@@ -16,6 +16,42 @@
 
  [`yield`](https://docs.python.org/3.7/reference/simple_stmts.html#yield) 用于暂停 generator iterator 的执行，并会记住当前位置的执行状态(包括局部变量和待处理的 try 语句)。当 generator iterator 恢复执行时，便会从之前中断的位置开始执行(普通函数每次调用时，都会从头开始重新执行)
 
+generator iterator 调用的 `__iter__` 方法会返回 generator iterator 自身；对 generator iterator 调用内置函数 `iter()` 同样会返回 generator iterator 自身。并且对同一个 generator iterator 依次执行这两种方法，均返回带有同一 id 的对象。
+
+```python
+class Generator:
+    def __iter__(self):#生成器
+        cont = 0
+        while cont < 3:
+            cont += 1
+            yield
+
+
+a_generator = Generator()
+
+# 通过同一个generator可创建不同的generator iterator。
+# 例如g_iter1和g_iter2是两个具备不同标识符id的generator iterator
+g_iter1 = iter(a_generator)
+g_iter2 = a_generator.__iter__()
+print("{0}的id是:{1}, 类型是:{2}".format("g_iter1", id(g_iter1), type(g_iter1)))
+print("{0}的id是:{1}, 类型是:{2}".format("g_iter2", id(g_iter2), type(g_iter2)))
+
+# 对同一个generator iterator依次执行这两种方法，均返回带有同一id的对象
+print(id(g_iter1.__iter__()))
+print(id(iter(g_iter1)))
+```
+
+输出
+
+```
+g_iter1的id是:2742184172272, 类型是:<class 'generator'>
+g_iter2的id是:2742184172624, 类型是:<class 'generator'>
+2742184172272
+2742184172272
+```
+
+
+
 ### generator expression
 
 生成器表达式
@@ -38,7 +74,7 @@ Iterables 可用于 [`for`](https://docs.python.org/3.7/reference/compound_stmts
 
 迭代器是表示数据流的对象。重复调用迭代器的 [`__next__()`](https://docs.python.org/3.7/library/stdtypes.html#iterator.__next__) 方法(或通过内置函数[`next()`](https://docs.python.org/3.7/library/functions.html#next) 重复调用迭代器)，将返回流中连续的项。当没有再无数据可供使用时，便会抛出 [`StopIteration`](https://docs.python.org/3.7/library/exceptions.html#StopIteration) 异常，这时表明该迭代器对象已经耗尽，若此后仍试图调用该迭代器的 `__next__()` 方法，将会再次抛出 [`StopIteration`](https://docs.python.org/3.7/library/exceptions.html#StopIteration) 异常。迭代器需要一个 [`__iter__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__iter__) 方法来返回迭代器对象自身，因此每个迭代器也都属于 iterable；并且在其它接受 iterable 的地方，也多半可以接受迭代器。
 
-不同的 iterable 对象在迭代过程中，也会有所区别。比如，对容器对象(如 [`list`](https://docs.python.org/3.7/library/stdtypes.html#list))而言，每次将其传递给 [`iter()`](https://docs.python.org/3.7/library/functions.html#iter) ，或用于 `for` 循环时，都将产生一个全新的迭代器。如果尝试将某个迭代器反复传递给 [`iter()`](https://docs.python.org/3.7/library/functions.html#iter) ，只会得到该迭代器相同引用；如果尝试将某个迭代器对象反复用于 `for` 循环，在第一次 `for` 循环时便会耗尽该迭代器，之后只会反复使用这个已被耗尽的迭代器，看起来就像是在使用一个空容器。
+不同的 iterable 对象在迭代过程中，也会有所区别。比如，对容器对象(如 [`list`](https://docs.python.org/3.7/library/stdtypes.html#list))而言，每次将其传递给 [`iter()`](https://docs.python.org/3.7/library/functions.html#iter) ，或用于 `for` 循环时，都将产生一个全新的迭代器。如果尝试将某个迭代器反复传递给 [`iter()`](https://docs.python.org/3.7/library/functions.html#iter) ，也只会返回指向该迭代器的引用；如果尝试将某个迭代器对象反复用于 `for` 循环，在第一次 `for` 循环时便会耗尽该迭代器，之后只会反复使用这个已被耗尽的迭代器，看起来就像是在使用一个空容器。
 
 ```python
 >>> aa = [1,2,3,]
