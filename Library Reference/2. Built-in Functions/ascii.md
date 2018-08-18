@@ -2,17 +2,17 @@
 
 ascii(*object*)
 
-类似于 [`repr()`](https://docs.python.org/3.7/library/functions.html#repr)，该函数也会返回一个用于描述 *object* 的字符串。与 [`repr()`](https://docs.python.org/3.7/library/functions.html#repr)  的不同之处在于，`ascii()` 在获取 `__repr__()` 的返回值之后，会使用转义序列 (`\x`, `\u` , `\U`) 来表示其中的非 ASCII 码字符。`ascii()` 返回的字符串类似于 Python 2 中的 `repr()` 函数返回的字符串。 
+类似于 [`repr()`](https://docs.python.org/3.7/library/functions.html#repr)，该函数会返回一个用于描述 *object* 的可打印(printable)的字符串。与 [`repr()`](https://docs.python.org/3.7/library/functions.html#repr)  的不同之处在于，`ascii()` 在获取 `__repr__()` 的返回值之后，会使用转义序列 (`\x`, `\u` , `\U`) 来表示其中的非 ASCII 码字符。`ascii()` 返回的字符串类似于 Python 2 中的 `repr()` 函数返回的字符串。 
 
 ```python
 class Cls:
     def __repr__(self):
-        # ascii与repr都会使用__repr__，
+        # ascii与repr都会调用__repr__，
         # 但ascii会转义其中的非ASCII字符
         return "调用__repr__"
 
     def __str__(self):
-        # ascii不使用__str__
+        # ascii不会调用__str__
         return "调用__str__"
 
 
@@ -72,3 +72,15 @@ print(repr("😊"))
 '😊'
 ```
 
+#### what's printable
+
+可打印(printable)是指通过 `print()` 函数可获得预期输出，例如：
+
+```python
+>>> ascii('鲸')
+"'\\u9cb8'"
+>>> print(ascii('鲸'))
+'\u9cb8'
+```
+
+因为 `ascii('鲸')` 的返回值是可打印(printable)字符串，所有需要在转义字符 `\u` 前，再添加一个反斜线(`\`)，才能保证 `print` 函数输出预期字符串。也就是说可打印字符串是通过增加 `\` 来去掉转义字符的特殊含义的字符串。因此，当用户通过 `print` 打印一个可打印字符串时，便可输出一个用户可读的"转义字符串"。

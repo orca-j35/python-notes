@@ -1,38 +1,8 @@
-# Built-in Functions
-
-## E
-
-### enumerate
-
-`enumerate(iterable, start=0) -> iterator for index, value of iterable`
-
-该函数会返回一个枚举(enumerate)对象。iterable 必须是一个支持迭代的对象，比如  sequence 和 [iterator](https://docs.python.org/3/glossary.html#term-iterator) 。枚举对象每次会产生(yield)一对值，其中包含一个计数值(以start为起点，默认值是0)和一个通过 iterable 对象生成(yield)的值。相当于如下代码：
-
-```python
-def enumerate(sequence, start=0):
-    n = start
-    for elem in sequence:
-        yield n, elem
-        n += 1
-```
-
-`enumerate()` 函数在获取列表的 index-value 对时，很有用：
-
-```python
->>> seasons = ['Spring', 'Summer', 'Fall', 'Winter']
->>> list(enumerate(seasons))
-[(0, 'Spring'), (1, 'Summer'), (2, 'Fall'), (3, 'Winter')]
->>> list(enumerate(seasons, start=1))
-[(1, 'Spring'), (2, 'Summer'), (3, 'Fall'), (4, 'Winter')]
-```
-
-## I
-
 ### iter
 
 `iter(object[, sentinel])`
 
-该函数会返回一个 [iterator](https://docs.python.org/3.7/glossary.html#term-iterator) 对象。第一个实参(argument)会因为第二个实参的传入，而获得截然不同的解释。
+该函数会返回一个 [iterator](https://docs.python.org/3.7/glossary.html#term-iterator) 对象，但第一个实参(argument)会因为第二个实参的传入与否，而获得截然不同的解释。
 
 在没有传入第二个实参的情况下，object 必须是一个支持迭代协议( [`__iter__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__iter__) 方法)的集合(collection)对象；或者 object 必须支持序列协议 (the [`__getitem__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__getitem__) method with integer arguments starting at `0`)。如果这两种协议均不被 object 支持，`iter()` 便会抛出 [`TypeError`](https://docs.python.org/3.7/library/exceptions.html#TypeError)。Tips：这里提到的集合对象只是一种抽象概念，并非特指 [`Callable`](https://docs.python.org/3.7/library/collections.abc.html#collections.abc.Callable) 类型，仅实现 [`__iter__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__iter__) 方法即可支持 `iter` 函数；同样的，仅实现 [`__getitem__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__getitem__) 方法也能支持 `iter` 函数。
 
@@ -110,17 +80,4 @@ with open('mydata.txt') as fp:
         process_line(line)
 ```
 
-## N
-
-### next
-
-`next(iterator[, default])`
-
-通过调用 iterator 的 [`__next__()`](https://docs.python.org/3.7/library/stdtypes.html#iterator.__next__) 方法来检索迭代器中的下一项。在给定 default 的情况下，当迭代器耗尽时便会返回 default；如果没有给定 default，则会抛出 [`StopIteration`](https://docs.python.org/3.7/library/exceptions.html#StopIteration)。
-
 ## 
-
-
-
-
-

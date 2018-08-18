@@ -19,7 +19,7 @@ def all(iterable):
 示例
 
 ```python
->>> all([])
+>>> all([]) # 空列表
 True
 
 >>> all([True, False])
@@ -27,14 +27,14 @@ False
 >>> all([True, True])
 True
 
->>> all('True')
+>>> all('True') # 非空字符串始终为真
 True
 >>> all('False')
 True
->>> all("")
+>>> all("") # 空字符串
 True
 
->>> all([0, 1])
+>>> all([0, 1]) # 数值0的布尔值是False
 False
 >>> all([1, 1])
 True
@@ -44,7 +44,7 @@ True
 >>> all((1, 0))
 False
 
->>> all({0: 'zero', 1: 'one'})
+>>> all({0: 'zero', 1: 'one'}) # 数值0的布尔值是False
 False
 >>> all({1: 'one', 2: 'two'})
 True

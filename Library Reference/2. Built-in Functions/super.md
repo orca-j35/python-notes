@@ -173,7 +173,7 @@ TypeError: Cannot create a consistent method resolution
 order (MRO) for bases Base, A
 ```
 
-另外，并列的父类间也需要按照相同的顺序排列：
+另外，并列的基类间也需要遵循相同的顺序，否则也回抛出异常。例如下面的 A 类和 B 类，如果它们的基类排序不一致，则会抛出异常。
 
 ```python
 class Base_1: pass
@@ -230,7 +230,7 @@ class super:
             pass
 ```
 
-这里需要特别注意"游标类"、"被绑定的实例对象"(`self._instance`)、"被绑定的类对象"(`self._cls`)，下面会详细阐述 super 对象这三个参数是如何协作的。
+这里需要特别注意"游标类"、"被绑定的实例对象"(`self._instance`)、"被绑定的类对象"(`self._cls`)和 MRO 列表(`self._mro`)，下面会详细阐述 super 对象这三个参数是如何协作的。
 
 ### 1. super(type1, obj)
 
@@ -285,9 +285,9 @@ B -> __init__
 # super_objc实例的"被绑定的类对象"：super_objc._cls=B
 ```
 
-通过 `super_objc` 调用**实例方法**时，`super_objc` 会在 MRO 列表中依次查找位于游标类之后的各个类，谁第一个拥有该实例方法，便会将该类的此实例方法绑定到`b_objc` 中；如果没有类拥有此方法，则抛出 `AttributeError`。
+通过 `super_objc` 调用**实例方法**时，`super_objc` 会在 MRO 列表中依次查找游标类之后的各个类，谁第一个拥有该实例方法，便会将该类的此实例方法绑定到`b_objc` 中；如果没有类拥有此方法，则抛出 `AttributeError`。
 
-比如，在调用 `super_objc.instance_method()` 后，类 A 是 MRO 列表中游标类之后第一个拥有该方法的类(类 X 虽然在类 A 之前，但没有该实例方法)。便会将`A.instance_method` 绑定到 `b_objc` 中(假设绑定后会在 `b_objc` 中创建一个名为 `A_inst_methd` 的实例方法)。然后再会调用 `b_objc.A_inst_methd()` ， 此时 `A_inst_methd()` 将 `b_objc` 实例作为第一参数使用，也就是说 `A_inst_methd()`  会套用 `b_objc` 的实例属性。完成调用后会删除该绑定方法。
+比如，在调用 `super_objc.instance_method()` 后，类 A 是 MRO 列表中游标类之后第一个拥有该方法的类(虽然类 X 在类 A 之前，但它没有该实例方法)，便会将`A.instance_method` 绑定到 `b_objc` 中(假设绑定后会在 `b_objc` 中创建一个名为 `A_inst_methd` 的实例方法)。然后再会调用 `b_objc.A_inst_methd()` ， 此时 `A_inst_methd()` 将 `b_objc` 实例作为第一参数使用，也就是说 `A_inst_methd()`  会套用 `b_objc` 的实例属性。完成调用后会删除该绑定方法。
 
 ```python
 >>> super_objc.instance_method()
@@ -296,9 +296,9 @@ _instance_B # 实例方法使用b_objc作为第一参数，因此会输出b_objc
 <bound method A.instance_method of <__main__.B object at 0x0000029269780AC8>>
 ```
 
-通过 `super_objc` 调用**类方法**时，`super_objc` 会在 MRO 列表中依次查找位于游标类之后的各个类，谁第一个拥有此类方法，便会将该类的此类方法绑定到`b_objc` 中；如果没有类拥有此方法，则抛出 `AttributeError`。
+通过 `super_objc` 调用**类方法**时，`super_objc` 会在 MRO 列表中依次查找游标类之后的各个类，谁第一个拥有此类方法，便会将该类的此类方法绑定到`b_objc` 中；如果没有类拥有此方法，则抛出 `AttributeError`。
 
-比如，在调用 `super_objc.class_method()` 后，类 A 是 MRO 列表中游标类之后第一个拥有该方法的类(类 X 虽然在类 A 之前，但没有该类方法)。便会将`A.class_method` 绑定到 B 类中(假设绑定后会在 B 类中创建一个名为 `A_clas_methd ` 的类方法)。然后再会调用 `B.A_clas_methd()` ， 此时 `A_clas_methd()` 中被省略的第一参数 `cls` 指向 B 类，也就是说 `A_clas_methd()` 将 B 类作为第一参数使用。完成调用后会删除该绑定方法。
+比如，在调用 `super_objc.class_method()` 后，类 A 是 MRO 列表中游标类之后第一个拥有该方法的类(虽然类 X 在类 A 之前，但没有该类方法)，便会将`A.class_method` 绑定到 B 类中(假设绑定后会在 B 类中创建一个名为 `A_clas_methd ` 的类方法)。然后再会调用 `B.A_clas_methd()` ， 此时 `A_clas_methd()` 中被省略的第一参数 `cls` 指向 B 类，也就是说 `A_clas_methd()` 将 B 类作为第一参数使用。完成调用后会删除该绑定方法。
 
 ```python
 >>> super_objc.class_method()
@@ -307,7 +307,7 @@ _instance_B # 实例方法使用b_objc作为第一参数，因此会输出b_objc
 <bound method A.class_method of <class '__main__.B'>>
 ```
 
-通过 `super_objc` 调用**静态方法**时，`super_objc` 会在 MRO 列表中依次查找位于游标类之后的各个类，谁第一个拥有此静态方法，便会直接调用该类的此静态方法，不会进行绑定；如果没有类拥有此方法，则抛出 `AttributeError`。
+通过 `super_objc` 调用**静态方法**时，`super_objc` 会在 MRO 列表中依次查找游标类之后的各个类，谁第一个拥有此静态方法，便会直接调用该类的此静态方法，不会进行绑定；如果没有类拥有此方法，则抛出 `AttributeError`。
 
 ```python
 >>> super_objc.static_method()
@@ -316,7 +316,7 @@ A_staticmethod
 <function A.static_method at 0x00000292697CFEA0>
 ```
 
-通过 `super_objc` 调用**类字段**时，`super_objc` 会在 MRO 列表中依次查找位于游标类之后的各个类，谁第一个拥有此类字段，便会直接返回该类的该类字段，不会进行绑定；如果没有类拥有此方法，则抛出 `AttributeError`。
+通过 `super_objc` 调用**类字段**时，`super_objc` 会在 MRO 列表中依次查找游标类之后的各个类，谁第一个拥有此类字段，便会直接返回该类的该类字段，不会进行绑定；如果没有类拥有此方法，则抛出 `AttributeError`。
 
 ```python
 >>> super_objc.class_field
@@ -362,9 +362,9 @@ class B(X,A):
 # super_objc实例的"绑定类对象"：super_objc._cls=B
 ```
 
-通过 `super_objc` 调用**类方法**时，`super_objc` 会在 MRO 列表中依次查找位于游标类之后的各个类，谁第一个拥有此类方法，便会将该类的此类方法绑定到 B 类中；如果没有类拥有此方法，则抛出 `AttributeError`。
+通过 `super_objc` 调用**类方法**时，`super_objc` 会在 MRO 列表中依次查找游标类之后的各个类，谁第一个拥有此类方法，便会将该类的此类方法绑定到 B 类中；如果没有类拥有此方法，则抛出 `AttributeError`。
 
-比如，在调用 `super_objc.class_method()` 后，类 A 是 MRO 列表中游标类之后第一个拥有该方法的类(类 X 虽然在类 A 之前，但没有该类方法)。便会将`A.class_method` 绑定到 B 类中(假设绑定后会在 B 类中创建一个名为 `A_clas_methd ` 的类方法)。然后再会调用 `B.A_clas_methd()` ， 此时 `A_clas_methd()` 将类 B 作为第一参数使用，也就是说 `A_inst_methd()`  会套用 B 的类属性。完成调用后会删除该绑定方法。
+比如，在调用 `super_objc.class_method()` 后，类 A 是 MRO 列表中游标类之后第一个拥有该方法的类(虽然类 X 在类 A 之前，但没有该类方法)。便会将`A.class_method` 绑定到 B 类中(假设绑定后会在 B 类中创建一个名为 `A_clas_methd ` 的类方法)。然后再会调用 `B.A_clas_methd()` ， 此时 `A_clas_methd()` 将类 B 作为第一参数使用，也就是说 `A_inst_methd()`  会套用 B 的类属性。完成调用后会删除该绑定方法。
 
 ```python
 >>> super_objc.class_method()
@@ -373,7 +373,7 @@ class B(X,A):
 <bound method A.class_method of <class '__main__.B'>>
 ```
 
-通过 `super_objc` 调用**静态方法**时，`super_objc` 会在 MRO 列表中依次查找位于游标类之后的各个类，谁第一个拥有此静态方法，便会直接调用该类的此静态方法，不会进行绑定；如果没有类拥有此方法，则抛出 `AttributeError`。
+通过 `super_objc` 调用**静态方法**时，`super_objc` 会在 MRO 列表中依次查找游标类之后的各个类，谁第一个拥有此静态方法，便会直接调用该类的此静态方法，不会进行绑定；如果没有类拥有此方法，则抛出 `AttributeError`。
 
 ```python
 >>> super_objc.static_method()
@@ -382,7 +382,7 @@ A_staticmethod
 <function A.static_method at 0x00000292697CFEA0>
 ```
 
-通过 `super_objc` 调用**类字段**时，`super_objc` 会在 MRO 列表中依次查找位于游标类之后的各个类，谁第一个拥有此类字段，便会直接返回该类的该类字段，不会进行绑定；如果没有类拥有此方法，则抛出 `AttributeError`。
+通过 `super_objc` 调用**类字段**时，`super_objc` 会在 MRO 列表中依次查找游标类之后的各个类，谁第一个拥有此类字段，便会直接返回该类的该类字段，不会进行绑定；如果没有类拥有此方法，则抛出 `AttributeError`。
 
 ```python
 >>> super_objc.class_field
@@ -401,9 +401,7 @@ super(type1) -> unbound super object
 
 ### 4. 只用第一个
 
-super 对象会在 MRO 列表中依次查找位于游标类之后的各个类，谁第一个拥有目标方法，便会将该类的此方法绑定到 `self._instance` 或 `self._cls` 中，然后通过 `self._instance` 或 `self._cls` 调用被绑定的方法；如果没有类拥有此方法，则抛出 `AttributeError`。
-
-也就是说 super 对象并不会处理 MRO 中每一个包含目标方法的类，只会处理第一个包含目标方法的类。
+super 对象会在 MRO 列表中依次查找游标类之后的各个类，谁第一个拥有目标方法，便会将该类的此方法绑定到 `self._instance` 或 `self._cls` 中(注：静态方法直接调用，不会绑定)，然后通过 `self._instance` 或 `self._cls` 调用被绑定的方法，剩余的类都会被忽略；如果游标类之后的所有类都不包含目标方法，则抛出 `AttributeError`。
 
 ```python
 class A():
@@ -455,7 +453,7 @@ enter A
 enter B
 ```
 
-### 4. 指定游标类
+### 4. 改变游标类
 
 下面的代码展示了一个典型的"钻石型"多继承的类层次结构。
 
@@ -495,7 +493,7 @@ C 类的 MRO 列表如下：
 [<class '__main__.C'>, <class '__main__.A'>, <class '__main__.B'>, <class '__main__.Base'>, <class 'object'>]
 ```
 
-通过改变游标类(*type1*) ，可改变 MRO 列表的搜索起点。下面这个示例中，我们将游标类改为 B 类，则会使用 Base 中的 `func` 方法。
+通过改变游标类(*type1*) ，便会改变 MRO 列表的搜索起点，游标类之前的类会被忽略。下面这个示例中，我们将游标类改为 B 类，则会使用 Base 中的 `func` 方法。
 
 ```python
 >>> super(B,C()).func()
@@ -568,7 +566,8 @@ class super(object)
 - [8.7 调用父类方法 - python3_cookbook](http://python3-cookbook.readthedocs.io/zh_CN/latest/c08/p07_calling_method_on_parent_class.html#id1)
 - [你不知道的 super - Python 之旅](https://funhacks.net/explore-python/Class/super.html)
 - [深入super，看Python如何解决钻石继承难题](https://www.cnblogs.com/testview/p/4651198.html)
--  [Python’s super() considered super!](https://rhettinger.wordpress.com/2011/05/26/super-considered-super/) 
+- [Python内置函数(63)——super](https://www.cnblogs.com/sesshoumaru/p/6120517.html)
+- [Python’s super() considered super!](https://rhettinger.wordpress.com/2011/05/26/super-considered-super/) 
   - [深入思考python的super()](https://blog.csdn.net/tab_space/article/details/50506138) - 译
 - [How does Python's super() work with multiple inheritance? - stackoverflow](https://stackoverflow.com/questions/3277367/how-does-pythons-super-work-with-multiple-inheritance)
 
