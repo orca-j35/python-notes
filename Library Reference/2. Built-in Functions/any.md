@@ -1,4 +1,4 @@
-### any
+# any
 
 any(*iterable*)
 

@@ -1,10 +1,12 @@
-### iter
+# iter
 
-`iter(object[, sentinel])`
+iter(*object*[, *sentinel*])
 
-该函数会返回一个 [iterator](https://docs.python.org/3.7/glossary.html#term-iterator) 对象，但第一个实参(argument)会因为第二个实参的传入与否，而获得截然不同的解释。
+该函数会返回一个 [iterator](https://docs.python.org/3.7/glossary.html#term-iterator) 对象，但 *object* 会因为 *sentinel* 的传入与否，而获得截然不同的解释。
 
-在没有传入第二个实参的情况下，object 必须是一个支持迭代协议( [`__iter__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__iter__) 方法)的集合(collection)对象；或者 object 必须支持序列协议 (the [`__getitem__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__getitem__) method with integer arguments starting at `0`)。如果这两种协议均不被 object 支持，`iter()` 便会抛出 [`TypeError`](https://docs.python.org/3.7/library/exceptions.html#TypeError)。Tips：这里提到的集合对象只是一种抽象概念，并非特指 [`Callable`](https://docs.python.org/3.7/library/collections.abc.html#collections.abc.Callable) 类型，仅实现 [`__iter__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__iter__) 方法即可支持 `iter` 函数；同样的，仅实现 [`__getitem__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__getitem__) 方法也能支持 `iter` 函数。
+在没有传入 *sentinel*  的情况下，*object* 必须是一个支持迭代协议( [`__iter__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__iter__) 方法)的集合(collection)对象；或者是一个支持序列协议的对象 (the [`__getitem__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__getitem__) method with integer arguments starting at `0`)。如果这两种协议均不被 object 支持，`iter()` 便会抛出 [`TypeError`](https://docs.python.org/3.7/library/exceptions.html#TypeError)。
+
+Tips：这里提到的集合对象只是一种抽象概念，并非特指 [`Callable`](https://docs.python.org/3.7/library/collections.abc.html#collections.abc.Callable) 类型，仅实现 [`__iter__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__iter__) 方法即可支持 `iter` 函数；同样的，仅实现 [`__getitem__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__getitem__) 方法也能支持 `iter` 函数。
 
 ```python
 class ObjcIter:
@@ -41,9 +43,23 @@ print(list(a_iter2))
 [1, 2, 3, 4]
 ```
 
+列表、元组、字典等都可直接用作 `iter` 的参数：
 
+```python
+>>> i = iter([1, 2, 3])
+>>> i.next()
+1
+>>> i.next()
+2
+>>> i.next()
+3
+>>> i.next()
+Traceback (most recent call last):
+  File "<interactive input>", line 1, in <module>
+StopIteration
+```
 
-如果传入了第二参数 sentinel，此时 object 必须是一个可调用(callable)对象。对于在这种情况下创建的迭代器，每当调用其 [`__next__()`](https://docs.python.org/3.7/library/stdtypes.html#iterator.__next__) 方法时，便会以无参数形式调用 object。如果 object 的返回值等于 sentinel，便会抛出 [`StopIteration`](https://docs.python.org/3.7/library/exceptions.html#StopIteration) ；如果返回值不等于 sentinel，则直接返回该值。比如下面这个示例：
+如果传入了第二参数 *sentinel*，此时 *object* 必须是一个可调用(callable)对象。对于在这种情况下创建的迭代器，每当调用其 [`__next__()`](https://docs.python.org/3.7/library/stdtypes.html#iterator.__next__) 方法时，便会以无参数形式调用 *object*。如果 *object* 的返回值等于 *sentinel*，便会抛出 [`StopIteration`](https://docs.python.org/3.7/library/exceptions.html#StopIteration) ；如果返回值不等于 *sentinel*，则直接返回该值。比如下面这个示例：
 
 ```python
 class AutoIncrement(object):
@@ -70,9 +86,29 @@ for i in iter(a_iter, 3):
 1,2,
 ```
 
-还可参考：[Iterator Types](https://docs.python.org/3.7/library/stdtypes.html#typeiter).
+也可直接使用函数对象，例如：
 
-[`iter()`](https://docs.python.org/3.7/library/functions.html#iter) 的第二种使用形式的一个使用场景是：可以一次性读取文件中的多个行，并在某个特定行停止读取。下面这个示例会持续读取一个文件，直到 [`readline()`](https://docs.python.org/3.7/library/io.html#io.TextIOBase.readline) 方法返回空字符串为止。
+```python
+_count = 0
+
+
+def func():
+    global _count
+    _count += 1
+    return _count
+
+
+for i in iter(func, 3):
+    print(i, end=",")
+```
+
+输出：
+
+```python
+1,2,
+```
+
+[`iter()`](https://docs.python.org/3.7/library/functions.html#iter) 带第二参数的一个使用场景是：可以一次性读取文件中的多个行，并在某个特定行停止读取。下面这个示例会持续读取一个文件，直到 [`readline()`](https://docs.python.org/3.7/library/io.html#io.TextIOBase.readline) 方法返回空字符串为止。
 
 ```python
 with open('mydata.txt') as fp:
@@ -80,4 +116,6 @@ with open('mydata.txt') as fp:
         process_line(line)
 ```
 
-## 
+
+
+[参考 Iterator Types 可了解更多有关迭代器的信息。](https://docs.python.org/3.7/library/stdtypes.html#typeiter)

@@ -1,4 +1,4 @@
-### ascii
+# ascii
 
 ascii(*object*)
 
@@ -72,7 +72,7 @@ print(repr("😊"))
 '😊'
 ```
 
-#### what's printable
+## what's printable
 
 可打印(printable)是指通过 `print()` 函数可获得预期输出，例如：
 

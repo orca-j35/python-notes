@@ -1,10 +1,11 @@
-### getattr
+# getattr
 
 getattr(*object*, *name*[, *default*])
 
 该函数用于获取 *object* 中名为 *name* 的属性(*name* 以字符串表示)，也就是说 `getattr(x, 'foobar')` 等效于 `x.foobar`。
-如果 *object* 中含有 *name* 属性，则返回该属性；如果 *object* 没有 *name* 属性，则返回 *default*(如果提供)，否则抛出 [`AttributeError`](https://docs.python.org/3.7/library/exceptions.html#AttributeError) 异常。
-对于字段属性，会直接返回值；对于方法属性，会返回其引用(通过引用可调用方法属性)。
+
+如果 *object* 中包含 *name* 属性，则返回该属性；如果 *object* 没有 *name* 属性，则返回 *default*(如果提供)，否则抛出 [`AttributeError`](https://docs.python.org/3.7/library/exceptions.html#AttributeError) 异常。
+对于字段属性，会直接返回值；对于方法属性，会返回其引用(通过引用可调用该方法)。
 
 Tips：该函数属于反射操作；使用 `object.__class__` 的 `__mro__` 属性提供方的法解析顺序(MRO)列表，在继承链中搜索 *name* 属性。
 
@@ -24,7 +25,7 @@ Tips：该函数属于反射操作；使用 `object.__class__` 的 `__mro__` 属
 'bar'
 ```
 
-另一个较复杂的示例：
+另一个较复杂的示例，展示了如何通过 `getattr` 获取类字段、静态方法、类方法、实例字段、实例方法。
 
 ```python
 class Cls:
