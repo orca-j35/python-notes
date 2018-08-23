@@ -6,4 +6,4 @@ while True:
         print("已包含该文件，不会自动覆盖")
     else:
         with open(file_name+".md", "w") as file_objc:
-            file_objc.write("### "+ file_name)
+            file_objc.write("# "+ file_name)
