@@ -13,3 +13,7 @@ Python 学习笔记
 杂项：
 
 - [Cool New Features in Python 3.7](https://realpython.com/python37-new-features/) ：详细讲述了 3.7 版本的新功能
+
+学习工具：
+
+- [pythontutor](http://www.pythontutor.com/index.html)：可视化 Python 代码的执行过程
