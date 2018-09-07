@@ -2,7 +2,7 @@
 
 enumerate(*iterable*, *start=0*) 
 
-该内置函数本质上是在调用 enumerate 类的构造函数，从而获得一个枚举(enumerate)对象。 *iterable* 必须是一个支持迭代(iteration)的对象，比如序列(sequence)和迭代器([iterator](https://docs.python.org/3/glossary.html#term-iterator))。枚举对象本身就是一个迭代器(iterator)，每次调用其 [`__next__()`](https://docs.python.org/3.7/library/stdtypes.html#iterator.__next__)  方法时，都会产生(yield)一对值：
+该内置函数本质上是 enumerate 类的构造函数，用于创建一个枚举(enumerate)对象。 *iterable* 必须是一个支持迭代(iteration)的对象，比如序列(sequence)和迭代器([iterator](https://docs.python.org/3/glossary.html#term-iterator))。枚举对象本身就是一个迭代器(iterator)，每次调用其 [`__next__()`](https://docs.python.org/3.7/library/stdtypes.html#iterator.__next__)  方法时，都会产生(yield)一对值：
 
 - 一个计数值(以start为起点，默认值是0)
 - 一个通过 *iterable* 对象生成的值。

@@ -1,4 +1,4 @@
-# 已编码字符集
+# 已编码字符集(CCS)
 
 Coded Character Set (CCS)
 
@@ -54,7 +54,7 @@ Coded Character Set (CCS)
 
 编码空间 (*Codespace*) ：在对抽象字符进行编码的过程中，用于映射抽象字符的非负整数的范围。编码空间中的某个具体值便是码点。在 Unicode 标准中，编码空间的范围是 0x0 ~ 0x10FFFF。
 
-### 1.3 其他术语
+### 1.3 相关术语补充
 
 以下内容直接翻译自 Unicode 术语表：
 

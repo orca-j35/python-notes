@@ -47,7 +47,7 @@ Character Encoding Form (CEF)
 
 **UTF** (*Unicode transformation format* ) 是将每个标量值分别映射到一个唯一字节序列的算法，属于"Unicode 字符编码模式"的具体实现方式。UTF 包含三中模式：UTF-8、UTF-16、UTF-32，且每种 UTF 算法都是可逆算法。
 
-### 2.1 UTF-8 编码模式
+### 2.1 UTF-8 CEF
 
 **UTF-8 编码模式** (Encoding Form)：一种 Unicode 编码模式，会为每个标量值分别分配一个唯一的无符号字节序列，该序列的长度是 1 ~ 4 字节(可变宽度)。另外，UTF-8 与 ASCII 兼容。 (See definition D92 in [Section 3.9, Unicode Encoding Forms](http://www.unicode.org/versions/latest/ch03.pdf#G7404).)
 
@@ -74,7 +74,7 @@ Character Encoding Form (CEF)
 | U+40000..U+FFFFF   | F1..F3     | 80..BF      | 80..BF     | 80..BF      |
 | U+100000..U+10FFFF | F4         | 80..8F      | 80..BF     | 80..BF      |
 
-### 2.2 UTF-16 编码模式
+### 2.2 UTF-16 CEF
 
 **UTF-16 编码模式** (Encoding Form)：一种 Unicode 编码模式，会为 U+0000..U+D7FF 和 U+E000..U+FFFF 中的每个标量值分别分配一个唯一的无符号 16-bit 编码单元(编码单元的值与 Unicode 标量值相等)；会为 U+10000..U+10FFFF 中的每个标量值分别分配一个唯一代理对。下表展示了 UTF-16 中比特位编码方式： (See definition D91 in [Section 3.9, Unicode Encoding Forms](http://www.unicode.org/versions/latest/ch03.pdf#G7404).)
 
@@ -145,7 +145,7 @@ get_surrogate_pairs(0x10FFFF) # 输出最大码点值的代理对
 >
 > ***低代理编码单元*** (Low-Surrogate Code Unit)：位于 0xDC00~ 0xDFFF 间的 16-bit 编码单元，在 UTF-16 中被用作代理对的第二个编码单元。(See definition D74 in [Section 3.8, Surrogates](http://www.unicode.org/versions/latest/ch03.pdf#G2630).)
 
-### 2.3 UTF-32 编码模式
+### 2.3 UTF-32 CEF
 
 **UTF-32 编码模式** (Encoding Form)：一种 Unicode 编码模式，会为每个 Unicode 标量值分配一个唯一的无符号 32-bit 编码单元(编码单元的值与 Unicode 标量值相等)。(See definition D90 in [Section 3.9, Unicode Encoding Forms](http://www.unicode.org/versions/latest/ch03.pdf#G7404).)
 
@@ -159,13 +159,15 @@ UTF-32 虽可编码所有 Unicode 码点，但是相比其它编码模式会占�
 
 ***UCS-4*** ：ISO/IEC 10646 编码模式：使用 4 个 8 位字节编码通用字符集，适用于所有平面。
 
-## 4. 其它术语
+## 4. 相关术语补充
 
-> ***Unicode 编码模式*** (Unicode Encoding Form)：一种字符编码模式，用于为每个 Unicode 标量值(scalar value)分别分配一个唯一的"编码单元序列"。Unicode 标准定义了三种 Unicode 编码模式：UTF-8, UTF-16, and UTF-32。(See definition D79 in [Section 3.9, Unicode Encoding Forms](http://www.unicode.org/versions/latest/ch03.pdf#G7404).)
+以下内容直接翻译自 Unicode 术语表：
+
+> - ***Unicode 编码模式*** (Unicode Encoding Form)：一种字符编码模式，用于为每个 Unicode 标量值(scalar value)分别分配一个唯一的"编码单元序列"。Unicode 标准定义了三种 Unicode 编码模式：UTF-8, UTF-16, and UTF-32。(See definition D79 in [Section 3.9, Unicode Encoding Forms](http://www.unicode.org/versions/latest/ch03.pdf#G7404).)
 >
-> ***字符编码模式*** (Character Encoding Form)：简称编码模式，将字符集中的定义(definition)映射到表示数据的实际编码单元。另外，Encoding Form 与 character encoding form 同义
+> - ***字符编码模式*** (Character Encoding Form)：简称编码模式，将字符集中的定义(definition)映射到表示数据的实际编码单元。另外，Encoding Form 与 character encoding form 同义
 >
-> ***转换格式*** (Transformation Format)：从已编码字符序列到唯一编码序列的映射(typically bytes)。
+> - ***转换格式*** (Transformation Format)：从已编码字符序列到唯一编码序列的映射(typically bytes)。
 >
-> ***代理码点*** (Surrogate Code Point)：位于 U+D800 ~ U+DFFF 之间的 Unicode 码点属于作代理码点，保留共 UTF-16 使用。UTF-16 使用一对代理编码单元"表示"辅助码点。
+> - ***代理码点*** (Surrogate Code Point)：位于 U+D800 ~ U+DFFF 之间的 Unicode 码点属于作代理码点，保留共 UTF-16 使用。UTF-16 使用一对代理编码单元"表示"辅助码点。
 

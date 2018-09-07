@@ -1,35 +1,10 @@
-# ord
+## 字符串
 
-ord(*c*)
+[`str`](https://docs.python.org/3/library/stdtypes.html#str) 对象用于处理 Python 中的文本数据。从技术上来说，字符串是由 Unicode 码点组成的不可变序列。因此，Unicode 字符的本质就是 Unicode 码点。
 
-该函数用于获取 *c* 的 Unicode 码点，并以整数形式表示。*c* 表示一个 Unicode 字符，不过由于 Python 的内置类型中并不包含字符类型，所有 *c* 实际上是一个长度为 1 的字符串，并且其中仅包含一个 Unicode 字符。示例：
+## 转义字符与码点
 
-```python
->>> ord('鲸')
-40120
->>> ord('€')
-8364
->>> ord('a')
-97
-```
-
-同一码点的不同转义序列(`'\xhh'`,`'\ooo'`,`'\uhhhh'`, `'\Uhhhhhhhh'`)，对 `ord` 完全等效：
-
-```python
->>> ord('\x61'),ord('\141'),ord('\u0061'),ord('\U00000061'),ord('a')
-(97, 97, 97, 97, 97)
-```
-
-Tips：`chr()` 与 `ord()` 的功能正好相反。
-
-```python
->>> chr(ord('a'))
-'a'
->>> ord(chr(97))
-97
-```
-
-## '\xhh' 和 '\ooo'
+### '\xhh' 和 '\ooo'
 
 在字符串字面值中，十六进制(`'\xhh'`)和八进制(`'\ooo'`)转义序列用于表示指定码点的 Unicode 字符(`hh` 以十六进制表示指定码点；`ooo` 以八进制表示指定码点)。也就是说，在字符串字面值中使用这两种转义序列的效果，与直接使用 Unicode 字符完全相同。
 
@@ -56,7 +31,7 @@ True
 ('\x01', '\x01', '\x01')
 ```
 
-## '\uhhhh' 和 '\Uhhhhhhhh'
+### '\uhhhh' 和 '\Uhhhhhhhh'
 
 在字符串字面值中，Unicode 转义序列 `'\uhhhh'` 和  `'\Uhhhhhhhh'` 用于表示指定码点的 Unicode 字符(`hhhh` 和 `hhhhhhhh` 以十六进制表示指定码点，后者表示的码点范围更宽)。也就是说，在字符串字面值中使用 Unicode 转义序列的效果，与直接使用 Unicode 字符完全相同。
 
@@ -86,3 +61,10 @@ True
 '\ufeff'
 ```
 
+## what's 编码(encoding)
+
+在 Python 文档中，"编码"是指将 Unicode 字符串转换为字节序列的规则，也就是说"编码"包含了从"抽象字符序列"到"字节序列"的全部过程。
+
+### 支持的编码类型
+
+7.2. [codecs — Codec registry and base classes](https://docs.python.org/3.7/library/codecs.html#module-codecs) 中列举了 Python 内置支持的编码类型。

@@ -74,56 +74,74 @@ Tips: 在 Python 文档中，"编码(encoding)"是指将 Unicode 字符串转换
 
 扩展阅读: [Binary Sequence Types — bytes, bytearray, memoryview](https://docs.python.org/3.7/library/stdtypes.html#binaryseq) 及 [Bytearray Objects](https://docs.python.org/3.7/library/stdtypes.html#typebytearray).
 
-## 如何理解 bytearray 对象
+## 深入理解 bytearray 对象
 
 在 C 语言中创建字节数组的语法如下：
 
 ```c
-byte bytes_array[] = {0x02, 0x03, 0x0A, 0x41}
+byte bytes_instance[] = {0x02, 0x03, 0x0A, 0x41}
 ```
 
-Python 中的 bytearray 对象与 C 语言中的字节数组类似，它们的**每个索引位置都对应一个整数 x (且 0≤x≤255)**。不同之处在于 bytearray 对象会以转义序列或 ASCII 编码显示相应数值(如，将十进制整数 65 显示为字母 A)，但是 bytearray 对象的每个索引位置仍然是一个数值，而非一个字符。bytearray 对象是一个实实在在的**字节序列**，每个索引位置对应一个字节(byte)而不是一个字符(char)。
+Python 中的 bytearray 对象与 C 语言中的字节数组类似，它们的每个索引位置都对应一个整数 x (且 0≤x≤255)。不同之处在于 bytearray 对象会以转义序列或 ASCII 字符显示相应的整数值(如，会将十进制整数 65 显示为字母 A)，但是 bytearray 对象的每个索引位置都仅表示一个数值，而非一个字母。因此，bytearray 对象是一个实实在在的字节序列，每个索引位置对应一个字节(byte)而不是一个字符(char)。
 
-注意：不能将 bytearray 完全等同于 C 的字符数组，因为 bytearray 远比字符数组强大。
-
-下面创建一个与上面的 C 语言字节数组拥有相同内容的 bytearray 对象：
+下面创建一个与 C 字节数组拥有相同内容的 bytearray 对象
 
 ```python
 >>> a_obj = bytearray((0x02, 0x03, 0x0A, 0x41))
 >>> a_obj
-bytearray(b'\x02\x03\nA') # 以转义序列或 ASCII 编码显示相应数值
+bytearray(b'\x02\x03\nA')
 >>> [ x for x in a_obj]
-[2, 3, 10, 65] # 每个索引位置始终对应一个数值，而非一个字符
+[2, 3, 10, 65]
 ```
 
-如果某个索引位置的数值对应 ASCII 编码中的可见字符，那么该索引位会显示该字符：
+显示为 ASCII 字符的好处在于，如果 bytearray 对象是一个 ASCII 编码的字节序列，那么便可直接读懂其中的内容，无需解码
 
 ```python
->>> bytearray((0x41, 0x42))
-bytearray(b'AB')
-```
-
-如果某个索引位置的数值对应 ASCII 编码中的不可见字符，但该字符拥有"独立转义序列"，那么该索引位置会显示该"独立转义序列"：
-
-```python
->>> bytearray((0x0A, 0x0D))
-bytearray(b'\n\r')
-```
-
-如果某个索引位置的数值对应 ASCII 编码中的不可见字符，并且该字符没有"独立转义序列"；或该数值已超出了 ASCII 编码的范围。那么该索引位置会显示十六进制(`'\xhh'`)转义序列。在 bytearray 对象中，十六进制(`'\xhh'`)转义序列用于表示具有指定数值的字节。
-
-```python
->>> bytearray((0x01, 0xFE))
-bytearray(b'\x01\xfe')
-```
-
-将 bytearray 对象中各个字节的数值，尽力按照 ASCII 编码显示为相应字符的好处是：如果 bytearray 对象是一个 ASCII 编码的字节序列，那么便可直接读懂其中的内容，无需解码：
-
-```python
->>> hi = bytearray('hello!\n','ascii')
+>>> hi = bytearray('hello!','ascii')
 >>> hi
-bytearray(b'hello!\n') # 虽然是字节序列，但是不用解码也读懂
+bytearray(b'hello!') # 虽然是字节序列，但是不用解码也读懂
 >>> hi.decode('ascii')
-'hello!\n'
+'hello!'
 ```
+
+
+
+不同之处在于 bytearray 对象的长度可变，同时拥有很多
+
+在使用过程中，我们可将 bytearray 对象类比于 C 语言中的字节数组，如：
+
+==在 bytes 字面值中，十六进制(`'\xhh'`)和八进制(`'\ooo'`)转义序列用于表示具有给定值的字节，`hh` 和 `ooo` 分别是十六进制和八进制的给定值。==
+
+
+
+### 显示方式
+
+在字符串字面值中，十六进制(`'\xhh'`)和八进制(`'\ooo'`)转义序列用于表示指定码点的 Unicode 字符(`hh` 以十六进制表示指定码点；`ooo` 以八进制表示指定码点)。也就是说，在字符串字面值中使用这两种转义序列的效果，与直接使用 Unicode 字符完全相同。
+
+对于可见 Unicode 字符，这两种转义序列最终都会以 Unicode 字符表示；对于不可见 Unicode 字符，转义序列的最终表示方式分以下两种情况：
+
+1. 如果"不可见字符"拥有独立的转义序列，最终会表示为该独立的转义序列
+2. 如果没有独立的转义序列，最终会表示为十六进制转义序列
+
+
+
+
+
+bytes就是一个字节序列
+
+
+
+
+
+[`str`](https://docs.python.org/3/library/stdtypes.html#str) 对象用于处理 Python 中的文本数据。从技术上来说，字符串是由 Unicode 码点组成的不可变序列。因此，Unicode 字符的本质就是 Unicode 码点。
+
+
+
+
+
+
+
+
+
+
 
