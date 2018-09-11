@@ -44,3 +44,5 @@ True
 object.\_\_call\_\_(*self*[, *args*...])
 
 该函数用于[模拟可调用对象](https://docs.python.org/3.7/reference/datamodel.html#emulating-callable-objects)，当我们像调用函数一样调用类实例时，便会调用该方法。如果类中定义了该方法，那么在调用类实例 x 时：`x(arg1,arg2, ...)` 与  `x.__call__(arg1, arg2, ...)` 等效果。
+
+由于类本身也是可调用对象(当我们调用某个类时，便会返回该类的实例)，所以作为类对象模板的元类(如 type)也需要实现 `__call__` 方法。

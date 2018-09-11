@@ -17,3 +17,7 @@ Python 学习笔记
 学习工具：
 
 - [pythontutor](http://www.pythontutor.com/index.html)：可视化 Python 代码的执行过程
+
+推荐书籍
+
+- [The Best Python Books](https://realpython.com/best-python-books/)：相关书籍的推荐列表
