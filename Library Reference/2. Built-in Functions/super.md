@@ -195,6 +195,8 @@ class C(A, B): pass
 
 super([*type1*[, *object-or-type2*]])
 
+`super` 仅支持继承自 `object` 的新式类。
+
 该内置函数本质上是 super 类的构造函数，用于创建一个 super 实例。通过 super 实例可调用 "游标类(*type1*)" 的父类或兄弟类[^1]中的方法。super 类的构造函数大致如下：(这里只为了是方便理解，真正的实现过程并非如此)
 
 ```python

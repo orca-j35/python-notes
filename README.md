@@ -48,3 +48,7 @@ Python 学习笔记
 
   - 中文译本：[笨办法学Python 3](https://item.jd.com/12372646.html?dist=jd)，在网络上流传的中文译本都是旧版本，最好直接购买纸质书。
 
+- [Effective Python: 59 Ways to Write Better Python](https://effectivepython.com/)
+
+  - 中文译本：Effective Python 编写高质量Python代码的59个有效方法
+
