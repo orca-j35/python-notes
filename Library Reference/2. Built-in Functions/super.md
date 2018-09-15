@@ -116,6 +116,8 @@ Python 中的相关属性如下：
 - `class.__mro__` - 该属性用于存储 MRO 元组，以便在方法解析期间提供基类排序。该属性是动态的，每当继承层次更新时，该属性都可能发生改变。
 - `class.mro()` - 通过元类(metaclass)可以覆盖此方法，以自定义类实例的方法解析顺序。该方法会在程序初始化时调用，其结果存储在 [`__mro__`](https://docs.python.org/3.7/library/stdtypes.html#class.__mro__) 中。
 
+Tips：在旧式类中，没有这两个属性
+
 考虑如下类层次结构的 MRO 列表：
 
 ```python
