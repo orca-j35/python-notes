@@ -101,6 +101,8 @@ C.__init__
 
 ## what's MRO
 
+> 本小结仅适用于 Python 3。因为，旧式类并没有采用 C3，而是采用了**深度优先，自左向右的解析策略**。另外，在 Python 2.2 中的解析策略也有别于 C3 和旧式类。可阅读 [Method Resolution Order - Python 见闻志](https://harveyqing.gitbooks.io/python-read-and-write/content/python_advance/method_resolution_order.html) 以了解更多信息。
+
 方法解析顺序(Method Resolution Order - **MRO**)，是一种在多重继承中用于确定方法搜索顺序的算法，又称 C3 超类线性化(superclass linearization)。Python 会计算出每一个类的 MRO 列表。一个类的 MRO 列表是一个包含了其继承链上所有基类的线性顺序列，并且列表中的每一项均保持唯一。 
 
 我们不必深究这个算法的数学原理，它实际上就是合并所有父类的MRO列表并遵循如下三条准则：
@@ -192,6 +194,7 @@ class C(A, B): pass
   - [Python的MRO算法(The Python 2.3 Method Resolution Order-翻译)](https://sq.163yun.com/blog/article/181102632228446208)
   - [python2.3方法解析顺序（译）](http://www.nanerbang.com/article/40/)
 - [wiki/C3_linearization](https://en.wikipedia.org/wiki/C3_linearization)
+- [Method Resolution Order - Python 见闻志](https://harveyqing.gitbooks.io/python-read-and-write/content/python_advance/method_resolution_order.html)
 
 ## what's super
 
@@ -571,8 +574,9 @@ class super(object)
 - [你不知道的 super - Python 之旅](https://funhacks.net/explore-python/Class/super.html)
 - [深入super，看Python如何解决钻石继承难题](https://www.cnblogs.com/testview/p/4651198.html)
 - [Python内置函数(63)——super](https://www.cnblogs.com/sesshoumaru/p/6120517.html)
-- [Python’s super() considered super!](https://rhettinger.wordpress.com/2011/05/26/super-considered-super/) 
+- [Python's super() considered super!](https://rhettinger.wordpress.com/2011/05/26/super-considered-super/) 
   - [深入思考python的super()](https://blog.csdn.net/tab_space/article/details/50506138) - 译
+  - [Python’s super() considered super!](https://harveyqing.gitbooks.io/python-read-and-write/content/python_advance/python_super_considered_super.html) - 译
 - [How does Python's super() work with multiple inheritance? - stackoverflow](https://stackoverflow.com/questions/3277367/how-does-pythons-super-work-with-multiple-inheritance)
 
 注脚：

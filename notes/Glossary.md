@@ -126,6 +126,10 @@ Iterables 可用于 [`for`](https://docs.python.org/3.7/reference/compound_stmts
 
 ## Q
 
+
+
+## S
+
 ### sequence
 
 序列是一个 [iterable](https://docs.python.org/3.7/glossary.html#term-iterable) 对象。通过定义 [`__getitem__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__getitem__) 方法，使得序列能够通过整数索引来高效的访问其中的元素。通过定义 [`__len__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__len__) 方法，以便查看序列的长度。如 [`list`](https://docs.python.org/3.7/library/stdtypes.html#list) | [`str`](https://docs.python.org/3.7/library/stdtypes.html#str)| [`tuple`](https://docs.python.org/3.7/library/stdtypes.html#tuple)|  [`bytes`](https://docs.python.org/3.7/library/stdtypes.html#bytes) 都属于内置序列类型。注意，[`dict`](https://docs.python.org/3.7/library/stdtypes.html#dict) 同样支持  [`__getitem__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__getitem__) 和 [`__len__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__len__)，但是考虑到 `dict` 是映射而非序列，因此将 [不可变](https://docs.python.org/3.7/glossary.html#term-immutable)的 key 作为查找对象，而没有使用整数。
