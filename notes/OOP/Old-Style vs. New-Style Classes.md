@@ -375,16 +375,28 @@ type 可以被继承，我们可以基于 type 派生自定义元类。
       assert False
   ```
 
+## 6. 术语
 
+### classic class
 
-## 5. 扩展阅读
+in Glossary of Python 2
+
+Any class which does not inherit from [`object`](https://docs.python.org/2/library/functions.html#object). See [new-style class](https://docs.python.org/2/glossary.html#term-new-style-class). Classic classes have been removed in Python 3.
+
+### new-style class
+
+Any class which inherits from [`object`](https://docs.python.org/2/library/functions.html#object). This includes all built-in types like `list` and [`dict`](https://docs.python.org/2/library/stdtypes.html#dict). Only new-style classes can use Python's newer, versatile features like `__slots__`, descriptors, properties, and [`__getattribute__()`](https://docs.python.org/2/reference/datamodel.html#object.__getattribute__), class methods, and static methods.
+
+More information can be found in [New-style and classic classes](https://docs.python.org/2/reference/datamodel.html#newstyle).
+
+## 7. 扩展阅读
 
 - https://wiki.python.org/moin/NewClassVsClassicClass
 
 - https://www.python.org/doc/newstyle/
 
 
-## 6. 注脚
+## 8. 注脚
 
 [^1]: [What is the difference between old style and new style classes in Python?](https://stackoverflow.com/questions/54867/what-is-the-difference-between-old-style-and-new-style-classes-in-python)
 [^2]: [The Inside Story on New-Style Classes](http://python-history.blogspot.com/2010/06/inside-story-on-new-style-classes.html) 
