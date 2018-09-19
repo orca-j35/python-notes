@@ -50,6 +50,9 @@ tips: 在 Python 2 和3 中[内置类型](https://docs.python.org/3.7/library/st
 >>> import types
 >>> types.ClassType
 <type 'classobj'>
+# 旧式类OldCls是元类types.ClassType的实例
+>>> isinstance(OldCls, types.ClassType)
+True
 ```
 
 #### a. ClassType in Python 2
@@ -78,7 +81,7 @@ ClassType = type(_C)
 False
 ```
 
-`types.ClassType` 是旧式类的元类，负责构造旧式类。所以，用户定义的旧式类的类型均是 `<type 'classobj'>`。另外，该类型也可构造新式类。
+`types.ClassType` 是旧式类的元类，负责构造旧式类，旧式类均是该元类的实例。所以，旧式类的类型均是 `<type 'classobj'>`。另外，该类型也可构造新式类。
 
 ```python
 >>> # in Python 2.7
@@ -113,6 +116,20 @@ Traceback (most recent call last):
     class Metaclass(types.ClassType):pass
 AttributeError: module 'types' has no attribute 'ClassType'
 ```
+
+#### b. 三种等价定义方式
+
+```python
+# in Python 2
+class Old: pass
+
+class Old:
+    __metaclass__ = types.ClassType
+
+Old = types.ClassType('Old', (), {})
+```
+
+
 
 ### 2.2 旧式实例
 
@@ -226,6 +243,9 @@ InstanceType = type(_x)
 <type 'type'>
 >>> type(NewCls)
 <type 'type'>
+# 新式类NewCls是type的实例
+>>> isinstance(NewCls, type)
+True
 ```
 
 #### a. type in Python
@@ -267,6 +287,19 @@ type 是新式类的元类，负责构造新式类：
 
 type 可以被继承，我们可以基于 type 派生自定义元类。
 
+#### b. 三种等价定义方式
+
+```python
+class New(object): pass
+
+class New:
+    __metaclass__ = type
+
+New = type('New', (), {})
+```
+
+
+
 ### 3.2 新式实例
 
 对于某个新式类的实例 x 而言，其类(或类型)始终是该新式类。不同于旧式类，新式类的实例不再由特定类型创建，而是由新式类自己创建。
@@ -289,12 +322,19 @@ type 可以被继承，我们可以基于 type 派生自定义元类。
 新式类较旧式类的重要差异如下：[^1] [^2]
 
 - 内置函数 `super` 仅支持新式类
+
 - 新式类支持描述符([descriptors](http://docs.python.org/2/howto/descriptor.html))，可阅读 [【译】Python描述符指南](https://harveyqing.gitbooks.io/python-read-and-write/content/python_advance/python_descriptor.html)
+
 - 新式类支持装饰器(decorators) - introduced in Python 2.4
+
 - 新式类支持静态方法和类方法
+
 - 新式类增加了 `__new__` 方法
+
 - 新式类增加了 [`__getattribute__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__getattribute__) 方法
+
 - 新式类增加了 [`__slots__`](http://docs.python.org/2/reference/datamodel.html#slots) 方法
+
 - properties (computed attributes)
 
 - MRO 的算法更新，可阅读 [Method Resolution Order - Python 见闻志](https://harveyqing.gitbooks.io/python-read-and-write/content/python_advance/method_resolution_order.html) 
