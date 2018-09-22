@@ -19,6 +19,7 @@ class ObjcIter:
 
 a_iter1 = iter(ObjcIter())
 print(list(a_iter1))
+# Out: [1, 2, 3]
 
 
 class ObjcGetitem:
@@ -34,13 +35,7 @@ class ObjcGetitem:
 
 a_iter2 = iter(ObjcGetitem())
 print(list(a_iter2))
-```
-
-输出：
-
-```
-[1, 2, 3]
-[1, 2, 3, 4]
+# Out: [1, 2, 3, 4]
 ```
 
 列表、元组、字典等都可直接用作 `iter` 的参数：
@@ -78,12 +73,7 @@ for i in iter(a_iter, 3):
     # 当a_iter()返回5时，便会抛出StopIteration
     # 停止迭代
     print(i, end=',')
-```
-
-输出：
-
-```
-1,2,
+# Out: 1,2,
 ```
 
 也可直接使用函数对象，例如：
@@ -100,12 +90,7 @@ def func():
 
 for i in iter(func, 3):
     print(i, end=",")
-```
-
-输出：
-
-```python
-1,2,
+# Out: 1,2,
 ```
 
 [`iter()`](https://docs.python.org/3.7/library/functions.html#iter) 带第二参数的一个使用场景是：可以一次性读取文件中的多个行，并在某个特定行停止读取。下面这个示例会持续读取一个文件，直到 [`readline()`](https://docs.python.org/3.7/library/io.html#io.TextIOBase.readline) 方法返回空字符串为止。
@@ -115,7 +100,5 @@ with open('mydata.txt') as fp:
     for line in iter(fp.readline, ''):
         process_line(line)
 ```
-
-
 
 [参考 Iterator Types 可了解更多有关迭代器的信息。](https://docs.python.org/3.7/library/stdtypes.html#typeiter)
