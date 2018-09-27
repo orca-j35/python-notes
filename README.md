@@ -5,7 +5,9 @@ Python 学习笔记
 
 - [Python Reference (The Right Way) - DRAFT](https://python-reference.readthedocs.io/en/latest/index.html)：适用于Python 2.7.X，提供了有关内置函数、列表推导式、容器数据、运算符、语句等的快速参考
 - [Rreal Python](https://realpython.com/tutorials/all/)：提供了大量教程，覆盖面很广。阅读过其中一篇的译文：[Python 3.7 中的新特性](https://pythonfun.top/cool-new-features-in-python-3.7-trp/)，感觉挺不错的
-- [Python 之旅](http://funhacks.net/2017/01/03/explore_python/) ：内容层次清晰，有作者自己的理解，很不错 - [在线阅读](https://funhacks.net/explore-python/)
+- [Python 之旅](http://funhacks.net/2017/01/03/explore_python/)：内容层次清晰，有作者自己的理解，很不错 - [在线阅读](https://funhacks.net/explore-python/)
+- [Python 之禅](https://foofish.net/)：技术博客
+- [Python 学习之旅](https://segmentfault.com/blog/python3)：有几篇总结性的文章很不错
 
 博客：
 
@@ -18,6 +20,7 @@ Python 学习笔记
 学习工具：
 
 - [pythontutor](http://www.pythontutor.com/index.html)：可视化 Python 代码的执行过程
+- [Thonny](http://thonny.org/)：Python IDE for beginners
 
 阅读建议
 

@@ -1,4 +1,4 @@
-# Metaclasses
+# 元类_Metaclasses
 
 [TOC]
 
@@ -122,7 +122,7 @@ tips: <u>使用"类定义语句"创建类的方式</u>与<u>使用对应元类�
 
 tips: type(*name*, *bases*, *dict*) 是[**类定义语句**](https://docs.python.org/3.7/reference/compound_stmts.html#class-definitions)的动态形式。在保证参数一直的前提下，通过这两种方式构造出的类对象完全等效。
 
-#### 示例: 最简单的情况
+#### a. 最简单的情况
 
 In this first example, the *bases*  and *dict* arguments passed to `type()` are both empty. No inheritance from any parent class is specified, and nothing is initially placed in the namespace dictionary. 
 
@@ -147,7 +147,7 @@ In this first example, the *bases*  and *dict* arguments passed to `type()` are 
 <__main__.Foo object at 0x0370AD50>
 ```
 
-#### 示例: 有基类和字段的情况
+#### b. 有基类和字段的情况
 
 *bases*  is a tuple with a single element `Foo`, specifying the parent class that `Bar` inherits from. An attribute, `attr`, is initially placed into the namespace dictionary:
 
@@ -179,7 +179,7 @@ In this first example, the *bases*  and *dict* arguments passed to `type()` are 
 (<class '__main__.Foo'>,)
 ```
 
-#### 示例: 有字段和方法的情况
+#### c. 有字段和方法的情况
 
 This time, *bases* is again empty. Two objects are placed into the namespace dictionary via the *dict*  argument. The first is an attribute named `attr` and the second a function named `attr_val`, which becomes a method of the defined class:
 
@@ -216,7 +216,7 @@ This time, *bases* is again empty. Two objects are placed into the namespace dic
 100
 ```
 
-#### 示例: 有字段和外置方法的情况
+#### d. 有字段和外置方法的情况
 
 Only very simple functions can be defined with [`lambda` in Python](https://dbader.org/blog/python-lambda-functions). In the following example, a slightly more complex function is defined externally then assigned to `attr_val` in the namespace dictionary via the name `f`:
 
@@ -305,7 +305,7 @@ class Meta(type):  # 自定义元类需继承自type
 
 
 
-### metaclass 参数
+### 3.1 metaclass 参数
 
 在构造类对象时，如果需要使用特定元类，可使用关键字参数 `metaclass` 引入该元类。如果父类已中引入了某个元类，在构造子类时也会使用该元类。
 
@@ -320,7 +320,7 @@ class MySubclass(MyClass): # MySubclass同样由Meta构造
     pass
 ```
 
-Note: Python 2 需使用特殊变量 `__metaclass__`，但 Python 3 不支持该变量。
+**Note**: Python 2 需使用特殊变量 `__metaclass__`，但 Python 3 不支持该变量。
 
 其实 `metaclass` 参数可以是任意可调用对象，比如：
 
@@ -367,7 +367,7 @@ print(f.BAR)
 # Out: 'bip'
 ```
 
-相同的目标，用自定义元类在做一次：
+相同的目标，用自定义元类再做一次：
 
 ```python
 # remember that `type` is actually a class like `str` and `int`
@@ -397,15 +397,15 @@ class UpperAttrMetaclass(type):
 
 虽然 `metaclass` 可以是任意可调用对象，但建议始终使用元类。
 
-### \_\_new\_\_
+### 3.2 \_\_new\_\_
 
 如果需要干涉类对象的创建过程，应覆写 `__new__` 。
 
-### \_\_init\_\_
+### 3.3 \_\_init\_\_
 
 如果需要干涉类对象的初始化过程，可覆写 `__new__` 或 `__init__` 。
 
-### \_\_call\_\_
+### 3.4 \_\_call\_\_
 
 因为类是元类的实例，所以当我们调用某个类对象时，其实是在调用元类的`__call__` 方法。因此，我们可以借助元类的 `__call__` 方法来修改类对象的行为和状态。
 
@@ -444,7 +444,7 @@ x = Foo()  # 调用类对象来构造一个实例对象
 
 ![__call__](元类.assets/__call__.jpg)
 
-#### 单例模式
+#### a. 单例模式
 
 ```python
 # -*- coding: utf-8 -*-
@@ -471,11 +471,11 @@ assert one is two # 无异常
 
 
 
-### 替代方案
+### 3.5 元类的替代方案
 
 在 Python 中，元类是较为复杂的概念，使用起来也比较容易出错。因此，当我们需要改变类对象的行为和状态时，应尽量考虑更加简洁的方案。比如继承、装饰器和 Monkey Patch。
 
-#### 继承
+#### a. 继承
 
 ```python
 >>> # 在父类中添加attr属性后，所有子类的均包含attr属性
@@ -494,7 +494,7 @@ assert one is two # 无异常
 100
 ```
 
-#### 装饰器
+#### b. 装饰器
 
 ```python
 >>> # 通过装饰器为类对象添加attr属性
@@ -520,7 +520,7 @@ assert one is two # 无异常
 100
 ```
 
-#### Monkey Patch
+#### c. Monkey Patch
 
 ```python
 class Foo(object):
@@ -535,28 +535,16 @@ Foo.bar = bar
 Foo().bar() # Out: Modified bar
 ```
 
-### 示例: ORM
+### 3.6  ORM
 
-元类的主要用途是创建API。一个典型的例子是Django ORM。它允许你像这样定义：
+阅读并理解以下文章中的相关内容：
 
-```python
-class Person(models.Model):
-    name = models.CharField(max_length=30)
-    age = models.IntegerField()
-```
+- [使用元类 - 廖雪峰](https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014319106919344c4ef8b1e04c48778bb45796e0335839000#0)
+- [python-进阶-元类在ORM上的应用详解](https://www.jianshu.com/p/21857172fb3d)
+- [深刻理解Python中的元类(metaclass) - 伯乐在线](http://blog.jobbole.com/21351/)
+- [在Python中使用 class decorator 和 metaclass](https://blog.zhangyu.so/python/2016/02/19/class-decorator-and-metaclass-in-python/)
 
-但是如果你像这样做的话：
-
-```python
-guy = Person(name='bob', age='35')
-print(guy.age)
-```
-
-这并不会返回一个IntegerField对象，而是会返回一个int，甚至可以直接从数据库中取出数据。这是有可能的，因为models.Model定义了__metaclass__， 并且使用了一些魔法能够将你刚刚定义的简单的Person类转变成对数据库的一个复杂hook。Django框架将这些看起来很复杂的东西通过暴露出一个简单的使用元类的API将其化简，通过这个API重新创建代码，在背后完成真正的工作。
-
-ORM (Object Relational Mappers for working with databases)
-
-## 术语
+## 4. 术语
 
 以下内容来自官方的术语表。
 
@@ -578,16 +566,14 @@ The class of a class. Class definitions create a class name, a class dictionary,
 
 More information can be found in [Metaclasses](https://docs.python.org/3.7/reference/datamodel.html#metaclasses) and in  [Customizing class creation](https://docs.python.org/2/reference/datamodel.html#metaclasses).
 
-
-
-## 扩展阅读
+## 5. 扩展阅读
 
 - [Python基础：元类](http://www.cnblogs.com/russellluo/p/3409602.html)
 - [在Python中使用class decorator和metaclass](http://blog.zhangyu.so/python/2016/02/19/class-decorator-and-metaclass-in-python/)
 - [Meta-classes Made Easy](http://www.voidspace.org.uk/python/articles/metaclasses.shtml)
 - [Metaclass Programming In Python](http://gnosis.cx/publish/programming/metaclass_1.html)
 
-## 参考
+## 6. 参考
 
 - https://en.wikipedia.org/wiki/Metaprogramming
 
@@ -604,7 +590,4 @@ More information can be found in [Metaclasses](https://docs.python.org/3.7/refer
 - [3.4.3. Customizing class creation - Python 2](https://docs.python.org/2/reference/datamodel.html#customizing-class-creation)
 
 - [oop - What is a metaclass in Python? - Stack Overflow](http://stackoverflow.com/questions/100003/what-is-a-metaclass-in-python)
-
   - 译文：[深刻理解Python中的元类(metaclass) - 伯乐在线](http://blog.jobbole.com/21351/)
-
-- 
