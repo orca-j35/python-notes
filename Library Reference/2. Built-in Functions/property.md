@@ -4,7 +4,7 @@
 
 ## 1. 函数形式
 
-🔨class property(*fget=None*, *fset=None*, *fdel=None*, *doc=None*)
+🔨class property(*fget=None*, *fset=None*, *fdel=None*, *doc=None*) -> property attribute
 
 > 为了避免混淆 attribute 和 property，本文将 attribute 译作"属性"，property 使用单词形式。
 

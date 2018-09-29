@@ -1,6 +1,6 @@
 # getattr
 
-getattr(*object*, *name*[, *default*])
+🔨getattr(*object*, *name*[, *default*]) -> value
 
 该函数用于获取 *object* 中名为 *name* 的属性(*name* 以字符串表示)，也就是说 `getattr(x, 'foobar')` 等效于 `x.foobar`。
 

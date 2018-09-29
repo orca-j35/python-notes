@@ -4,9 +4,13 @@ iter(*object*[, *sentinel*])
 
 该函数会返回一个 [iterator](https://docs.python.org/3.7/glossary.html#term-iterator) 对象，但 *object* 会因为 *sentinel* 的传入与否，而获得截然不同的解释。
 
+## iter(object)
+
+🔨iter(*object*) -> iterator
+
 在没有传入 *sentinel*  的情况下，*object* 必须是一个支持迭代协议( [`__iter__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__iter__) 方法)的集合(collection)对象；或者是一个支持序列协议的对象 (the [`__getitem__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__getitem__) method with integer arguments starting at `0`)。如果这两种协议均不被 object 支持，`iter()` 便会抛出 [`TypeError`](https://docs.python.org/3.7/library/exceptions.html#TypeError)。
 
-Tips：这里提到的集合对象只是一种抽象概念，并非特指 [`Callable`](https://docs.python.org/3.7/library/collections.abc.html#collections.abc.Callable) 类型，仅实现 [`__iter__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__iter__) 方法即可支持 `iter` 函数；同样的，仅实现 [`__getitem__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__getitem__) 方法也能支持 `iter` 函数。
+Tips：这里提到的集合对象只是一种抽象概念，并非特指 [Collection](https://docs.python.org/3.7/library/collections.abc.html#collections.abc.Collection) 类型，仅实现 [`__iter__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__iter__) 方法即可支持 `iter` 函数；同样的，仅实现 [`__getitem__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__getitem__) 方法也能支持 `iter` 函数。
 
 ```python
 class ObjcIter:
@@ -53,6 +57,22 @@ Traceback (most recent call last):
   File "<interactive input>", line 1, in <module>
 StopIteration
 ```
+
+注意：将某个迭代器对象传递给 [`iter()`](https://docs.python.org/3.7/library/functions.html#iter) 后，只会返回指向该迭代器的引用，并不会创建具备新id的迭代器对象。
+
+```python
+>>> aa = [1,2,3,]
+>>> bb = iter(aa)
+>>> bb
+<list_iterator object at 0x000001B393436E48>
+>>> cc = iter(bb)
+>>> cc # bb和cc引用同一个对象
+<list_iterator object at 0x000001B393436E48>
+```
+
+## iter(object, sentinel)
+
+🔨iter(*object*, *sentinel*) -> iterator
 
 如果传入了第二参数 *sentinel*，此时 *object* 必须是一个可调用(callable)对象。对于在这种情况下创建的迭代器，每当调用其 [`__next__()`](https://docs.python.org/3.7/library/stdtypes.html#iterator.__next__) 方法时，便会以无参数形式调用 *object*。如果 *object* 的返回值等于 *sentinel*，便会抛出 [`StopIteration`](https://docs.python.org/3.7/library/exceptions.html#StopIteration) ；如果返回值不等于 *sentinel*，则直接返回该值。比如下面这个示例：
 
