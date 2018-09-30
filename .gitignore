@@ -1,9 +1,3 @@
-# 自定义
-documents/
-学习笔记/
-*_is_ignored/
-
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

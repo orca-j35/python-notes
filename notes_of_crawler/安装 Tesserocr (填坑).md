@@ -120,7 +120,7 @@ print(tesserocr.image_to_text(image))
 
 ## 3. 附件
 
-![image](assets/image.png)
+![image](安装 Tesserocr (填坑).assets/image.png)
 
 
 
