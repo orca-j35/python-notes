@@ -28,11 +28,12 @@ Python 学习笔记
 
 - [What tutorial should I read?](https://sopython.com/wiki/What_tutorial_should_I_read%3F)：由 [sopython](https://sopython.com/) 提供的推荐阅读列表
 
-- [Think Python](https://greenteapress.com/wp/think-python/)：免费书籍，其中部分示例基于 [Swampy](http://www.greenteapress.com/thinkpython/swampy/) ，务必先阅读本书的[主页](https://greenteapress.com/wp/think-python/)。
+- [Think Python 2e](https://greenteapress.com/wp/think-python-2e/)：免费书籍，该书的 GitHub 仓库是 [ThinkPython2](https://github.com/AllenDowney/ThinkPython2/tree/master/code)
 
   该书的中文译本如下：
 
   - [Think Python 第二版中文版](https://legacy.gitbook.com/book/cycleuser/think-python/details)(GitBook)：该译本的 GitHub 仓库是 [ThinkPython-CN](https://github.com/cycleuser/ThinkPython-CN)(GitHub)
+  - [ThinkPython2-CN](http://codingpy.com/books/thinkpython2/)：该译本的 GitHub 仓库是 [ThinkPython-CN](https://github.com/bingjin/ThinkPython2-CN) ⭐
   - 像计算机科学家一样思考Python 第2版：目前在销售的中文译本
 
 - [Python Crash Course](https://ehmatthes.github.io/pcc/)：[作者的网站](https://ehmatthes.github.io/pcc/)提供了示例代码、速查列表、勘误等内容
