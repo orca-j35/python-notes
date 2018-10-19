@@ -1,4 +1,4 @@
-# str 文本序列类型
+# 文本序列类型(str)
 
 Python 通过 [`str`](https://docs.python.org/3/library/stdtypes.html#str) 对象来处理文本数据(*textual data*)。字符串是由 Unicode 码点(*code point*)组成的不可变[序列](https://docs.python.org/3.7/glossary.html#term-sequence)(*sequence*)。字符串字面量有如下三种定义方式：
 
@@ -58,11 +58,11 @@ See [String and Bytes literals](https://docs.python.org/3/reference/lexical_anal
 | `s.index(x[, i[, j]])` | index of the first occurrence of *x* in *s* (at or after index *i* and before index *j*) |
 | `s.count(x)`           | total number of occurrences of *x* in *s*                    |
 
-还可阅读 [Common Sequence Operations](https://docs.python.org/3/library/stdtypes.html#common-sequence-operations)
+更多细节请阅读笔记 "序列类型(list,tuple,range).md" 和 "[Common Sequence Operations](https://docs.python.org/3/library/stdtypes.html#common-sequence-operations)" 
 
 ### s[ i ]
 
-`i` 被称为索引(*index*)，表示相对于序列中第一个元素的偏移量(*offset*)。因此，序列中的第一个元素的索引为 0，且索引只能是整数。索引可以是一个**负整数**，此时序列对象会将负索引与序列长度相加，从而得到一个正索引。因此，负索引的绝对值不能大于序列的长度。
+`i` 被称为索引(*index*)，表示相对于序列中第一个元素的偏移量(*offset*)。因此，序列中的第一个元素的索引为 0，且索引只能是整数。索引可以是一个**负整数**，负索引表示相对于序列中最后一个元素的偏移量。序列对象会将负索引与序列长度相加，从而得到一个正索引。因此，负索引的绝对值不能大于序列的长度。
 
 ```
  +---+---+---+---+---+---+
