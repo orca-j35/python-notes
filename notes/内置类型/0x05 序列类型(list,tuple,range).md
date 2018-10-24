@@ -16,8 +16,8 @@ Python 中包含基本[序列类型](https://docs.python.org/3/library/stdtypes.
 
 - 使用一对方括号可构建一个空列表：`[]`
 - 使用一对方括号，并在其中填充以逗号分隔的项：`[a]`, `[a, b, c]`
-- 是使用列表解析(*comprehension*)：`[x for x in iterable]`
-- 使用类型构造器(*constructor*)：`list()` or `list(iterable)`
+- 使用列表解析(*comprehension*)：`[x for x in iterable]`
+- 使用类型构造器(*constructor*)：`list()` 或 `list(iterable)`
 
 🔨 *class* `list`([*iterable*])
 
@@ -98,7 +98,7 @@ finally:
 
 浅拷贝时，原序列中引用的可变对象**不会产生**新副本，仅会对可变对象的引用进行多次拷贝。若在新副本中修改可变对象，原副本中的可变对象也会发生改变。copy 模块中的 `copy()` 属于浅拷贝(*shallow copy*)
 
-深拷贝时，原序列中引用的可变对象都**会产生**新副本，并会在新序列中引用这些副本。若在新副本中修改可变对象，原副本中的可变对象不受影响。copy 模块中的 `deepcopy()` 属于深拷贝(**deep copy*)
+深拷贝时，原序列中引用的可变对象都**会产生**新副本，并会在新序列中引用这些副本。若在新副本中修改可变对象，原副本中的可变对象不受影响。copy 模块中的 `deepcopy()` 属于深拷贝(*deep copy*)
 
 对于不可变对象，由于本身并不能被修改，因此在浅拷贝和深拷贝中都直接拷贝其引用。
 
@@ -192,8 +192,8 @@ for x in []:
 
 - 使用一对圆号可构建一个空元组：`()`
 - 构建单元素元组时，需在元素后面附加一个逗号：`a,` 或 `(a,)`
-- 构建多元素元组时，需使用逗号分隔每个项：`a, b, c` or `(a, b, c)`
-- 使用类型构造器(*constructor*)：`tuple()` or `tuple(iterable)`
+- 构建多元素元组时，需使用逗号分隔每个项：`a, b, c` , `(a, b, c)`
+- 使用类型构造器(*constructor*)：`tuple()` , `tuple(iterable)`
 
 Note：通过中间两种方式构建元组时，实际上是由于逗号的存在才产生了元组，即便省略括号也可照常构建元组。圆括号作为可选部分，其作用是为了避免语法歧义。例如，`f(a, b, c)` 表示以三个实参来调用函数，而 `f((a, b, c))` 则表示以单个实参( 3 元元组)来调用函数，
 
@@ -388,9 +388,7 @@ New in version 3.3: The [`start`](https://docs.python.org/3.7/library/stdtypes.h
 
 扩展阅读：[linspace recipe](http://code.activestate.com/recipes/579000/) 展示了如何实现一个浮点版本的 range 类型
 
-### 3.2 提示
-
-#### a. range 支持的操作
+### 3.2 range 支持的操作
 
 range 对象中实现了除 `+` (连接) 和 `*` (重复)操作以外的所有通用序列操作。因为 range 对象表示的序列必须严格遵循既定模式(*pattern*)，而 `+` 和 `*` 操作通常会违反既定模式。
 
@@ -418,7 +416,9 @@ range 对象同样支持序列拆封
 >>> a, b = range(2)
 ```
 
-#### b. range 支持负索引
+### 3.2 提示
+
+#### a. range 支持负索引
 
 range 对象同样支持负索引，负索引表示相对于 `r` 中最后一个元素的偏移量(从 `-1` 开始)。
 
@@ -428,9 +428,9 @@ range 对象同样支持负索引，负索引表示相对于 `r` 中最后一个
 9
 ```
 
-#### c. 拷贝 range 对象
+#### b. 拷贝 range 对象
 
-如果对 range 对象进行深拷贝，会创建一个新的 range 对象：
+如果对 range 对象进行浅拷贝，则会直接引用原 range 对象；如果对 range 对象进行深拷贝，则会创建一个新的 range 对象：
 
 ```
 import copy
@@ -443,7 +443,7 @@ r2 = copy.deepcopy(r)
 
 ![拷贝 range 对象](0x05 序列类型(list,tuple,range).assets/拷贝 range 对象.png)
 
-#### e. 比较 range 对象
+#### c. 比较 range 对象
 
 可使用比较运算符 `==` 和 `!=` 来测试 range 对象中所包含的序列是否相等。注意，这里是在考察序列是否相等，即便拥有不同 *start* , *stop* , *step* 值，只要序列中的元素相等即可：
 
