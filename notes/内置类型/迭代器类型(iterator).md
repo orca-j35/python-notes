@@ -25,6 +25,3 @@ Python 定义了多个迭代器对象，以支持对如下类型进行迭代：�
 ### 4.5.1. Generator Types
 
 生成器([generator](https://docs.python.org/3.7/glossary.html#term-generator))提供了一种实现迭代器协议的便捷方式。如果某个容器对象的 [`__iter__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__iter__) 方法以生成器的方式被实现，那么它将自动返回一个支持 [`__iter__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__iter__) 和 [`__next__()`](https://docs.python.org/3.7/reference/expressions.html#generator.__next__) 方法的迭代器对象——从技术上将，该对象其实属于生成器对象。有关生成器的更多信息请查阅 [the documentation for the yield expression](https://docs.python.org/3.7/reference/expressions.html#yieldexpr). 
-
-
-

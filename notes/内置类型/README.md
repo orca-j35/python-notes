@@ -1,0 +1,1 @@
+本章内容主要参考自 [Built-in Types](https://docs.python.org/3.7/library/stdtypes.html#built-in-types)，每个已完成的小节都包含 [Built-in Types](https://docs.python.org/3.7/library/stdtypes.html#built-in-types) 中对应部分的内容，并对部分知识点进行了扩展。

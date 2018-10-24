@@ -3,19 +3,22 @@ Python 学习笔记
 
 参考：
 
-- [Python Reference (The Right Way) - DRAFT](https://python-reference.readthedocs.io/en/latest/index.html)：适用于Python 2.7.X，提供了有关内置函数、列表推导式、容器数据、运算符、语句等的快速参考
 - [Rreal Python](https://realpython.com/tutorials/all/)：提供了大量教程，覆盖面很广。阅读过其中一篇的译文：[Python 3.7 中的新特性](https://pythonfun.top/cool-new-features-in-python-3.7-trp/)，感觉挺不错的
-- [Python 之旅](http://funhacks.net/2017/01/03/explore_python/)：内容层次清晰，有作者自己的理解，很不错 - [在线阅读](https://funhacks.net/explore-python/)
-- [Python 之禅](https://foofish.net/)：技术博客
-- [Python 学习之旅](https://segmentfault.com/blog/python3)：有几篇总结性的文章很不错
 
 博客：
 
 - [欢乐蟒](https://pythonfun.top/)：翻译了一些技术文章，比如 [Python 3.7 中的新特性](https://pythonfun.top/cool-new-features-in-python-3.7-trp/) 
+- [Python 之旅](http://funhacks.net/2017/01/03/explore_python/)：内容层次清晰，有作者自己的理解，很不错 - [在线阅读](https://funhacks.net/explore-python/)
+- [Python 之禅](https://foofish.net/)：技术博客
+- [Python 学习之旅](https://segmentfault.com/blog/python3)：有几篇总结性的文章很不错
+- [Python Reference (The Right Way) - DRAFT](https://python-reference.readthedocs.io/en/latest/index.html)：适用于Python 2.7.X，提供了有关内置函数、列表推导式、容器数据、运算符、语句等的快速参考
+- [〖十月狐狸〗](https://www.cnblogs.com/sesshoumaru/)：提供了 Python 3.6 中所有内置函数的笔记
+- [Yixiaohan](https://github.com/Yixiaohan)/[codeparkshare](https://github.com/Yixiaohan/codeparkshare) 整理并推荐了一些学习资料
 
 杂项：
 
 - [Cool New Features in Python 3.7](https://realpython.com/python37-new-features/) ：详细讲述了 3.7 版本的新功能
+- 
 
 学习工具：
 
@@ -30,10 +33,10 @@ Python 学习笔记
 
 - [Think Python 2e](https://greenteapress.com/wp/think-python-2e/)：免费书籍，该书的 GitHub 仓库是 [ThinkPython2](https://github.com/AllenDowney/ThinkPython2/tree/master/code)
 
-  该书的中文译本如下：
+  该书有如下中文译本：
 
-  - [Think Python 第二版中文版](https://legacy.gitbook.com/book/cycleuser/think-python/details)(GitBook)：该译本的 GitHub 仓库是 [ThinkPython-CN](https://github.com/cycleuser/ThinkPython-CN)(GitHub)
   - [ThinkPython2-CN](http://codingpy.com/books/thinkpython2/)：该译本的 GitHub 仓库是 [ThinkPython-CN](https://github.com/bingjin/ThinkPython2-CN) ⭐
+  - [Think Python 第二版中文版](https://legacy.gitbook.com/book/cycleuser/think-python/details)(GitBook)：该译本的 GitHub 仓库是 [ThinkPython-CN](https://github.com/cycleuser/ThinkPython-CN)(GitHub)
   - 像计算机科学家一样思考Python 第2版：目前在销售的中文译本
 
 - [Python Crash Course](https://ehmatthes.github.io/pcc/)：[作者的网站](https://ehmatthes.github.io/pcc/)提供了示例代码、速查列表、勘误等内容
@@ -56,4 +59,10 @@ Python 学习笔记
 - [Effective Python: 59 Ways to Write Better Python](https://effectivepython.com/)
 
   - 中文译本：Effective Python 编写高质量Python代码的59个有效方法
+
+- Intermediate Python：这本书更像是一本学习笔记，汇总了很多知识点，该书的 GitHub 仓库是 [intermediatePython](https://github.com/yasoob/intermediatePython)，在线阅读地址是 [http://book.pythontips.com](http://book.pythontips.com/)，作者博客 [Python Tips](https://pythontips.com/)
+
+  - 中文译本的 GitHub 仓库是 [interpy-zh](https://github.com/eastlakeside/interpy-zh)，在线阅读[Python进阶](http://interpy.eastlakeside.com/)
+
+- [Intermediate Python](https://leanpub.com/intermediatepython)：与上一本书同名，没有发现中文 译本
 

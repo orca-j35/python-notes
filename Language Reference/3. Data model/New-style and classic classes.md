@@ -1,6 +1,6 @@
 # Old-Style vs. New-Style Classes
 
-https://docs.python.org/2/reference/datamodel.html#new-style-and-classic-classes
+> 以下内容参考自：[3.3. New-style and classic classes](https://docs.python.org/2/reference/datamodel.html#new-style-and-classic-classes)
 
 在 Python 中，类(class)和实例(instance)可被划分为两种风格：old-style (classic) 和 new-style。
 
