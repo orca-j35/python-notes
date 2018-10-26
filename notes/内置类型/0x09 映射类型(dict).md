@@ -8,7 +8,7 @@
 
 > 本节内容涵盖了 [hashable - 术语表](https://docs.python.org/3.7/glossary.html#term-hashable)，并进行了扩展
 
-"可哈希对象(*hashable*)"需实现 [`__hash__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__hash__) 方法，并且"可哈希对象"的哈希值在其生命周期内永远不会发生变化。"可哈希对象"还需实现 [`__eq__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__eq__) 方法，且满足：当 `x==y` 时，`hash(x) == hash(y)` (x, y 是具备不同id的"可哈希对象")。
+"可哈希对象(*hashable*)"需实现 [`__hash__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__hash__) 方法，并且"可哈希对象"的哈希值在其生命周期内永远不会发生变化。"可哈希对象"还需实现 [`__eq__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__eq__) 方法，且满足：当 `x==y` 时，`hash(x) == hash(y)` (`x`, `y` 是具备不同 id 的"可哈希对象")。
 
 即使"可哈希对象"拥有不同的 id，但只要它们的哈希值相同，便可等效使用，例如：
 
@@ -57,9 +57,9 @@ True
 
 ## 2. 字典
 
-字典的键和集合的成员必须是"可哈希对象"，因为这两种数据结构会在内部使用相关对象的哈希值。
+字典使用哈希表(*hashtable*)实现，字典会使用键的哈希值来存储和查找键值对，因此字典的键必须是"可哈希对象"。
 
-数值类型被用作字典的键时，依旧遵循数值比较规则：如果两个数值相等(如 `1` 和 `1.0` )，字典会认为这两个数值均代表同一个键(可互换)。因此在索引字典时，相等的数值可互换使用。不过由于计算机以近似值存储浮点数，因此最好不要将浮点数用作字典的键。
+数值类型被用作字典的键时，依旧遵循数值比较规则。比如在遇到两个相等数值时(如 `1` 和 `1.0` )，字典会认为这两个数值均代表同一个键(可互换)。也就是说在索引字典时，相等的数值可互换使用。不过由于计算机以近似值存储浮点数，因此最好不要将浮点数用作字典的键。
 
 ```python
 >>> j = {1:"orca"}
@@ -67,7 +67,7 @@ True
 'orca'
 ```
 
-扩展：可利用 [`types.MappingProxyType`](https://docs.python.org/3.7/library/types.html#types.MappingProxyType) 为字典创建的只读视图(*view*)。
+Hint: 可利用 [`types.MappingProxyType`](https://docs.python.org/3.7/library/types.html#types.MappingProxyType) 为字典创建的只读视图(*view*)。
 
 ### 2.1 构建字典
 
@@ -89,7 +89,7 @@ True
 
 - 使用类型构造器：`dict(**kwarg)` , `dict(mapping, **kwarg)` , `dict(iterable, **kwarg)`
 
-在构造字典对象时，如果某个键多次出现在不同的键值对中，那么该键在新字典中的值是最后出现的那个值。
+在构造字典对象时，如果某个键多次出现在不同的键值对中，那么该键在字典中的值是最后出现的那个值。
 
 #### a. 构造器 dict()
 
@@ -106,7 +106,7 @@ class dict(object)
  |      in the keyword argument list.  For example:  dict(one=1, two=2)
 ```
 
-构造器 `dict()` 的使用方法如下：
+构造器 `dict()` 的具体使用方法如下：
 
 🔨 class dict()
 
@@ -173,11 +173,11 @@ dict(iterable) -> new dictionary initialized as if via:
 
 以下是字典所支持的操作，自定义映射类型也应支持这些操作。
 
-#### 类方法
+#### a. 类方法
 
-classmethod `fromkeys`(*seq*[, *value*])
+classmethod fromkeys(*seq*[, *value*])
 
-以 *seq* 中的项作为键创建一个新字典，并将各个键的值设为 *value* (*value* 的默认值是 `None` )。
+该类方法会创建一个新的字典实例。在创建实例的过程中，会将 *seq* 中的元素作为键， 并将各个键的值设为 *value* (*value* 的默认值是 `None` )。
 
 ```python
 >>> dict.fromkeys(range(5))
@@ -186,9 +186,9 @@ classmethod `fromkeys`(*seq*[, *value*])
 {0: 'Orca', 1: 'Orca', 2: 'Orca', 3: 'Orca', 4: 'Orca'}
 ```
 
-#### 与项相关的操作
+#### b. 与项相关的操作
 
-在字典中，项(*item*)或条目(*entry*)被用于表示一个键值对。
+在字典中，项(*item*)或条目(*entry*)用于表示一个键值对。
 
 - `len(d)` - 返回字典 `d` 中的项的数量
 
@@ -196,7 +196,7 @@ classmethod `fromkeys`(*seq*[, *value*])
 
 - `d.copy() ` - 返回字典实例的浅拷贝副本
 
-- `d.popitem() ` - 会按照 LIFO 的顺序移除 `d` 中的项，并以元组形式返回被移除的项。当需要对字典进行破坏性迭代时，通常会使用 `popitem` 方法。在空字典上调用 `popitem` 方法时，会抛出 `KeyError` 
+- `d.popitem() ` - 会按照 LIFO 的顺序移除 `d` 中的项，并以元组形式返回被移除的项。当需要对字典进行破坏性迭代时，通常会使用 `popitem` 方法。在空字典上调用 `popitem` 方法时，会抛出 `KeyError` 。
 
   ```python
   >>> d = {'a':1,'b':2,'c':3}
@@ -206,7 +206,7 @@ classmethod `fromkeys`(*seq*[, *value*])
 
   Changed in version 3.7: LIFO order is now guaranteed. In prior versions, [`popitem()`](https://docs.python.org/3.7/library/stdtypes.html#dict.popitem)would return an arbitrary key/value pair.
 
-- `d.update([other])` - 将 `other` 中的键值对添加到字典中，该操作会覆盖已有的键值对，返回值是 `None` 。`other` 可以是一个字典，也可以是以『 `key,value` 』为单元的可迭代对象。在 `update` 方法中也可使用关键字参数：`d.update(red=1, blue=2)`
+- `d.update([other])` - 将 `other` 中的键值对添加到字典中，该操作会覆盖已有的键值对，返回值是 `None` 。`other` 可以是一个字典，也可以是以『 `key,value` 』为单元的可迭代对象。在 `update` 方法中还可使用关键字参数：`d.update(red=1, blue=2)`
 
   ```python
   >>> d = {'a':1}
@@ -217,7 +217,7 @@ classmethod `fromkeys`(*seq*[, *value*])
   {'a': 1, 'b': 2, 'c': 3, 'd': 4}
   ```
 
-#### 与键相关的操作
+#### c. 与键相关的操作
 
 - `d[key]` - 返回字典 `d` 中 `key` 键的值，如果字典中没有 `key` 键，则抛出 [`KeyError`](https://docs.python.org/3.7/library/exceptions.html#KeyError) 异常。
 
@@ -236,7 +236,7 @@ classmethod `fromkeys`(*seq*[, *value*])
   1
   ```
 
-  上面的代码展示了 [`collections.Counter`](https://docs.python.org/3.7/library/collections.html#collections.Counter) 类的部分实现， `__missing__` 方法的另一种用法可参考 [`collections.defaultdict`](https://docs.python.org/3.7/library/collections.html#collections.defaultdict)。
+  Hint: 上面的代码展示了 [`collections.Counter`](https://docs.python.org/3.7/library/collections.html#collections.Counter) 类的部分实现， `__missing__` 方法的另一种用法可参考 [`collections.defaultdict`](https://docs.python.org/3.7/library/collections.html#collections.defaultdict)。
 
 - `d[key] = value` - 设置键 `key` 的值为 `value`
 
@@ -268,7 +268,7 @@ classmethod `fromkeys`(*seq*[, *value*])
   {'a': 1, 'b': 2, 'c': 3, 'd': None}
   ```
 
-- `iter(d)` - 等效于 `iter(d.keys())`，返回一个包含 `d` 中所有键的迭代器。
+- `iter(d)` - 等效于 `iter(d.keys())`，会返回一个包含 `d` 中所有键的迭代器。由于 `for` 循环会将对象传递给 `iter` 函数，所以 `for i in d` 等效于 `for i in d.keys()`。
 
   ```python
   >>> d = {'a':1,'b':2}
@@ -293,41 +293,17 @@ classmethod `fromkeys`(*seq*[, *value*])
   ['a', 'b']
   ```
 
-- `key in d` - 测试 `d` 中是否包含 `key` 键，返回 `True` 表示包含，`False` 表示不包含。
+- `key in d` - 测试 `d` 中是否包含 `key` 键，返回 `True` 表示包含，`False` 表示不包含。运算符 `in` 对列表和字典采用不同的算法。对于列表，会按顺序依次查找目标，搜索时间随列表的长度增加；而对于字典，会使用一种叫做哈希表(*hashtable*)的算法，无论字典中有多少项，`in` 运算符所需的时间都一样。
 
 - `key not in d` - 等效于 `not key in d`
 
-#### 获取视图对象
+#### d. 获取视图对象
 
-- `d.items`() - 返回由字典 `d` 中的项构成的新视图(*view*)。
-- `d.keys`() - 返回由字典 `d` 中的键构成的新视图(*view*)。
-- `d.values`() - 返回由字典 `d` 中的值构成的新视图(*view*)。
+- `d.items`() - 返回由字典 `d` 中的项构成的新视图(*view*)对象。
+- `d.keys`() - 返回由字典 `d` 中的键构成的新视图对象。
+- `d.values`() - 返回由字典 `d` 中的值构成的新视图对象。
 
-视图对象与字典 `d` 联动，当 `d` 中的项发生变化时，视图对象也将发生变化。另外，视图对象还支持成员测试、迭代等操作。具体细节请看"字典视图对象"小节。
-
-```python
->>> d = {'a':1,'b':2,'c':3}
->>>
->>> d_items = d.items()
->>> d_items
-dict_items([('a', 1), ('b', 2), ('c', 3)])
->>>
->>> d_keys = d.keys()
->>> d_keys
-dict_keys(['a', 'b', 'c'])
->>>
->>> d_values = d.values()
->>> d_values
-dict_values([1, 2, 3])
->>> # 修改字典后，视图对象也将发生变化
->>> d['d']=4
->>> d_items
-dict_items([('a', 1), ('b', 2), ('c', 3), ('d', 4)])
->>> d_keys
-dict_keys(['a', 'b', 'c', 'd'])
->>> d_values
-dict_values([1, 2, 3, 4])
-```
+具体细节查看"字典视图对象"。
 
 ### 2.3 字典视图对象
 
@@ -341,6 +317,32 @@ dict.items() -> dict_items object # 项视图对象
 
 视图对象与字典内容动态关联，也就是说当字典发生变化时，视图对象也会发生相应的变化。
 
+```python
+>>> d = {'a':1,'b':2,'c':3}
+>>>
+>>> items = d.items()
+>>> items
+dict_items([('a', 1), ('b', 2), ('c', 3)])
+>>>
+>>> keys = d.keys()
+>>> keys
+dict_keys(['a', 'b', 'c'])
+>>>
+>>> values = d.values()
+>>> values
+dict_values([1, 2, 3])
+>>> # 修改字典后，视图对象也将发生变化
+>>> d['d']=4
+>>> items
+dict_items([('a', 1), ('b', 2), ('c', 3), ('d', 4)])
+>>> keys
+dict_keys(['a', 'b', 'c', 'd'])
+>>> values
+dict_values([1, 2, 3, 4])
+```
+
+#### a. 视图对象支持的操作
+
 视图对象支持的操作如下：(`dictview` 可以是三种视图中的任意一个)
 
 - `len(dictview)` 
@@ -349,7 +351,7 @@ dict.items() -> dict_items object # 项视图对象
 
 - `iter(dictview)` 
 
-  返回一个迭代器，迭代器生成的内容与视图内容一致。
+  返回一个迭代器，迭代器生成的内容与视图对象所含内容一致。
 
   由于迭代器会按照插入顺序生成键和值，因此可通过以下两种方式获取 `(value,key)` 列表：
 
@@ -365,7 +367,7 @@ dict.items() -> dict_items object # 项视图对象
 
   在向字典添加或删除条目时迭代视图对象，则可能会抛出 [`RuntimeError`](https://docs.python.org/3.7/library/exceptions.html#RuntimeError) 异常，或不能遍历所有条目。
 
-  Changed in version 3.7: 保证字典保持插入顺序。
+  Changed in version 3.7:  Dictionary order is guaranteed to be insertion order(保证字典保持插入顺序).
 
 - `x in dictview`
 
@@ -377,34 +379,24 @@ dict.items() -> dict_items object # 项视图对象
   True
   ```
 
-键视图是 set-like 对象，因为  `dict_keys` 中元素唯一且都
+- dict_keys 和 dict_items 支持 set-like 操作
 
-由于"键视图"中的元素满足唯一性且均可哈希，所以"键视图"是 set-like 对象。如果字典中所有的值也都可哈希，那么"项视图"也是 set-like 对象，因为此时"项视图"中的元素 `(key, value)` 满足唯一性且均可哈希。由于"值视图"中的元素通常不满足唯一性，所以"值视图"不被视作 set-like 对象。对 set-like 视图来说，抽象基类  [`collections.abc.Set`](https://docs.python.org/3.7/library/collections.abc.html#collections.abc.Set) 中定义的操作皆可被使用(如：`==`, `<`,  `^`)。
+  由于"键视图"中的元素满足唯一性且均可哈希，所以"键视图"属于 set-like 对象。如果字典中所有的值都可哈希，那么"项视图"也属于 set-like 对象，因为此时"项视图"中的元素 `(key, value)` 满足唯一性且均可哈希。由于"值视图"中的元素通常不满足唯一性，所以"值视图"不被视作 set-like 对象。
 
-```python
->>> d
-{'a': 1, 'b': 2, 'c': 3, 'd': 4}
->>> isinstance(d.keys(),Set)
-True
->>> isinstance(d.values(),Set)
-False
->>> isinstance(d.items(),Set)
-True
->>> d['list_']=[1,2]
->>> isinstance(d.items(),Set)
-True
->>> d.items()
-dict_items([('a', 1), ('b', 2), ('c', 3), ('d', 4), ('list_', [1, 2])])
->>> 
-```
+  由于抽象基类 [`collections.abc.Set`](https://docs.python.org/3.7/library/collections.abc.html#collections.abc.Set) 中定义的所有操作(如：`==`, `<`,  `^`)，对 set-like 对象均可用，所以"键视图"和"项视图"也支持这些操作。
 
+  ```python
+  >>> from collections import abc
+  >>> d = {'a':1,'b':2,'c':3}
+  >>> isinstance(d.keys(),abc.Set)
+  True
+  >>> isinstance(d.items(),abc.Set)
+  True
+  >>> isinstance(d.values(),abc.Set)
+  False
+  ```
 
-
-那么键值对元组 `(key, value)` 中的元素也满足唯一性，且均可被哈希，此时项视图也是 set-like 对象。
-
-Keys views are set-like since their entries are unique and hashable. If all values are hashable, so that `(key, value)` pairs are unique and hashable, then the items view is also set-like. (Values views are not treated as set-like since the entries are generally not unique.) For set-like views, all of the operations defined for the abstract base class [`collections.abc.Set`](https://docs.python.org/3.7/library/collections.abc.html#collections.abc.Set) are available (for example, `==`, `<`, or `^`).
-
-示例 - 字典视图的常见用法：
+示例 - 字典视图的常见操作：
 
 ```python
 >>> dishes = {'eggs': 2, 'sausage': 1, 'bacon': 1, 'spam': 500}
@@ -437,8 +429,6 @@ Keys views are set-like since their entries are unique and hashable. If all valu
 {'juice', 'sausage', 'bacon', 'spam'}
 ```
 
-
-
 ### 2.3 字典拆封
 
 > 本节内容参考自 [6.2.7. Dictionary displays](https://docs.python.org/3.7/reference/expressions.html#dictionary-displays)
@@ -465,9 +455,65 @@ Keys views are set-like since their entries are unique and hashable. If all valu
 1 2 3
 ```
 
-## 提示
+在遇到 *var-keyword* 实参时，需要使用 `**` 对打包到字典中的参数进行拆封：
 
-### a. 拷贝字典
+```python
+c
+>>> def func(**kwargs):
+	for i,j in kwargs.items():
+		print(i,j)
+
+		
+>>> func(**dict(a=1,b=2,c=3))
+a 1
+b 2
+c 3
+```
+
+### 2.4 项的顺序
+
+**Changed in version 3.7**: Dictionary order is guaranteed to be insertion order. This behavior was implementation detail of CPython from 3.6.
+
+字典中项的顺序与插入顺序一致。更新已有的键的值，并不会影响项的顺序。如果在删除某个键后，又将其重新添加到字典中，则会在尾部插入该项。
+
+```python
+>>> d = {"one": 1, "two": 2, "three": 3, "four": 4}
+>>> d
+{'one': 1, 'two': 2, 'three': 3, 'four': 4}
+>>> list(d)
+['one', 'two', 'three', 'four']
+>>> list(d.values())
+[1, 2, 3, 4]
+>>> d["one"] = 42
+>>> d
+{'one': 42, 'two': 2, 'three': 3, 'four': 4}
+>>> del d["two"]
+>>> d["two"] = None
+>>> d
+{'one': 42, 'three': 3, 'four': 4, 'two': None}
+```
+
+在 Python 3.5 之前，字典中的项的顺序与插入顺序无关。
+
+### 2.5 比较字典
+
+在比较运算符中，仅 `==` 和 `！=` 对字典有效。若在字典上使用其余的比较运算符( `<`, `<=`, `>=`, `>`)，则会抛出 [`TypeError`](https://docs.python.org/3.7/library/exceptions.html#TypeError) 异常。
+
+```python
+>>> d = {'a':1,'b':2}
+>>> d_ = d.copy()
+>>> d is d_
+False
+>>> d == d_
+True
+>>> d > d_
+Traceback (most recent call last):
+  File "<pyshell#77>", line 1, in <module>
+    d > d_
+TypeError: '>' not supported between instances of 'dict' and 'dict'
+```
+
+### 2.6 拷贝字典
 
 浅拷贝时，原映射中"值"引用的可变对象**不会产生**新副本，仅会对可变对象的引用进行多次拷贝。若在新副本中修改可变对象，原副本中的可变对象也会发生改变。copy 模块中的 `copy()` 属于浅拷贝(*shallow copy*)
 
@@ -489,46 +535,89 @@ d4 = copy.deepcopy(dict_)
 
 ![拷贝字典](0x09 映射类型(dict).assets/拷贝字典.png)
 
-### b. 比较字典
+### 2.7 字典 vs. 列表
 
-在比较运算符中，仅 `==` 和 `！=` 对字典有效。若在字典上使用其余的比较运算符( `<`, `<=`, `>=`, `>`)，则会抛出 [`TypeError`](https://docs.python.org/3.7/library/exceptions.html#TypeError) 异常。
+相较于列表，字典有以下特点：
 
-```python
->>> d = {'a':1,'b':2}
->>> d_ = d.copy()
->>> d is d_
-False
->>> d == d_
-True
->>> d > d_
-Traceback (most recent call last):
-  File "<pyshell#77>", line 1, in <module>
-    d > d_
-TypeError: '>' not supported between instances of 'dict' and 'dict'
-```
+- 查找和插入的速度极快，不会随着键值对的增加而变慢
+- 需要占用大量的内存，内存浪费多
 
-### c. 项的顺序
+而列表则相反：
 
-字典中项的顺序与插入顺序一致。更新已有的键的值，并不会影响项的顺序。如果在删除某个键后，又将其重新添加到字典中，则会在尾部插入该项。
+- 查找和插入的时间随着元素的增加而增加
+- 占用空间小，浪费内存很少
 
-```python
->>> d = {"one": 1, "two": 2, "three": 3, "four": 4}
->>> d
-{'one': 1, 'two': 2, 'three': 3, 'four': 4}
->>> list(d)
-['one', 'two', 'three', 'four']
->>> list(d.values())
-[1, 2, 3, 4]
->>> d["one"] = 42
->>> d
-{'one': 42, 'two': 2, 'three': 3, 'four': 4}
->>> del d["two"]
->>> d["two"] = None
->>> d
-{'one': 42, 'three': 3, 'four': 4, 'two': None}
-```
+所以，字典是用空间来换取时间的一种方法，可用在需要高速查找的地方。
 
-Changed in version 3.7: Dictionary order is guaranteed to be insertion order. This behavior was implementation detail of CPython from 3.6.
+## 3. 术语
 
-## 扩展阅读
+### 映射(mapping)
 
+> A relationship in which each element of one set corresponds to an element of another set.
+
+一个集合中的每个元素对应另一个集合中的一个元素的关系。
+
+### 字典(dictionary)
+
+> A mapping from keys to their corresponding values.
+
+将键映射到对应值的映射。
+
+### 键值对(key-value pair)
+
+> The representation of the mapping from a key to a value.
+
+键值之间映射关系的呈现形式。
+
+### 项(item)
+
+> In a dictionary, another name for a key-value pair.
+
+在字典中，这是键值对的另一个名称。
+
+### 键(key)
+
+> An object that appears in a dictionary as the first part of a key-value pair.
+
+字典中作为键值对第一部分的对象。
+
+### 值(value)
+
+> An object that appears in a dictionary as the second part of a key-value pair. This is more specific than our previous use of the word “value”.
+
+字典中作为键值对第二部分的对象。它比我们之前所用的“值”一词更具体。
+
+## 哈希表(hashtable)
+
+> The algorithm used to implement Python dictionaries.
+
+用来实现Python字典的算法。
+
+## 哈希函数(hash function)
+
+> A function used by a hashtable to compute the location for a key.
+
+哈希表用来计算键的位置的函数。
+
+## 可哈希的(hashable)
+
+> A type that has a hash function. Immutable types like integers, floats and strings are hashable; mutable types like lists and dictionaries are not.
+
+具备哈希函数的类型。诸如整数、浮点数和字符串这样的不可变类型是可哈希的；诸如列表和字典这样的可变对象是不可哈希的。
+
+## 查找(lookup)
+
+> A dictionary operation that takes a key and finds the corresponding value.
+
+接受一个键并返回相应值的字典操作。
+
+## 逆向查找(reverse lookup)
+
+> A dictionary operation that takes a value and finds one or more keys that map to it.
+
+接受一个值并返回一个或多个映射至该值的键的字典操作。
+
+## 4. 参考
+
+- [Chapter 11  Dictionaries - Think Python](http://greenteapress.com/thinkpython2/html/thinkpython2012.html)
+  - [第十一章：字典](http://codingpy.com/books/thinkpython2/11-dictionaries.html#id2)
