@@ -2,7 +2,7 @@
 
 > 本章涵盖了 [Mapping Types — dict](https://docs.python.org/3.7/library/stdtypes.html#dict)，并进行了扩展。
 
-映射([*mapping*](https://docs.python.org/3/glossary.html#term-mapping))对象会将可哈希([*hashable*](https://docs.python.org/3/glossary.html#term-hashable))对象映射到另一个对象。映射属于可变对象。目前只有一种标准的映射类型，即字典(*dictionary*)。如果想要了解其它容器类型，可以参考内置类型 ([list](https://docs.python.org/3.7/library/stdtypes.html#list)、[set](https://docs.python.org/3.7/library/stdtypes.html#set)、[tuple](https://docs.python.org/3.7/library/stdtypes.html#tuple)) 以及 [collections](https://docs.python.org/3.7/library/collections.html#module-collections) 模块。
+映射([*mapping*](https://docs.python.org/3/glossary.html#term-mapping))对象会将可哈希([*hashable*](https://docs.python.org/3/glossary.html#term-hashable))对象映射到另一个对象，属于可变对象。目前只有一种标准的映射类型：字典(*dictionary*)——从键到值的映射。如果想要了解其它容器类型，可以参考内置类型 ([list](https://docs.python.org/3.7/library/stdtypes.html#list)、[set](https://docs.python.org/3.7/library/stdtypes.html#set)、[tuple](https://docs.python.org/3.7/library/stdtypes.html#tuple)) 以及 [collections](https://docs.python.org/3.7/library/collections.html#module-collections) 模块。
 
 ## 1. hashable
 
@@ -206,7 +206,7 @@ classmethod fromkeys(*seq*[, *value*])
 
   Changed in version 3.7: LIFO order is now guaranteed. In prior versions, [`popitem()`](https://docs.python.org/3.7/library/stdtypes.html#dict.popitem)would return an arbitrary key/value pair.
 
-- `d.update([other])` - 将 `other` 中的键值对添加到字典中，该操作会覆盖已有的键值对，返回值是 `None` 。`other` 可以是一个字典，也可以是以『 `key,value` 』为单元的可迭代对象。在 `update` 方法中还可使用关键字参数：`d.update(red=1, blue=2)`
+- `d.update([other])` - 将 `other` 中的键值对添加到字典中，该操作会覆盖已有的键值对，返回值是 `None` 。`other` 可以是一个字典，也可以是以『 `(key,value)` 』为单元的可迭代对象。在 `update` 方法中还可使用关键字参数：`d.update(red=1, blue=2)`
 
   ```python
   >>> d = {'a':1}
@@ -293,7 +293,9 @@ classmethod fromkeys(*seq*[, *value*])
   ['a', 'b']
   ```
 
-- `key in d` - 测试 `d` 中是否包含 `key` 键，返回 `True` 表示包含，`False` 表示不包含。运算符 `in` 对列表和字典采用不同的算法。对于列表，会按顺序依次查找目标，搜索时间随列表的长度增加；而对于字典，会使用一种叫做哈希表(*hashtable*)的算法，无论字典中有多少项，`in` 运算符所需的时间都一样。
+- `key in d` - 测试 `d` 中是否包含 `key` 键，返回 `True` 表示包含，`False` 表示不包含。
+
+  运算符 `in` 对列表和字典采用不同的算法。对于列表，会采用搜索算法；而对于字典，会使用一种叫做哈希表(*hashtable*)的算法，无论字典中有多少项，`in` 运算符所需的时间都一样。
 
 - `key not in d` - 等效于 `not key in d`
 
@@ -458,7 +460,6 @@ dict_values([1, 2, 3, 4])
 在遇到 *var-keyword* 实参时，需要使用 `**` 对打包到字典中的参数进行拆封：
 
 ```python
-c
 >>> def func(**kwargs):
 	for i,j in kwargs.items():
 		print(i,j)
@@ -535,7 +536,42 @@ d4 = copy.deepcopy(dict_)
 
 ![拷贝字典](0x09 映射类型(dict).assets/拷贝字典.png)
 
-### 2.7 字典 vs. 列表
+### 2.7 备忘录
+
+备忘(*memo*)用于存储已计算过的值，从而避免重复计算。
+比如在计算 fibonacci 时，我们常会看到下面这个版本：
+
+```python
+def fibonacci (n):
+    if n == 0:
+        return 0
+    elif  n == 1:
+        return 1
+    else:
+        return fibonacci(n-1) + fibonacci(n-2)
+```
+
+这个版本中会重复计算子节点，并且随着实参的增大效率会变得非常低，其调用图如下：
+
+![fibonacci](0x09 映射类型(dict).assets/fibonacci.png)
+
+从顶端节点向下，`fibonacci(4)` 调用 `fibonacci(3)` 和 `fibonacci(2)`，然后  `fibonacci(3)` 又调用  `fibonacci(2)` 和  `fibonacci(1)` ，并以此类推直至递归完成。为了避免重复计算子节点的问题，可使用字典充当备忘录，用于存储已经计算过的子节点，下面是 fibonacci 的备忘录版本：
+
+```python
+known = {0:0, 1:1} # 充当备忘录的字典
+
+def fibonacci(n):
+    if n in known:
+        return known[n]
+
+    res = fibonacci(n-1) + fibonacci(n-2)
+    known[n] = res
+    return res
+```
+
+
+
+### 2.8 字典 vs. 列表
 
 相较于列表，字典有以下特点：
 
@@ -587,35 +623,47 @@ d4 = copy.deepcopy(dict_)
 
 字典中作为键值对第二部分的对象。它比我们之前所用的“值”一词更具体。
 
-## 哈希表(hashtable)
+### 哈希表(hashtable)
 
 > The algorithm used to implement Python dictionaries.
 
 用来实现Python字典的算法。
 
-## 哈希函数(hash function)
+### 哈希函数(hash function)
 
 > A function used by a hashtable to compute the location for a key.
 
 哈希表用来计算键的位置的函数。
+哈希函数接受一个值（任何类型）并返回一个整数。 字典使用被称作哈希值的这些整数，来存储和查找键值对。
 
-## 可哈希的(hashable)
+### 可哈希的(hashable)
 
 > A type that has a hash function. Immutable types like integers, floats and strings are hashable; mutable types like lists and dictionaries are not.
 
 具备哈希函数的类型。诸如整数、浮点数和字符串这样的不可变类型是可哈希的；诸如列表和字典这样的可变对象是不可哈希的。
 
-## 查找(lookup)
+### 查找(lookup)
 
 > A dictionary operation that takes a key and finds the corresponding value.
 
 接受一个键并返回相应值的字典操作。
 
-## 逆向查找(reverse lookup)
+### 逆向查找(reverse lookup)
 
 > A dictionary operation that takes a value and finds one or more keys that map to it.
 
 接受一个值并返回一个或多个映射至该值的键的字典操作。
+
+```python
+def reverse_lookup(d: dict, v):
+    """逆向查找，接受一个值，并返回映射带该值的第一个键"""
+    for key, value in d.items():
+        if value == v:
+            return key
+    raise LookupError()
+```
+
+逆向查找比正向查找慢很多，如果频繁执行次操作或字典很大，程序性能会变得很差。
 
 ## 4. 参考
 
