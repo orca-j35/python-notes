@@ -434,6 +434,8 @@ dict_values([1, 2, 3, 4])
 ### 2.3 字典拆封
 
 > 本节内容参考自 [6.2.7. Dictionary displays](https://docs.python.org/3.7/reference/expressions.html#dictionary-displays)
+>
+> 扩展阅读：[PEP 448 -- Additional Unpacking Generalizations](https://www.python.org/dev/peps/pep-0448/)
 
 双星号 `**` 用于字典拆封(*unpacking*)，其操作数必须是映射([*mapping*](https://docs.python.org/3.7/glossary.html#term-mapping))。
 
@@ -469,6 +471,8 @@ dict_values([1, 2, 3, 4])
 a 1
 b 2
 c 3
+>>> dict（** {'x'：1}，y = 2，** {'z'：3}）
+{'x'：1，'y'：2，'z'：3}
 ```
 
 ### 2.4 项的顺序

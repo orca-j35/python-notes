@@ -531,7 +531,7 @@ The format method
 
 #### str.format(*args, **kwargs)
 
-关于 [`str.format()`](https://docs.python.org/3/library/stdtypes.html#str.format) 字符串格式的完整概述，阅读 [Format String Syntax](https://docs.python.org/3/library/string.html#formatstrings)。
+
 
 ##### 位置参数
 

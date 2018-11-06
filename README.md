@@ -50,7 +50,14 @@ Python 学习笔记
 
 - [The Hitchhiker's Guide to Python!](https://docs.python-guide.org/)
 
-  - 中文译本：[Python最佳实践指南!](https://pythonguidecn.readthedocs.io/zh/latest/)，该译本的 GitHub 仓库是 [Python-Guide-CN](https://github.com/Prodesire/Python-Guide-CN)
+  该指南有如下中文译本：
+
+  - [Python最佳实践指南!](https://pythonguidecn.readthedocs.io/zh/latest/)，该译本的 GitHub 仓库是 [Python-Guide-CN](https://github.com/Prodesire/Python-Guide-CN)
+  - [Python 最佳实践指南 2018](https://pythoncaff.com/docs/python-guide/2018) 
+
+- [Python 3 Module of the Week](https://pymotw.com/3/index.html)
+
+  - 中文翻译：[Python 3 标准库实例教程](https://pythoncaff.com/docs/pymotw)
 
 - [Learn Python 3 the Hard Way](https://learnpythonthehardway.org/python3/)：此教程存在 Stack Overflow 较多争议，部分人认为它不适合初学者，该教程有一个进阶版 [Learn More Python the Hard Way](https://learncodethehardway.org/more-python-book/)。
 
