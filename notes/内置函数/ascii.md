@@ -1,6 +1,6 @@
 # ascii
 
-ascii(*object*)
+🔨 ascii(*object*)
 
 类似于 [`repr()`](https://docs.python.org/3.7/library/functions.html#repr)，该函数会返回一个用于描述 *object* 的可打印(printable)的字符串。与 [`repr()`](https://docs.python.org/3.7/library/functions.html#repr)  的不同之处在于，`ascii()` 在获取 `__repr__()` 的返回值之后，会使用"可打印转义序列" (`'\\x'`, `'\\u'` , `'\\U'`) 来表示其中的非 ASCII 码字符。`ascii()` 返回的字符串类似于 Python 2 中的 `repr()` 函数返回的字符串。 
 

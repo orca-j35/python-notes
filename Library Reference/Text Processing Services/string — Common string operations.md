@@ -662,18 +662,11 @@ format_spec::=[[fill]align][sign][#][0][width][grouping_option][.precision][type
 | `'E'` | 指数表示法。除了改用 'E' 表示指数外，其余效果与 `'e'` 相同。 |
 | `'f'` | 定点表示法。将数值显式为一个定点数。默认精度是 `6`           |
 | `'F'` | 定点表示法，与 `'f'` 相同，但是会将 `nan` 转换为 `NAN` ，将 `inf` 转换为 `INF`. |
-| `'g'` | 通用格式，会先依照给定精度`p >= 1`，将数值舍入为 `p` 位有效数值，然后根据舍入结果的数量级选择"定点表示法"或"科学计数法"。简单来讲，如果指数小于 -4 或大于等于精度时，会采用 `'e'` 格式；否则采用小数格式的浮点数。<br />The precise rules are as follows: suppose that the result formatted with presentation type `'e'` and precision `p-1` would have exponent `exp`. Then if `-4 <= exp < p`, the number is formatted with presentation type `'f'` and precision `p-1-exp`. Otherwise, the number is formatted with presentation type `'e'` and precision `p-1`. In both cases insignificant trailing zeros are removed from the significand, and the decimal point is also removed if there are no remaining digits following it.<br />Positive and negative infinity, positive and negative zero, and nans, are formatted as `inf`, `-inf`, `0`, `-0` and `nan` respectively, regardless of the precision.<br />A precision of `0` is treated as equivalent to a precision of `1`. The default precision is `6`. |
-| `'G'` | General format. Same as `'g'` except switches to `'E'` if the number gets too large. The representations of infinity and NaN are uppercased, too. |
+| `'g'` | 通用格式，会先依照给定精度`p >= 1`，将数值舍入为 `p` 位有效数值，然后根据舍入结果的数量级选择"定点表示法"或"科学计数法"。简单来讲，如果指数小于 -4 或大于等于精度时，会采用 `'e'` 格式；否则采用小数格式的浮点数。<br />精度规则：首先会尝试采用"科学计数法"进行格式化，并假定精度是 `p-1` (留一位给个位使用)，此时经格式化后的指数值是 `exp`。如果 `-4 <= exp < p`，则会采用"定点表示法"格式化原数值，精度为`p-1-exp`；否则会采用"科学计数法"格式化原数值，精度为`p-1` 。在者两种情况下都会从有效数字中删除不重要的尾随零，如果小数点后没有数字，则会一并删除小数点。<br />正无穷和负无穷被格式化为`inf`和 `-inf`；正零和负零被格式化为 `0` 和 `-0`；nans 被格式化为 `nan`。以上三者和精度无关。<br />精度 `0` 被视为等于精度 `1`；默认精度是 `6`. |
+| `'G'` | 通用格式，除了使用大写 `'E'` 之外，和 `'g'` 完全相同。另外，无穷数和 nans 也会被记作大写。 |
 | `'n'` | 数字，与 `'g' ` 相同，但会根据当前语言环境插入来恰当的数字分隔符 |
 | `'%'` | 百分比，将数字乘以 100 并以固定(`'f'`)格式显示，同时将百分号作为后缀。 |
-| None  | Similar to `'g'`, except that fixed-point notation, when used, has at least one digit past the decimal point. The default precision is as high as needed to represent the particular value. The overall effect is to match the output of [`str()`](https://docs.python.org/3.7/library/stdtypes.html#str) as altered by the other format modifiers. |
-
-tips: 在保留精度时会进行舍入，而非直接截断。
-
-```python
->>> '{0:.3f}'.format(0.6666)
-'0.667'
-```
+| None  | 与 `'g'` 类似，除了在使用"定点表示法"时，小数点后至少有一位数字。默认精度与需要被表示的值一样高。整体效果与调用 `str()` 的相同，并会更具有其它格式化修饰符进行调整。 |
 
 示例 - 展示和浮点数相关的 `type` 值：
 
@@ -682,12 +675,46 @@ tips: 在保留精度时会进行舍入，而非直接截断。
 >>> total = 22
 >>> 'Correct answers: {:.2%}'.format(points/total)
 'Correct answers: 86.36%'
+>>> format(0.00003141566) #和g相同
+'3.141566e-05'
+```
+
+tips: 在保留精度时会进行舍入，而非直接截断。
+
+```python
+>>> '{0:.3f}'.format(0.6666)
+'0.667'
 ```
 
 ### 复杂示例
 
 ```python
-
+>>> for align, text in zip('<^>', ['left', 'center', 'right']):
+...     '{0:{fill}{align}16}'.format(text, fill=align, align=align)
+...
+'left<<<<<<<<<<<<'
+'^^^^^center^^^^^'
+'>>>>>>>>>>>right'
+>>>
+>>> octets = [192, 168, 0, 1]
+>>> '{:02X}{:02X}{:02X}{:02X}'.format(*octets)
+'C0A80001'
+>>> int(_, 16)
+3232235521
+>>>
+>>> width = 5
+>>> for num in range(5,12): 
+...     for base in 'dXob':
+...         print('{0:{width}{base}}'.format(num, base=base, width=width), end=' ')
+...     print()
+...
+    5     5     5   101
+    6     6     6   110
+    7     7     7   111
+    8     8    10  1000
+    9     9    11  1001
+   10     A    12  1010
+   11     B    13  1011
 ```
 
 ### 特定的格式化方式
