@@ -2,9 +2,16 @@
 
 [TOC]
 
+```
+class type(object)
+ |  type(object_or_name, bases, dict)
+ |  type(object) -> the object's type
+ |  type(name, bases, dict) -> a new type
+```
+
 内置函数 `type()` 其实是元类 `type` 的构造函数，有如下两种使用方式：
 
-## class type(*object*)
+## 🔨 type(*object*) 
 
 🔨 type(*object*) -> the object's type
 
@@ -41,7 +48,7 @@ True
 
 See also [Type Objects](https://docs.python.org/3.7/library/stdtypes.html#bltin-type-objects).
 
-## class type(*name*, *bases*, *dict*)
+## 🔨 type(*name*, *bases*, *dict*)
 
 🔨 type(*name*, *bases*, *dict*) -> a new type(or class) object：
 
