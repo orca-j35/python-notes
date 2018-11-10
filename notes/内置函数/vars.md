@@ -71,7 +71,7 @@ TypeError: 'mappingproxy' object does not support item assignment
 
 当实参为空时，可能出现以下两种情况：
 
-- 如果位于全局作用域中，则 `vars()`、`locals()` 和 `globals()` 三者等效。在全局字典中做出的修改会影响解释器所使用的全局变量。
+- 如果位于全局作用域中，则 `vars()`、`locals()` 和 `globals()` 三者等效。在全局字典中所做的修改会影响解释器所使用的全局变量，反之亦然：
 
   ```python
   >>> vars() is locals() is globals()
@@ -79,6 +79,9 @@ TypeError: 'mappingproxy' object does not support item assignment
   >>> globals()['update'] = "orca_j35"
   >>> update
   'orca_j35'
+  >>> del update
+  >>> globals().get('update','not to exist')
+  'not to exist'
   ```
 
 - 如果位于本地作用域中，则 `vars()` 和 `locals()` 等效：
