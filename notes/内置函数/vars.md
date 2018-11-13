@@ -10,9 +10,45 @@ vars(...)
 
 ## 🔨 vars(*object*)
 
-该函数会返回 *object* 的 [`__dict__`](https://docs.python.org/3.7/library/stdtypes.html#object.__dict__) 属性。*object* 必须是包含 `__dict__` 属性的对象(比如：模块、类、实例等等)，否则会抛出 `TypeError` 异常。
+该函数会返回 *object* 的 [`__dict__`](https://docs.python.org/3.7/library/stdtypes.html#object.__dict__) 字段属性。*object* 必须是包含 `__dict__` 属性的对象(比如：模块、类、实例等等)，否则会抛出 `TypeError` 异常。
 
-`__dict__` 用于存储对象中所含属性的映射关系，可以是字典或其它映射对象。一些对象(如，模块和实例)的 `__dict__` 属性没有写入限制，可被直接更新。`__dict__` 属性和对象是联动的，两者中只要有一个发生变化，另一个便会自动改变。
+`__dict__` 用于存储对象中所含(可写)属性的映射关系，可以是字典或其它映射对象。对象所含(可写)属性是指被绑定到对象的(可写)属性：
+
+- 如果 *object* 是实例，则只包含绑定到该实例的属性，不包含类和基类中的属性；
+- 如果 *object* 是类(或类型)，则只包含绑定到该类(或类型)的属性，不包含基类和元类中的属性。
+
+```python
+from pprint import pprint
+class Meta(type):
+    def method_of_meta(self): # 绑定到Mate的属性
+        print("method_of_meta")
+class Base(object, metaclass=Meta):
+    def __init__(self):
+        self.x = 1 # 绑定到实例的属性
+    def method_of_base(self): # 绑定到Base的属性
+        print("method_of_base")
+class Child(Base):
+    def __init__(self): # 绑定到Child的属性
+        self.y = 2 # 绑定到实例的属性
+        super().__init__()
+    def method_of_child(self): # 绑定到Child的属性
+        print("method_of_child")
+pprint(vars(Child()))  # 只包含绑定到实例的属性
+pprint(vars(Child))  # 只包含绑定到类的属性，不包含基类和元类中的属性
+pprint(vars(Meta))  # 只包含绑定到元类的属性，不包括基类中的属性
+"""Out:
+{'x': 1, 'y': 2}
+mappingproxy({'__doc__': None,
+              '__init__': <function Child.__init__ at 0x000001A76695C268>,
+              '__module__': '__main__',
+              'method_of_child': <function Child.method_of_child at 0x000001A76695C2F0>})
+mappingproxy({'__doc__': None,
+              '__module__': '__main__',
+              'method_of_meta': <function Meta.method_of_meta at 0x000001A76695C0D0>})
+"""
+```
+
+一些对象(如，模块和实例)的 `__dict__` 属性没有写入限制，可被直接更新。这些 `__dict__` 属性和对象是联动的，两者中只要有一个发生变化，另一个便会自动改变。
 
 ```python
 from pprint import pprint
@@ -95,23 +131,57 @@ TypeError: 'mappingproxy' object does not support item assignment
   True
   ```
 
-  tiap：不要修改本地字典中的内容。因为就算对本地字典做出了修改，也并不会影响解释器所使用的本地变量和自由变量的值，在本地字典所做的修改均会被忽略。
+  tiap：不要手动修改本地字典中的内容。因为就算对本地字典做出了修改，也并不会影响解释器所使用的本地变量和自由变量的值，在本地字典所做的修改均会被忽略。 
 
   ```python
   def vars_():
       a_field = 'orca'
       pprint(vars())
-      vars()['update'] = "j35"
+      vars()['a_field'] = "j35"
       pprint(vars())
       pprint(a_field)
       
   vars_()
   """Out:
   {'a_field': 'orca'}
-  {'a_field': 'orca', 'update': 'j35'}
+  {'a_field': 'orca'}
   'orca'
   """
   ```
+
+## \_\_dict\_\_
+
+> object.\_\_dict\_\_
+> A dictionary or other mapping object used to store an object’s (writable) attributes.
+
+不是所有对象都有 `__dict__` 属性。
+
+例如，当我们在类中添加了 `__slots__` 属性后，该类的实例便不再拥有 `__dict__` 属性：
+
+```python
+>>> class Foo(object):
+	__slots__ = ('bar', )
+
+>>> Foo.__dict__
+mappingproxy({'__module__': '__main__', '__slots__': ('bar',), 'bar': <member 'bar' of 'Foo' objects>, '__doc__': None})
+>>> Foo().__dict__
+Traceback (most recent call last):
+  File "<pyshell#11>", line 1, in <module>
+    Foo().__dict__
+AttributeError: 'Foo' object has no attribute '__dict__'
+```
+
+另外，许多内置类型的实例并没有 `__dict__` 属性：
+
+```python
+>>> vars([1,2])
+Traceback (most recent call last):
+  File "<pyshell#16>", line 1, in <module>
+    vars([1,2])
+TypeError: vars() argument must have __dict__ attribute
+```
+
+
 
 ## MappingProxyType
 

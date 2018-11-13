@@ -6,6 +6,40 @@ Python 通过 [`str`](https://docs.python.org/3/library/stdtypes.html#str) 对�
 - Double quotes: `"allows embedded 'single' quotes"` 
 - Triple quoted: `'''Three single quotes'''` 或 `"""Three double quotes"""`
 
+三重引号 (*triple-quoted*) 字符串可以跨越多行，此时在字符串字面值中会保留所有相应的空白符(*whitespace*)，不过在这种情况下不可以添加注释：
+
+```python
+>>> '''first line
+second line'''
+'first line\nsecond line'
+```
+
+当单个表达式中存在被空白符分隔的多个字符串字面值时，这些字符串字面值将被隐式转换为一个单独的字符串：
+
+```python
+>>> print('orca'
+	  '_' 'j35')
+orca_j35
+```
+
+参考 2.4.2. 字符串字面值的连接
+
+Triple quoted strings may span multiple lines - all associated whitespace will be included in the string literal.
+
+String literals that are part of a single expression and have only whitespace between them will be implicitly converted to a single string literal. That is, `("spam " "eggs") == "spam eggs"`.
+
+See [String and Bytes literals](https://docs.python.org/3.7/reference/lexical_analysis.html#strings) for more about the various forms of string literal, including supported escape sequences, and the `r` (“raw”) prefix that disables most escape sequence processing.
+
+Strings may also be created from other objects using the [`str`](https://docs.python.org/3.7/library/stdtypes.html#str) constructor.
+
+Since there is no separate “character” type, indexing a string produces strings of length 1. That is, for a non-empty string *s*, `s[0] == s[0:1]`.
+
+There is also no mutable string type, but [`str.join()`](https://docs.python.org/3.7/library/stdtypes.html#str.join) or [`io.StringIO`](https://docs.python.org/3.7/library/io.html#io.StringIO) can be used to efficiently construct strings from multiple fragments.
+
+Changed in version 3.3: For backwards compatibility with the Python 2 series, the `u` prefix is once again permitted on string literals. It has no effect on the meaning of string literals and cannot be combined with the `r` prefix.
+
+
+
 由于字符串是[不可变的](https://docs.python.org/3/glossary.html#term-immutable)对象，因此不能对字符串本身做出修改。这意味着我们虽然可以查看字符串中的项，但并不能对其进行修改：
 
 ```python
