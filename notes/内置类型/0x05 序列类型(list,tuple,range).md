@@ -19,7 +19,7 @@ Python 中包含基本[序列类型](https://docs.python.org/3/library/stdtypes.
 - 使用列表解析(*comprehension*)：`[x for x in iterable]`
 - 使用类型构造器(*constructor*)：`list()` 或 `list(iterable)`
 
-🔨 *class* `list`([*iterable*])
+🔨 *class* list([*iterable*])
 
 通过构造函数创建列表对象时，新建列表对象中各个项的值和顺序均与 *iterable* 中各个项的值和顺序相同。*iterable* 可以是序列，也可是支持迭代的容器，还可以是迭代器对象。如果没有向构造函数传递实参，则会创建一个空列表。
 
@@ -180,7 +180,7 @@ for x in []:
 
 > 本节涵盖了 [Tuples](https://docs.python.org/3.7/library/stdtypes.html#tuples) 中的所有知识点，并进行了扩展。
 
-元组属于不可变序列类型，实现了所有通用序列操作，可用于存储异构数据集合和同构数据集合。由于元组是不可变类型，因此可将其用作 [`dict`](https://docs.python.org/3/library/stdtypes.html#dict) 的键(*key*)，或是被存储在 [`set`](https://docs.python.org/3/library/stdtypes.html#set) 和 [`frozenset`](https://docs.python.org/3/library/stdtypes.html#frozenset) 中。
+元组属于不可变序列类型，实现了所有**通用序列操作**，可用于存储异构数据集合和同构数据集合。由于元组是不可变类型，因此可将其用作 [`dict`](https://docs.python.org/3/library/stdtypes.html#dict) 的键(*key*)，或是被存储在 [`set`](https://docs.python.org/3/library/stdtypes.html#set) 和 [`frozenset`](https://docs.python.org/3/library/stdtypes.html#frozenset) 中。
 
 尽管元组表面上类似于列表，但常被用于不同的目的。列表通常会包含同构元素序列，并以迭代的方式访问。元组通常包含异构元素序列，通过解包或索引进行访问。
 
@@ -195,9 +195,9 @@ for x in []:
 - 构建多元素元组时，需使用逗号分隔每个项：`a, b, c` , `(a, b, c)`
 - 使用类型构造器(*constructor*)：`tuple()` , `tuple(iterable)`
 
-Note：通过中间两种方式构建元组时，实际上是由于逗号的存在才产生了元组，即便省略括号也可照常构建元组。圆括号作为可选部分，其作用是为了避免语法歧义。例如，`f(a, b, c)` 表示以三个实参来调用函数，而 `f((a, b, c))` 则表示以单个实参( 3 元元组)来调用函数，
+Note：通过中间两种方式构建元组时，实际上是由于逗号的存在才产生了元组，即便省略括号也可照常构建元组。圆括号作为可选部分，其作用是为了避免语法歧义。例如，`f(a, b, c)` 表示以三个实参来调用函数，而 `f((a, b, c))` 则表示以单个实参( 3 元元组)来调用函数。
 
-🔨 *class* `tuple`([*iterable*])
+🔨 *class* tuple([*iterable*])
 
 通过构造函数创建元组对象时，新建元组对象中各个项的值和顺序均与 *iterable* 中各个项的值和顺序相同。*iterable* 可以是序列，也可是支持迭代的容器，还可以是迭代器对象。如果没有向构造函数传递实参，则会创建一个空元组。
 
@@ -317,9 +317,9 @@ class range(object)
  |  When step is given, it specifies the increment (or decrement).
 ```
 
-🔨 *class* `range`(*stop*)
+🔨 *class* range(*stop*)
 
-🔨 *class* `range`(*start*, *stop*[, *step*])
+🔨 *class* range(*start*, *stop*[, *step*])
 
 在调用 range 类的构造函数时，必须使用整数作为实参。细节上而言，实参可以是 `int` 对象，或是实现任何了 `__index__` 方法的对象。
 

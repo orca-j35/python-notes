@@ -6,7 +6,7 @@
 
 参数 *source* 、*encoding* 、*errors*  在 `bytes()` 和 `bytearray()` 中以相同方式使用：
 
-- 没有任何参数时，将创建一个空实例
+- 没有提供任何参数时，将创建一个空实例
 
   ```python
   # bytes() -> empty bytes object
@@ -46,12 +46,12 @@
   # bytes(buffer) -> mutable copy of buffer
   ```
 
-- *source* 是一个字符串时，必须给定 *encoding* 参数。此时，构造函数 `bytes()`  会通过 [`str.encode()`](https://docs.python.org/3.7/library/stdtypes.html#str.encode) 方法将 *source* 编码(encoding)为字节序列。
+- *source* 是一个字符串时，必须给定 *encoding* 参数。此时，构造函数 `bytes()`  会通过 [`str.encode()`](https://docs.python.org/3.7/library/stdtypes.html#str.encode) 方法将 *source* 编码(*encoding*)为字节序列。
 
   - *encoding* 参数用于设置编码方案，会被传递给 `str.encode()`。在 [Standard Encodings](https://docs.python.org/3.7/library/codecs.html#standard-encodings) 中可查看编码方案列表。
   - *errors* 参数用于设置[错误处理方案](https://docs.python.org/3.7/library/codecs.html#error-handlers)，也会被传递给 `str.encode()`。如果 *errors* 为空，`str.encode()` 会使用默认方案 `'strict'`——该方案在出现编码错误时会抛出 [`UnicodeError`](https://docs.python.org/3.7/library/exceptions.html#UnicodeError)。*errors* 可以是 `'ignore'`, `'replace'`, `'xmlcharrefreplace'`, `'backslashreplace'` 或任何已通过 [`codecs.register_error()`](https://docs.python.org/3.7/library/codecs.html#codecs.register_error) 注册的名称。
 
-  Tips: 在 Python 文档中，"编码(encoding)"是指将 Unicode 字符串转换为字节序列的规则，也就是说"编码"包含了从"抽象字符序列"到"字节序列"的全部过程。
+  Tips: 在 Python 文档中，"编码(*encoding*)"是指将 Unicode 字符串转换为字节序列的规则，也就是说"编码"包含了从"抽象字符序列"到"字节序列"的全部过程。
 
   ```python
   # bytes(string, encoding[, errors]) -> bytes
@@ -69,7 +69,11 @@
   b''
   ```
 
-扩展阅读：[Binary Sequence Types — bytes, bytearray, memoryview](https://docs.python.org/3.7/library/stdtypes.html#binaryseq), [Bytes Objects](https://docs.python.org/3.7/library/stdtypes.html#typebytes), and [Bytes and Bytearray Operations](https://docs.python.org/3.7/library/stdtypes.html#bytes-methods).
+扩展阅读：
+
+- [Binary Sequence Types — bytes, bytearray, memoryview](https://docs.python.org/3.7/library/stdtypes.html#binaryseq), [Bytes Objects](https://docs.python.org/3.7/library/stdtypes.html#typebytes)
+- [Bytes and Bytearray Operations](https://docs.python.org/3.7/library/stdtypes.html#bytes-methods)
+-  [Buffer Protocol](https://docs.python.org/3.7/c-api/buffer.html#bufferobjects)
 
 ## 深入理解 bytes 对象
 

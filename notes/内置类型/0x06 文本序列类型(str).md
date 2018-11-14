@@ -1,6 +1,30 @@
 # 文本序列类型(str)
 
-Python 通过 [`str`](https://docs.python.org/3/library/stdtypes.html#str) 对象来处理文本数据(*textual data*)。字符串是由 Unicode 码点(*code point*)组成的不可变[序列](https://docs.python.org/3.7/glossary.html#term-sequence)(*sequence*)。字符串字面量有如下三种定义方式：
+> 本文涵盖了 [str](https://docs.python.org/3.7/library/stdtypes.html#str) 中的所有知识点，并进行了扩展。
+
+Python 通过 [`str`](https://docs.python.org/3/library/stdtypes.html#str) 对象来处理文本数据(*textual data*)。
+
+字符串是由 Unicode 码点(*code point*)组成的不可变[序列](https://docs.python.org/3.7/glossary.html#term-sequence)(*sequence*)。
+
+如果需要深入了解各种形式的字符串字面值，可阅读 [String and Bytes literals](https://docs.python.org/3.7/reference/lexical_analysis.html#strings)。在笔记『2. Lexical analysis.md』中已翻译了这部分文档，并且在文档中还讲述了转义序列，以及如何使用 `r` (*raw*) 前缀来禁用大多数转义序列。
+
+在 Python 中并没有单独的"字符(*character*)"类型，因此当我们索引一个非空字符串 `s` 时，将产生一个长度为 1 的字符串，即 `s[0] == s[0:1]`。
+
+在 Python 中没有可变字符串类型，当需要将多个字符串片段连接为一个字符串时，可使用 [`str.join()`](https://docs.python.org/3.7/library/stdtypes.html#str.join)( 或 [`io.StringIO`](https://docs.python.org/3.7/library/io.html#io.StringIO)) 。与连接操作符 `+` 的区别是，这两个方法的时间复杂度为线性。
+
+[`-b`](https://docs.python.org/3.7/using/cmdline.html#cmdoption-b) 命令行选项会在比较 `str` 对象和 [`bytes`](https://docs.python.org/3.7/library/stdtypes.html#bytes)(或 [`bytearray`](https://docs.python.org/3.7/library/stdtypes.html#bytearray))对象时发出警告。
+
+**Changed in version 3.3:** 为了向后兼容 Python 2 系列，重新允许在字符串字面中使用 `u` 前缀。`u` 前缀对字符串的含义没有任何影响，但是不能和 `r` 前缀共存。
+
+> 扩展阅读：
+>
+> - 『2. Lexical analysis.md』->「2.4. 字面值」
+> - 『格式化操作.md』
+> - [Text Processing Services](https://docs.python.org/3.7/library/text.html#stringservices)
+
+## 1. 构建字符串
+
+字符串字面量有以下三种定义方式：
 
 - Single quotes: `'allows embedded "double" quotes'`
 - Double quotes: `"allows embedded 'single' quotes"` 
@@ -14,29 +38,133 @@ second line'''
 'first line\nsecond line'
 ```
 
-当单个表达式中存在被空白符分隔的多个字符串字面值时，这些字符串字面值将被隐式转换为一个单独的字符串：
+还可使用 `str()` 构造函数从其它对象创建字符串，具体使用方法如下：
 
-```python
->>> print('orca'
-	  '_' 'j35')
-orca_j35
+### 1.1 str(*object*)
+
+🔨 *class* str(*object=''*)
+
+此时，该函数将返回 *object* 的字符串版本，使用方法如下：
+
+```
+str(object='') -> str
+ | str() -> empty string ''
+ | str(object) -> type(object).__str__()
+ | str(bytes_or_buffer) -> type(bytes_or_buffer).__str__()
 ```
 
-参考 2.4.2. 字符串字面值的连接
+*object* 可以是任意的对象，包括 `bytes` 和 `buffer` 的实例。
 
-Triple quoted strings may span multiple lines - all associated whitespace will be included in the string literal.
+```python
+>>> str("orca_j35") # 字符串实例，将返回其自身
+'orca_j35'
+>>> str(b'abs') # bytes实例
+"b'abs'"
+```
 
-String literals that are part of a single expression and have only whitespace between them will be implicitly converted to a single string literal. That is, `("spam " "eggs") == "spam eggs"`.
+`type(object).__str__()` 方法会返回一个用于描述 *object* 的字符串，且该字符串会以适于打印的(或非正式的)形式来描述 *object*。如果 `type(object)` 没有 `__str__()` 方法，则会返回 [`repr(object)`](https://docs.python.org/3.7/library/functions.html#repr)：
 
-See [String and Bytes literals](https://docs.python.org/3.7/reference/lexical_analysis.html#strings) for more about the various forms of string literal, including supported escape sequences, and the `r` (“raw”) prefix that disables most escape sequence processing.
+```python
+class Cls():
+    def __repr__(self):
+        return 'in __repr__'
+print(str(Cls())) # Out: in __repr__
+```
 
-Strings may also be created from other objects using the [`str`](https://docs.python.org/3.7/library/stdtypes.html#str) constructor.
+注意：`str(object)` 会返回 `type(object).__str__()`，也就是说 `str()` 会利用类字典中的 `__str__` 方法对 *object* 进行格式化，这样做的目的是跳过实例字典中的方法。如果仅考虑类和实例，这好像并没有什么意义，因为不会有人在实例字典中重新绑定 `__str__` 方法。但是，如果考虑到元类和类，这就很有意义了，因为类是元类的实例，并且通常会在类字典中绑定 `__str__` 方法。当 *object* 是一个类时，实际上需要调用元类中的 `__str__` 方法，此时我们便需要跳过类字典中 `__str__` 方法，使用元类中的同名方法。
 
-Since there is no separate “character” type, indexing a string produces strings of length 1. That is, for a non-empty string *s*, `s[0] == s[0:1]`.
+```python
+class Cls():
+    def __str__(self):
+        return 'Cls 类的实例对象'
+obj = Cls()
+from types import MethodType
+obj.__str__ = MethodType(lambda self: '绑定到实例的__str__方法', obj)
+print(str(obj))
+"""Out:
+Cls 类的实例对象
+"""
+```
 
-There is also no mutable string type, but [`str.join()`](https://docs.python.org/3.7/library/stdtypes.html#str.join) or [`io.StringIO`](https://docs.python.org/3.7/library/io.html#io.StringIO) can be used to efficiently construct strings from multiple fragments.
+### 1.2 str(*object*, *encoding*, *errors*)
 
-Changed in version 3.3: For backwards compatibility with the Python 2 series, the `u` prefix is once again permitted on string literals. It has no effect on the meaning of string literals and cannot be combined with the `r` prefix.
+🔨 *class* str(*object=b''*, *encoding='utf-8'*, *errors='strict'*)
+
+此时会按照给定编码方式对 *object* 进行**解码**，并返回解码后的字符串，使用方法如下：
+
+```
+str(bytes_or_buffer[, encoding[, errors]]) -> str
+ | str(bytes_or_buffer, encoding='...') -> bytes_or_buffer.decode(encoding='...')
+ | str(bytes_or_buffer, errors='...') -> bytes_or_buffer.decode(errors='...')
+ | str(bytes_or_buffer, encoding='...', errors='...') -> bytes_or_buffer.decode(encoding='...', errors='...')
+```
+
+各参数的含义如下：
+
+- *object* 用于设置解码对象，要求其属于 [bytes-like](https://docs.python.org/3.7/glossary.html#term-bytes-like-object) 对象，可分为以下两种情况：
+  - 如果 *object* 是 `bytes`(或 `bytearray`)对象，那么 `str(object, encoding, errors)`会直接返回 [`object.decode(encoding, errors)`](https://docs.python.org/3.7/library/stdtypes.html#bytes.decode)；
+  - 否则，需要在返回 `object.decode()` 之前，先获取缓冲器对象下的字节对象。
+
+- *encoding* 用于设置编码方案，将被传递给 `bytes_or_buffer.decode()`，其默认值是 `sys.getdefaultencoding()`，可在 [Standard Encodings](https://docs.python.org/3.7/library/codecs.html#standard-encodings) 中可查看编码方案列表。
+
+- *errors* 用于设置[错误处理方案](https://docs.python.org/3.7/library/codecs.html#error-handlers)，也会被传递给 `bytes_or_buffer.decode()`，其默认值是 `'strict'`。*errors* 可以是 `'ignore'`, `'replace'`, `'xmlcharrefreplace'`, `'backslashreplace'` 或任何已通过 [`codecs.register_error()`](https://docs.python.org/3.7/library/codecs.html#codecs.register_error) 注册的名称。
+
+```python
+>>> a_bytes = bytes('鲸','utf-8')
+>>> a_bytes
+b'\xe9\xb2\xb8'
+>>> str(a_bytes,'utf-8')
+'鲸'
+>>> str(a_bytes,'ascii')
+Traceback (most recent call last):
+  File "<pyshell#5>", line 1, in <module>
+    str(a_bytes,'ascii')
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xe9 in position 0: ordinal not in range(128)
+>>> str(a_bytes,'ascii','ignore')
+''
+```
+
+有关缓冲区对象的详细信息，可阅读 [Binary Sequence Types — bytes, bytearray, memoryview](https://docs.python.org/3.7/library/stdtypes.html#binaryseq) 和 [Buffer Protocol](https://docs.python.org/3.7/c-api/buffer.html#bufferobjects)。
+
+Tips: 在 Python 文档中，"编码(*encoding*)"是指将 Unicode 字符串转换为字节序列的规则，也就是说"编码"包含了从"抽象字符序列"到"字节序列"的全部过程，"解码"则包含了从"字节序列"到"抽象字符序列"的全部过程。
+
+## 2. 字符串支持的操作
+
+字符串实现了所有[通用序列操作](https://docs.python.org/3/library/stdtypes.html#typesseq-common)，以及下列附加方法：
+
+Strings implement all of the [common](https://docs.python.org/3.7/library/stdtypes.html#typesseq-common) sequence operations, along with the additional methods described below.
+
+Strings also support two styles of string formatting, one providing a large degree of flexibility and customization (see [`str.format()`](https://docs.python.org/3.7/library/stdtypes.html#str.format), [Format String Syntax](https://docs.python.org/3.7/library/string.html#formatstrings) and [Custom String Formatting](https://docs.python.org/3.7/library/string.html#string-formatting)) and the other based on C `printf` style formatting that handles a narrower range of types and is slightly harder to use correctly, but is often faster for the cases it can handle ([printf-style String Formatting](https://docs.python.org/3.7/library/stdtypes.html#old-string-formatting)).
+
+The [Text Processing Services](https://docs.python.org/3.7/library/text.html#textservices) section of the standard library covers a number of other modules that provide various text related utilities (including regular expression support in the [`re`](https://docs.python.org/3.7/library/re.html#module-re) module).
+
+
+
+### 2.1 字符串字面值的连接
+
+在对序列进行连接时通常会使用连接操作符(`+`)，但在连接字符串时甚至可以省略 `+`。直接将字符串并置在一起，便可完成连接操作：
+
+```python
+>>> 'orca'"_"'j35'
+'orca_j35'
+```
+
+当单个表达式中存在被空白符分隔的多个字符串字面值时，这些字符串也将被隐式连接为一个单独的字符串。在连接字面值时，对于每个组成部分可以使用不同的引用风格(甚至可以将原始字符串和三重引号字符串进行混用)，还可以将格式化字符串字面值与纯(*plain*)字符串字面值连接。
+
+```python
+>>> sn='j35'
+>>> print('orca' # 允许对每段字符串添加注释
+	  """_"""
+	  f'{sn}'
+	  r'\n')
+orca_j35\n
+```
+
+注意，上述特性是在语法层次上定义的，但在编译时实现。在运行时必须使用 '+' 运算符连接字符串表达式。
+
+
+
+
 
 
 
@@ -411,6 +539,8 @@ Return a string version of object. If object is not provided, returns the empty 
 
 #### \_\_str_\_
 
+[`type(object).__str__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__str__)
+
 > `object.` `__str__`(*self*)  
 >
 > Called by [`str(object)`](../library/stdtypes.html#str) and the built-in functions [`format()`](../library/functions.html#format) and [`print()`](../library/functions.html#print) to compute the “informal” or nicely printable string representation of an object. The return value must be a [string](../library/stdtypes.html#textseq) object.
@@ -625,7 +755,7 @@ Brazil_*_Russia_*_India_*_China
    注意：该方法只适用于字面量，不能包含表达式和变量。
 
 ```
->>> 'Py' 'thon'
+>>> 'Py''thon'
 'Python'
 
 >>> prefix = 'Py'
