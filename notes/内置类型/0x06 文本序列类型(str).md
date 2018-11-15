@@ -1,20 +1,18 @@
 # 文本序列类型(str)
 
-> 本文涵盖了 [str](https://docs.python.org/3.7/library/stdtypes.html#str) 中的所有知识点，并进行了扩展。
+> 本文涵盖了 [str](https://docs.python.org/3.7/library/stdtypes.html#str) 中的第一部分的知识点，并进行了扩展，后面两部的笔记如下：
+> - [String Methods](https://docs.python.org/3.7/library/stdtypes.html#string-methods) 小节位于笔记『字符串方法.md』中
+> - `printf`-[style String Formatting](https://docs.python.org/3.7/library/stdtypes.html#printf-style-string-formatting) 小节位于笔记『格式化操作.md』中
 
-Python 通过 [`str`](https://docs.python.org/3/library/stdtypes.html#str) 对象来处理文本数据(*textual data*)。
-
-字符串是由 Unicode 码点(*code point*)组成的不可变[序列](https://docs.python.org/3.7/glossary.html#term-sequence)(*sequence*)。
-
-如果需要深入了解各种形式的字符串字面值，可阅读 [String and Bytes literals](https://docs.python.org/3.7/reference/lexical_analysis.html#strings)。在笔记『2. Lexical analysis.md』中已翻译了这部分文档，并且在文档中还讲述了转义序列，以及如何使用 `r` (*raw*) 前缀来禁用大多数转义序列。
+Python 通过字符(*string*) 来处理文本数据(*textual data*)，字符串是由 Unicode 码点(*code point*)组成的不可变[序列](https://docs.python.org/3.7/glossary.html#term-sequence)(*sequence*)。
 
 在 Python 中并没有单独的"字符(*character*)"类型，因此当我们索引一个非空字符串 `s` 时，将产生一个长度为 1 的字符串，即 `s[0] == s[0:1]`。
 
-在 Python 中没有可变字符串类型，当需要将多个字符串片段连接为一个字符串时，可使用 [`str.join()`](https://docs.python.org/3.7/library/stdtypes.html#str.join)( 或 [`io.StringIO`](https://docs.python.org/3.7/library/io.html#io.StringIO)) 。与连接操作符 `+` 的区别是，这两个方法的时间复杂度为线性。
+如果需要深入了解各种形式的字符串字面值，可阅读 [String and Bytes literals](https://docs.python.org/3.7/reference/lexical_analysis.html#strings)。在笔记『2. Lexical analysis.md』中已翻译了这部分文档，并且在文档中还介绍了转义序列，以及如何使用 `r` (*raw*) 前缀来禁用大多数转义序列。
 
 [`-b`](https://docs.python.org/3.7/using/cmdline.html#cmdoption-b) 命令行选项会在比较 `str` 对象和 [`bytes`](https://docs.python.org/3.7/library/stdtypes.html#bytes)(或 [`bytearray`](https://docs.python.org/3.7/library/stdtypes.html#bytearray))对象时发出警告。
 
-**Changed in version 3.3:** 为了向后兼容 Python 2 系列，重新允许在字符串字面中使用 `u` 前缀。`u` 前缀对字符串的含义没有任何影响，但是不能和 `r` 前缀共存。
+**Changed in version 3.3:** 为了向后兼容 Python 2 系列，重新允许在字符串中使用 `u` 前缀。`u` 前缀对字符串的含义没有任何影响，但是不能和 `r` 前缀共存。
 
 > 扩展阅读：
 >
@@ -38,6 +36,27 @@ second line'''
 'first line\nsecond line'
 ```
 
+如果想要避免三重引号字符串在行尾自动添加换行符，可在行尾使用反斜线 `\`：
+
+```python
+>>> print("""\
+Usage: thingy [OPTIONS]
+     -h                        Display this usage message
+     -H hostname               Hostname to connect to
+""")
+Usage: thingy [OPTIONS]
+     -h                        Display this usage message
+     -H hostname               Hostname to connect to
+```
+
+如果在单引号(或双引号)字符串的行末添加反斜线 `\`，则表示该字符串在下一行继续，并且不会添加换行符：
+
+```
+>>> "This is the first sentence. \
+This is the second sentence."
+'This is the first sentence. This is the second sentence.'
+```
+
 还可使用 `str()` 构造函数从其它对象创建字符串，具体使用方法如下：
 
 ### 1.1 str(*object*)
@@ -50,19 +69,24 @@ second line'''
 str(object='') -> str
  | str() -> empty string ''
  | str(object) -> type(object).__str__()
- | str(bytes_or_buffer) -> type(bytes_or_buffer).__str__()
+ |
+ | object 可以是任意对象，包括 bytes 和 buffer 的实例
 ```
 
-*object* 可以是任意的对象，包括 `bytes` 和 `buffer` 的实例。
+`type(object).__str__()` 会返回一个字符串——该字符串会以适于打印的(或非正式的)形式来描述 *object*。
 
 ```python
 >>> str("orca_j35") # 字符串实例，将返回其自身
 'orca_j35'
 >>> str(b'abs') # bytes实例
 "b'abs'"
+>>> str(list)				  
+"<class 'list'>"
+>>> str([1,2])					  
+'[1, 2]'
 ```
 
-`type(object).__str__()` 方法会返回一个用于描述 *object* 的字符串，且该字符串会以适于打印的(或非正式的)形式来描述 *object*。如果 `type(object)` 没有 `__str__()` 方法，则会返回 [`repr(object)`](https://docs.python.org/3.7/library/functions.html#repr)：
+如果 `type(object)` 没有 `__str__()` 方法，则会返回 [`repr(object)`](https://docs.python.org/3.7/library/functions.html#repr)：
 
 ```python
 class Cls():
@@ -93,52 +117,62 @@ Cls 类的实例对象
 此时会按照给定编码方式对 *object* 进行**解码**，并返回解码后的字符串，使用方法如下：
 
 ```
-str(bytes_or_buffer[, encoding[, errors]]) -> str
- | str(bytes_or_buffer, encoding='...') -> bytes_or_buffer.decode(encoding='...')
- | str(bytes_or_buffer, errors='...') -> bytes_or_buffer.decode(errors='...')
- | str(bytes_or_buffer, encoding='...', errors='...') -> bytes_or_buffer.decode(encoding='...', errors='...')
+str(object[, encoding[, errors]]) -> str
+ | str(object, encoding='...') -> object.decode(encoding='...')
+ | str(object, errors='...') -> object.decode(errors='...')
+ | str(object, encoding='...', errors='...') -> object.decode(encoding='...', errors='...')
+ | 
+ | object 必须是 bytes 和 buffer 的实例
 ```
 
-各参数的含义如下：
+各参数的含义如下：(这三个参数均是 *positional-or-keyword*)
 
-- *object* 用于设置解码对象，要求其属于 [bytes-like](https://docs.python.org/3.7/glossary.html#term-bytes-like-object) 对象，可分为以下两种情况：
-  - 如果 *object* 是 `bytes`(或 `bytearray`)对象，那么 `str(object, encoding, errors)`会直接返回 [`object.decode(encoding, errors)`](https://docs.python.org/3.7/library/stdtypes.html#bytes.decode)；
-  - 否则，需要在返回 `object.decode()` 之前，先获取缓冲器对象下的字节对象。
-
-- *encoding* 用于设置编码方案，将被传递给 `bytes_or_buffer.decode()`，其默认值是 `sys.getdefaultencoding()`，可在 [Standard Encodings](https://docs.python.org/3.7/library/codecs.html#standard-encodings) 中可查看编码方案列表。
-
+- *object* 是被解码的 [bytes-like](https://docs.python.org/3.7/glossary.html#term-bytes-like-object) 对象：
+  - 如果 *object* 是 `bytes`(或 `bytearray`)对象， `str(object, encoding, errors)`会调用 [`object.decode(encoding, errors)`](https://docs.python.org/3.7/library/stdtypes.html#bytes.decode) 并返回其结果
+  - 否则，`str(object, encoding, errors)` 会先获取缓冲器对象下的字节对象，然后再调用 `object.decode()` 并返回其结果
+- *encoding* 用于设置编码方案，会被传递给 `bytes_or_buffer.decode()`，其默认值是 `sys.getdefaultencoding()`，可在 [Standard Encodings](https://docs.python.org/3.7/library/codecs.html#standard-encodings) 中可查看编码方案列表。
 - *errors* 用于设置[错误处理方案](https://docs.python.org/3.7/library/codecs.html#error-handlers)，也会被传递给 `bytes_or_buffer.decode()`，其默认值是 `'strict'`。*errors* 可以是 `'ignore'`, `'replace'`, `'xmlcharrefreplace'`, `'backslashreplace'` 或任何已通过 [`codecs.register_error()`](https://docs.python.org/3.7/library/codecs.html#codecs.register_error) 注册的名称。
 
 ```python
->>> a_bytes = bytes('鲸','utf-8')
+>>> a_bytes = bytes('鲸','utf-8') # 对Unicode码点按照UTF8编码
 >>> a_bytes
 b'\xe9\xb2\xb8'
->>> str(a_bytes,'utf-8')
+>>> str(a_bytes,'utf-8') # 对bytes对象进行解码
 '鲸'
->>> str(a_bytes,'ascii')
+>>> str(a_bytes,'ascii') # 提供错误的编码方案会抛出异常
 Traceback (most recent call last):
   File "<pyshell#5>", line 1, in <module>
     str(a_bytes,'ascii')
 UnicodeDecodeError: 'ascii' codec can't decode byte 0xe9 in position 0: ordinal not in range(128)
->>> str(a_bytes,'ascii','ignore')
+>>> str(a_bytes,'ascii','ignore') # 修改错误处理方案
 ''
 ```
 
 有关缓冲区对象的详细信息，可阅读 [Binary Sequence Types — bytes, bytearray, memoryview](https://docs.python.org/3.7/library/stdtypes.html#binaryseq) 和 [Buffer Protocol](https://docs.python.org/3.7/c-api/buffer.html#bufferobjects)。
 
-Tips: 在 Python 文档中，"编码(*encoding*)"是指将 Unicode 字符串转换为字节序列的规则，也就是说"编码"包含了从"抽象字符序列"到"字节序列"的全部过程，"解码"则包含了从"字节序列"到"抽象字符序列"的全部过程。
+Tips: 在 Python 文档中，"编码(*encoding*)"是指将 Unicode 字符串转换为字节序列的规则，也就是说"编码"包含了从"抽象字符序列"到"字节序列"的全部过程；反之，"解码"则包含了从"字节序列"到"抽象字符序列"的全部过程。
 
 ## 2. 字符串支持的操作
 
-字符串实现了所有[通用序列操作](https://docs.python.org/3/library/stdtypes.html#typesseq-common)，以及下列附加方法：
+字符串实现了所有[通用序列操作](https://docs.python.org/3/library/stdtypes.html#typesseq-common)，详见笔记『序列类型支持的操作.md』
 
-Strings implement all of the [common](https://docs.python.org/3.7/library/stdtypes.html#typesseq-common) sequence operations, along with the additional methods described below.
+字符串还实现了很多附加方法，详见笔记『字符串方法.md』
 
-Strings also support two styles of string formatting, one providing a large degree of flexibility and customization (see [`str.format()`](https://docs.python.org/3.7/library/stdtypes.html#str.format), [Format String Syntax](https://docs.python.org/3.7/library/string.html#formatstrings) and [Custom String Formatting](https://docs.python.org/3.7/library/string.html#string-formatting)) and the other based on C `printf` style formatting that handles a narrower range of types and is slightly harder to use correctly, but is often faster for the cases it can handle ([printf-style String Formatting](https://docs.python.org/3.7/library/stdtypes.html#old-string-formatting)).
+字符串支持两种方式的格式化操作：
 
-The [Text Processing Services](https://docs.python.org/3.7/library/text.html#textservices) section of the standard library covers a number of other modules that provide various text related utilities (including regular expression support in the [`re`](https://docs.python.org/3.7/library/re.html#module-re) module).
+- 格式化字符串语法(*Format String Syntax*) - 具备更大灵活性和更强的定制性，详见：
+  - 『string — Common string operations.md』
+  - 『格式化操作.md』
+  -  [`str.format()`](https://docs.python.org/3.7/library/stdtypes.html#str.format)
+  - [Format String Syntax](https://docs.python.org/3.7/library/string.html#formatstrings)
+  - [Custom String Formatting](https://docs.python.org/3.7/library/string.html#string-formatting)
+- 基于 C  `printf` 风格的格式化操作，可处理的类型比上一种方式少，但是通常更快，详见：
+  - 『格式化操作.md』
+  - [printf-style String Formatting](https://docs.python.org/3.7/library/stdtypes.html#old-string-formatting)
 
+标准库中的 [Text Processing Services](https://docs.python.org/3.7/library/text.html#textservices) 部分提供了与处理文本相关的许多内置模块。比如，在  [`re`](https://docs.python.org/3.7/library/re.html#module-re) 模块中提供了与正则表达式相关的操作。
 
+## 3. 提示
 
 ### 2.1 字符串字面值的连接
 
@@ -149,7 +183,7 @@ The [Text Processing Services](https://docs.python.org/3.7/library/text.html#tex
 'orca_j35'
 ```
 
-当单个表达式中存在被空白符分隔的多个字符串字面值时，这些字符串也将被隐式连接为一个单独的字符串。在连接字面值时，对于每个组成部分可以使用不同的引用风格(甚至可以将原始字符串和三重引号字符串进行混用)，还可以将格式化字符串字面值与纯(*plain*)字符串字面值连接。
+当单个表达式中存在被空白符分隔的多个字符串字面值时，这些字符串也将被隐式连接为一个单独的字符串。在连接字面值时，对于每个组成部分可以使用不同的引用风格(甚至可以将原始字符串和三重引号字符串进行混用)，还可以将格式化字符串字面值与纯(*plain*)字符串字面值连接。但是，这种连接方法只适用于字符串字面值，不能包含变量或表达式——包含变量或表达式时，必须使用连接操作符(`+`)。
 
 ```python
 >>> sn='j35'
@@ -158,11 +192,47 @@ The [Text Processing Services](https://docs.python.org/3.7/library/text.html#tex
 	  f'{sn}'
 	  r'\n')
 orca_j35\n
+>>> 'orca' sn # 不能隐式连接字面值和变量
+SyntaxError: invalid syntax
+>>> ('orca'*3) 'j35' # 不能隐式连接字面值和表达式
+SyntaxError: invalid syntax
 ```
 
 注意，上述特性是在语法层次上定义的，但在编译时实现。在运行时必须使用 '+' 运算符连接字符串表达式。
 
+在 Python 中没有可变字符串类型，当需要将多个字符串片段连接为一个字符串时，可使用 [`str.join()`](https://docs.python.org/3.7/library/stdtypes.html#str.join)( 或 [`io.StringIO`](https://docs.python.org/3.7/library/io.html#io.StringIO)) 。与连接操作符 `+` 的区别是，这两个方法的时间复杂度为线性。
 
+### 2.2 反转字符串
+
+将切片的第三参数为 `-1`，便可反转字符串
+
+```python
+>>> word = 'Python'
+>>> word[::-1]
+'nohtyP'
+```
+
+### 2.3 比较字符串
+
+当我们利用"值比较运算符"来比较不同的字符串时，会依次比较两个字符串中的各个字符，并将字符的 Unicode 码点作为判定依据。
+
+```python
+>>> ord('鲸')
+40120
+>>> ord('熊')
+29066
+>>> '鲸' > '熊'
+True
+```
+
+注意，字符串的长度与比较结果无关。
+
+```python
+>>> 'abcd' < 'abd'
+True
+```
+
+## 4. 参考
 
 
 
@@ -203,226 +273,7 @@ See [String and Bytes literals](https://docs.python.org/3/reference/lexical_anal
 
 ## 1. 操作字符串
 
-字符串作为一种不可变[序列](https://docs.python.org/3.7/glossary.html#term-sequence)，它支持各种[通用序列操作](https://docs.python.org/3/library/stdtypes.html#common-sequence-operations)：
 
-| Operation              | Result                                                       |
-| ---------------------- | ------------------------------------------------------------ |
-| `x in s`               | `True` if an item of *s* is equal to *x*, else `False`       |
-| `x not in s`           | `False` if an item of *s* is equal to *x*, else `True`       |
-| `s + t`                | the concatenation of *s* and *t*                             |
-| `s * n` or `n * s`     | equivalent to adding *s* to itself *n* times                 |
-| `s[i]`                 | *i* th item of *s*, origin 0                                 |
-| `s[i:j]`               | slice of *s* from *i* to *j*                                 |
-| `s[i:j:k]`             | slice of *s* from *i* to *j* with step *k*                   |
-| `len(s)`               | length of *s*                                                |
-| `min(s)`               | smallest item of *s*                                         |
-| `max(s)`               | largest item of *s*                                          |
-| `s.index(x[, i[, j]])` | index of the first occurrence of *x* in *s* (at or after index *i* and before index *j*) |
-| `s.count(x)`           | total number of occurrences of *x* in *s*                    |
-
-更多细节请阅读笔记 "序列类型(list,tuple,range).md" 和 "[Common Sequence Operations](https://docs.python.org/3/library/stdtypes.html#common-sequence-operations)" 
-
-### s[ i ]
-
-`i` 被称为索引(*index*)，表示相对于序列中第一个元素的偏移量(*offset*)。因此，序列中的第一个元素的索引为 0，且索引只能是整数。索引可以是一个**负整数**，负索引表示相对于序列中最后一个元素的偏移量。序列对象会将负索引与序列长度相加，从而得到一个正索引。因此，负索引的绝对值不能大于序列的长度。
-
-```
- +---+---+---+---+---+---+
- | P | y | t | h | o | n |
- +---+---+---+---+---+---+
-   0   1   2   3   4   5
-  -6  -5  -4  -3  -2  -1
-```
-
-示例：
-
-```python
->>> word = 'Python'
->>> word[0]
-'P'
->>> word[5]
-'n'
-```
-
-在 `s[i]` 中使用超过序列的长度的索引，便会抛出 IndexError 异常。
-
-### s[ i : j ]
-
-从序列中获取位于两个索引( `i` 和 `j`)间的子序列，子序列中包含索引为 `i` 的元素，但不包含索引为 `j` 的元素。
-
-```
- +---+---+---+---+---+---+
- | P | y | t | h | o | n |
- +---+---+---+---+---+---+
-   0   1   2   3   4   5
-  -6  -5  -4  -3  -2  -1
-```
-
-示例：
-
-```python
->>> word = 'Python'
->>> word[2:5]
-'tho'
->>> word[:2] + word[2:]
-'Python'
-```
-
-如果 `i` 被省略，则将其视为 0，即 `s[:j] = s[0:j]` ；如果 `j` 被省略，则将其视为序列的长度，即 `s[:] = s[0:len(s)]` 。
-
-在 `s[i:j]` 中，若 `i` 或 `j` 超出了序列长度，则会被自动替换为序列长度：
-
-```python
->>> word[len(word)+1:]
-''
->>> word[:len(word)+1]
-'Python'
-```
-
-在 `s[i:j]` 中，若 `i` 的值大于等于 `j` ，则会返回空字符串：
-
-```python
->>> word[2:2]
-''
->>> word[3:2]
-''
-```
-
-### 反转字符串
-
-通过在切片中添加第三参数，可对切片进行反转
-
-```python
->>> word = 'Python'
->>> word[::-1]
-'nohtyP'
-```
-
-### 比较字符串对象
-
-当我们利用"值比较运算符"来比较不同的字符串时，会依次比较两个字符串中的各个字符，并将字符的 Unicode 码点作为判定依据。
-
-```python
->>> ord('鲸')
-40120
->>> ord('熊')
-29066
->>> '鲸' > '熊'
-True
-```
-
-注意，字符串的长度与比较结果无关。
-
-```python
->>> 'abcd' < 'abd'
-True
-```
-
-
-
-
-
-----
-
-### 引号
-
-#### 单引号/双引号
-
-单引号和双引号完全相同，没有任何区别。
-引号内所有的 space (spaces and tabs) 都照原样保留。 
-
-如果`'`本身也是一个字符，那就可以用`""`括起来，如`"I'm OK"`
-
-#### 三重引号 Triple Quotes
-
-三重引号用于指定多行字符串 - (`"""` or `'''`)。
-可在三重引号中自由使用单引号和双引号。例如：
-
-```
-'''This is a multi-line string. This is the first line.
-This is the second line.
-"What's your name?," I asked.
-He said "Bond, James Bond."
-'''
-```
-
-也可在多行字符串 `'''...'''` 前面加上 `r` 使用。
-
-##### 行尾换行符
-
-行尾换行符会被自动包含到字符串中，但是可以在行尾加上 `\` 来避免这个行为。下面的示例： 
-
-```
-print("""\
-Usage: thingy [OPTIONS]
-     -h                        Display this usage message
-     -H hostname               Hostname to connect to
-""")
-```
-
-输出如下（注意，不包括初始换行符）：
-
-```
-Usage: thingy [OPTIONS]
-     -h                        Display this usage message
-     -H hostname               Hostname to connect to
-```
-
-### 转义序列
-
-Escape Sequences
-
-`\` 字符用于将非图形化的字符(如 换行符 `\n`, 制表符 `\t` 或 反斜杠 `\` )进行转义。
-
-```
->>> print('I\'m learning\nPython.')
-I'm learning
-Python.
->>> print('\\\n\\')
-\
-\
-```
-
-如果字符串内部既包含`'`又包含`"`，可以用转义字符 `\` 来标识，比如：(注意有无 `print()` 语句的区别。)
-
-```
->>> 'I\'m \"OK\"!'
-'I\'m "OK"!'
->>> print('I\'m \"OK\"!')
-I'm "OK"!
-```
-
-在行末的一个反斜杠 `\` 表示该字符串在下一行继续，此处不会添加换行符。
-例如：
-
-```
-"This is the first sentence. \
-This is the second sentence."
-```
-
-等效于：
-
-```
-"This is the first sentence. This is the second sentence."
-```
-
-### 原始字符串
-
-Raw String
-
-如果字符串里面有很多字符都需要转义，便会加入很多`\` 。
-此时，为了简化操作，Python 允许使用 `r'...'` 表示 `'...'` 内部的字符串默认不转义：
-
-```
->>> print('\\\t\\')
-\       \
->>> print(r'\\\t\\')
-\\\t\\
-```
-
-**注意：正则表达式用户**
-
-当处理正则表达式时通常会使用原始字符串。否则会需要使用很多的反斜杠。例如，反向引用符可以写成 `'\\1'` or `r'\1'`.
 
 ### 将值转化为字符串
 
@@ -737,46 +588,7 @@ Brazil_*_Russia_*_India_*_China
 - `find` 方法用于定位给定字符串在原字符串中的位子，如果没有找到子字符串 `find` 返回 -1。
 - `str` 类拥有一个优雅的`join`方法，该方法将一个字符串序列项作为另序列中各个项目之间的分隔符，从该字符串中生成并返回一个更大的字符串。
 
-### 字符串运算符
+### 
 
-1. `+`  表示连接两个字符串； `*` 表示重复某字符串。
-   可用于操作变量。
 
-```
->>> # 3 times 'un', followed by 'ium'
->>> 3 * 'un' + 'ium'
-'unununium'
->>> prefix + 'thon'
-'Python'
-```
-
-1. 彼此相邻的字符串字面量，会自动连接在一起：
-
-   注意：该方法只适用于字面量，不能包含表达式和变量。
-
-```
->>> 'Py''thon'
-'Python'
-
->>> prefix = 'Py'
->>> prefix 'thon'  # can't concatenate a variable and a string literal
-  ...
-SyntaxError: invalid syntax
->>> ('un' * 3) 'ium'
-  ...
-SyntaxError: invalid syntax
-```
-
-```
-当想要断开很长的字符串时，此功能特别有用：
-```
-
-```
->>> text = ('Put several strings within parentheses '
-...         'to have them joined together.')
->>> text
-'Put several strings within parentheses to have them joined together.'
-```
-
-1. 
 
