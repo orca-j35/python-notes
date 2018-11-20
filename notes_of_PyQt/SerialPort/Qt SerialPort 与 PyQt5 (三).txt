@@ -1,0 +1,87 @@
+Qt SerialPort 与 PyQt5 (三)
+	4.QIODevice 类
+		4.1 简介
+		4.2 创建对象
+			QIODevice() 
+			QIODevice([QObject] parent)
+			~QIODevice() [virtual] 
+		4.3 打开模式
+			void setOpenMode([OpenMode] openMode) [protected]
+			OpenMode openMode() const
+			bool isTextModeEnabled() const
+			void setTextModeEnabled(bool enabled)
+		4.4 打开设备
+			bool open([OpenMode] mode) [virtual]
+			bool isOpen() const
+		4.5 关闭设备
+			公共函数
+				void close() [virtual]
+			信号
+				void aboutToClose() [signal] 
+		4.6 读取数据
+			读取字符串
+				[qint64] read(char data, [qint64] maxSize)
+				[QByteArray] read([qint64] maxSize)
+				[qint64] readData(char data, [qint64] maxSize) [pure virtual protected] 
+				[qint64] readLine(char data, [qint64] maxSize)
+				[QByteArray] readLine([qint64] maxSize = 0)
+				[qint64] readLineData(char data, [qint64] maxSize) [virtual protected]
+				[QByteArray] readAll()
+			读取字符
+				bool getChar(char c)
+				void ungetChar(char c)
+			信号
+				void readyRead() [signal]
+			其它函数
+				bool waitForReadyRead(int msecs) [virtual]
+				[qint64] bytesAvailable() const [virtual]
+				bool isReadable() const
+				bool canReadLine() const [virtual] 
+		4.7 写入数据
+			写入字符串
+				[qint64] write(const char data, [qint64] maxSize)
+				[qint64] write(const char data)
+				[qint64] write(const [QByteArray] &byteArray)
+				[qint64] writeData(const char data, [qint64] maxSize) [pure virtual protected]
+			写入字符
+				bool putChar(char c)
+			信号
+				void bytesWritten([qint64] bytes) [signal]
+			其它函数
+				bool waitForBytesWritten(int msecs) [virtual] 
+				[qint64] bytesToWrite() const [virtual]
+				bool isWritable() const
+		4.8 查看数据
+			[qint64] peek(char data, [qint64] maxSize)
+			[QByteArray] peek([qint64] maxSize)
+		4.9 跳过数据
+			[qint64] skip([qint64] maxSize)
+		4.10 读写位置
+			bool seek([qint64] pos) [virtual]
+			[qint64] pos() const [virtual]
+			bool reset() [virtual]
+			bool atEnd() const [virtual]
+		4.11 信道
+			公共函数
+				int currentReadChannel() const
+				int readChannelCount() const
+				void setCurrentReadChannel(int channel)
+				int currentWriteChannel() const
+				int writeChannelCount() const
+				void setCurrentWriteChannel(int channel)
+			信号
+				void channelReadyRead(int channel) [signal]
+				void readChannelFinished() [signal]
+				void channelBytesWritten(int channel, [qint64] bytes) [signal]
+		4.12 设备类型查询
+			bool isSequential() const [virtual]
+		4.13 设备大小查询
+			[qint64] size() const [virtual]
+		4.14 事务处理
+			void startTransaction()
+			bool isTransactionStarted() const
+			void rollbackTransaction()
+			void commitTransaction()
+		4.15 错误字符串
+			[QString] errorString() const
+			void setErrorString(const [QString] &str) [protected]

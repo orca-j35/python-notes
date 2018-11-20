@@ -390,6 +390,8 @@ Return a string version of object. If object is not provided, returns the empty 
 
 #### \_\_str_\_
 
+https://docs.python.org/3.7/reference/datamodel.html#object.__str__
+
 [`type(object).__str__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__str__)
 
 > `object.` `__str__`(*self*)  

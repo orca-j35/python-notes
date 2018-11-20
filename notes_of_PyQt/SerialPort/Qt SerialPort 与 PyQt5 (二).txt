@@ -1,0 +1,96 @@
+Qt SerialPort 与 PyQt5 (二)
+	3.QSerialPort 类
+		3.1 简介
+		3.2 阻塞和非阻塞编程
+			非阻塞方式
+			阻塞方式
+		3.3 基本操作
+			创建对象
+				QSerialPort([QObject] parent = nullptr)
+				QSerialPort(const [QString] &name, [QObject] parent = nullptr)
+				QSerialPort(const [QSerialPortInfo] &serialPortInfo, [QObject] parent = nullptr)
+				~QSerialPort() [virtual]
+			打开
+				bool open([OpenMode] mode) [virtual]
+			读取
+				waitForReadyRead
+					bool waitForReadyRead(int msecs = 30000)
+				readData
+					[qint64] readData(char data, [qint64] maxSize) [virtual protected]
+				readLineData
+					[qint64] readLineData(char data, [qint64] maxSize) [virtual protected]
+			写入
+				waitForBytesWritten
+					bool waitForBytesWritten(int msecs = 30000) [virtual protected]
+				writeData
+					[qint64] writeData(const char data, [qint64] maxSize)
+			清理
+				bool clear([Directions] directions = AllDirections)
+			关闭
+				void close() [virtual]
+			冲洗缓冲区
+				bool flush()
+			引线状态
+				DTR引线
+					bool isDataTerminalReady()
+					bool setDataTerminalReady(bool set)
+					void dataTerminalReadyChanged(bool set)
+				RTS引线
+					bool isRequestToSend()
+					bool setRequestToSend(bool set)
+					void requestToSendChanged(bool set)
+				传输线中断状态
+					bool isBreakEnabled() const
+					bool setBreakEnabled(bool set = true)
+					void breakEnabledChanged(bool set)
+			句柄
+				handle() const
+			发送中断
+				bool sendBreak(int duration = 0)
+		3.4 设置项
+			端口名
+				[QString] portName() const
+				void setPortName(const [QString] &name)
+			设置serialPortInfo
+				void setPort(const [QSerialPortInfo] &serialPortInfo)
+			波特率
+				[qint32]  baudRate(Directions directions = AllDirections) const
+				bool setBaudRate(qint32 baudRate, Directions directions = AllDirections)
+				void baudRateChanged(qint32 baudRate, Directions directions)
+				数据传输方向
+			数据位
+				DataBits dataBits() const
+				bool setDataBits(DataBits dataBits)
+				void dataBitsChanged(DataBits dataBits)
+			流控制
+				FlowControl flowControl() const
+				bool setFlowControl(FlowControl flowControl)
+				void flowControlChanged(FlowControl flow)
+			校验位
+				Parity parity() const
+				bool setParity(Parity parity)
+				void parityChanged(Parity parity)
+			停止位
+				StopBits stopBits() const
+				bool setStopBits(StopBits stopBits)
+				void stopBitsChanged(StopBits stopBits)
+			readBuffer尺寸
+				[qint64] readBufferSize() const
+				void setReadBufferSize([qint64] size)
+		3.5 信息查询
+			atEnd
+				[virtual] bool atEnd() const
+			bytesAvailable
+				[qint64] bytesAvailable() const [virtual]
+			bytesToWrite
+				[qint64] bytesToWrite() const [virtual]
+			canReadLine
+				bool canReadLine() const [virtual]
+			isSequential
+				bool isSequential() const [virtual]
+			引线状态
+				[PinoutSignals]  pinoutSignals()
+			错误信息
+				SerialPortError error() const
+				void clearError()
+				void errorOccurred([SerialPortError] error)
