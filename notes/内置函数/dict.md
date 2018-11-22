@@ -15,13 +15,13 @@ class dict(object)
 
 构造器 `dict()` 用于创建字典对象。如果想要了解其它容器类型，可以参考内置类型 ([list](https://docs.python.org/3.7/library/stdtypes.html#list)、[set](https://docs.python.org/3.7/library/stdtypes.html#set)、[tuple](https://docs.python.org/3.7/library/stdtypes.html#tuple)) 以及 [collections](https://docs.python.org/3.7/library/collections.html#module-collections) 模块。
 
-🔨 class dict()
+🔨 *class* dict()
 
 ```
  dict() -> new empty dictionary
 ```
 
-🔨 class dict(\*\**kwarg*)
+🔨 *class* dict(\*\**kwarg*)
 
 ```
 dict(**kwargs) -> new dictionary initialized with the name=value pairs in the keyword argument list.  
@@ -41,7 +41,7 @@ For example:  dict(one=1, two=2)
 
 注意，关键字实参的名称必须是有效标识符。
 
-🔨 class dict(*mapping*, \*\**kwarg*)
+🔨 *class* dict(*mapping*, \*\**kwarg*)
 
 ```
 dict(mapping) -> new dictionary initialized from a mapping object's (key, value) pairs

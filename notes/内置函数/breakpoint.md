@@ -48,7 +48,7 @@ __breakpointhook__ = breakpointhook
 
 ### 2.1 breakpoint()
 
-breakpoint(\**args*, \*\**kws*)
+🔨 breakpoint(\**args*, \*\**kws*)
 
 伪代码：
 
@@ -73,7 +73,7 @@ def breakpoint(*args, **kws):
 
 ### 2.2 breakpointhook()
 
-sys.breakpointhook(\**args*, \*\**kws*)
+🔨 sys.breakpointhook(\**args*, \*\**kws*)
 
 伪代码：
 

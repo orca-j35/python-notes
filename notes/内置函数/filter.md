@@ -22,7 +22,7 @@ def filter(function, iterable):
 filter 函数会返回一个迭代器——该迭代器其实是一个支持迭代器协议的 filter 对象。
 *iterable* 参数可以是序列(sequence)，或是支持迭代的容器(container)，还可以是迭代器。
 
-🔨filter(*None*, *iterable*)
+🔨 filter(*None*, *iterable*)
 
 如果在调用 filter 函数时，***function* 的值是 None**，便会将 *iterable* 中布尔值为真的元素依次用作迭代器的生成项。下面这个生成器表达式与 `filter(None, iterable)` 等价：
 
@@ -37,7 +37,7 @@ filter 函数会返回一个迭代器——该迭代器其实是一个支持迭�
 ['I']
 ```
 
-🔨filter(*function*, *iterable*)
+🔨 filter(*function*, *iterable*)
 
 如果在调用 filter 函数时，***function* 的值是一个可调用对象**，迭代器会将 *iterable* 中的各个元素依次传递给 *function*，并将返回值为真的元素依次用作迭代器的生成项。下面这个生成器表达式与 `filter(function, iterable)` 等价：
 
@@ -96,7 +96,7 @@ def filterfalse(predicate, iterable):
 
 [filterfalse](https://docs.python.org/3.7/library/itertools.html#itertools.filterfalse) 函数会返回一个迭代器，它的功能与 filter 函数正好相反。
 
-🔨itertools.filterfalse(*None*, *iterable*) 
+🔨 itertools.filterfalse(*None*, *iterable*) 
 
 如果在调用 filterfalse 函数时，*predicate* 的值是 *None*，便会将 *iterable* 中布尔值为**假**的元素依次用作迭代器的生成项。
 
@@ -106,7 +106,7 @@ def filterfalse(predicate, iterable):
 ['', False, {}]
 ```
 
-🔨itertools.filterfalse(*predicate*, *iterable*) 
+🔨 itertools.filterfalse(*predicate*, *iterable*) 
 
 如果在调用 filterfalse 函数时，***predicate* 的值是一个可调用对象**，迭代器会将 *iterable* 中的各个元素依次传递给 *predicate*，并将返回值为**假**的元素依次用作迭代器的生成项。
 

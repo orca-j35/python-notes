@@ -4,7 +4,7 @@
 
 🔨 *class* str(*obj=''*)
 
-使用单参数形式时，该方法会返回 *obj* 的非正式(*informal*)字符串表示形式——易于人类阅读的表示形式。单参数形式的使用方法如下：
+使用单参数形式时，该方法会返回 *obj* 的非正式(*informal*)字符串表示形式，即易于人类阅读的表示形式。单参数形式的使用方法如下：
 
 ```
 str(object='') -> str
@@ -57,6 +57,16 @@ Cls 类的实例对象
 
 如果仅考虑类和实例，这好像并没有什么意义，因为不会有人在实例字典中重新绑定 `__str__` 方法。但是，如果考虑到元类和类，这就很有意义了。类是元类的实例，当 *obj* 是一个类时，实际上需要调用元类中的 `__str__` 方法，此时我们便需要跳过类字典中 `__str__` 方法，使用元类中的同名方法。
 
+### _\_str\_\_
+
+🔨 object.\_\_str\_\_(*self*)
+
+该方法会返回对象的非正式(*informal*)的字符串表示形式(易于人类阅读的表示形式)，其返回值必须是一个字符串对象。 [`str(object)`](https://docs.python.org/3.7/library/stdtypes.html#str) 、 [`format()`](https://docs.python.org/3.7/library/functions.html#format)、[`print()`](https://docs.python.org/3.7/library/functions.html#print) 会在内部调用该方法。 
+
+ `__str__()` 和 [`__repr__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__repr__) 的区别在于，不要期望 `__str__()` 返回的字符串是一个有效的 Python 表达式。`__str__()` 会采用更恰当(或简洁)的方式来描述目标对象。
+
+`__str__` 方法的默认实现是通过内置类型 [`object`](https://docs.python.org/3.7/library/functions.html#object) 调用 [`object.__repr__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__repr__)。
+
 ## str(*obj*, *encoding*, *errors*)
 
 🔨 *class* str(*obj=b''*, *encoding='utf-8'*, *errors='strict'*)
@@ -98,13 +108,3 @@ UnicodeDecodeError: 'ascii' codec can't decode byte 0xe9 in position 0: ordinal 
 有关缓冲区对象的详细信息，可阅读 [Binary Sequence Types — bytes, bytearray, memoryview](https://docs.python.org/3.7/library/stdtypes.html#binaryseq) 和 [Buffer Protocol](https://docs.python.org/3.7/c-api/buffer.html#bufferobjects)。
 
 Tips: 在 Python 文档中，"编码(*encoding*)"是指将 Unicode 字符串转换为字节序列的规则，也就是说"编码"包含了从"抽象字符序列"到"字节序列"的全部过程；反之，"解码"则包含了从"字节序列"到"抽象字符序列"的全部过程。
-
-## _\_str\_\_
-
-🔨 object.\_\_str\_\_(*self*)
-
-该方法会返回对象的非正式(*informal*)的字符串表示形式(易于人类阅读的表示形式)，其返回值必须是一个字符串对象。 [`str(object)`](https://docs.python.org/3.7/library/stdtypes.html#str) 、 [`format()`](https://docs.python.org/3.7/library/functions.html#format)、[`print()`](https://docs.python.org/3.7/library/functions.html#print) 会在内部调用该方法。 
-
- `__str__()` 和 [`__repr__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__repr__) 的区别在于，不要期望 `__str__()` 返回的字符串是一个有效的 Python 表达式。`__str__()` 会采用更恰当(或简洁)的方式来描述目标对象。
-
-`__str__` 方法的默认实现是通过内置类型 [`object`](https://docs.python.org/3.7/library/functions.html#object) 调用 [`object.__repr__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__repr__)。

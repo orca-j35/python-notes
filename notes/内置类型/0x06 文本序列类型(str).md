@@ -61,7 +61,7 @@ This is the second sentence."
 
 ### 1.1 str()
 
-详见笔记 『str.md』，还可以阅读笔记『repr.md』
+详见笔记 『str.md』，还可阅读笔记『repr.md』
 
 ## 2. 字符串支持的操作
 

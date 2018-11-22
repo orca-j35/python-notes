@@ -1,6 +1,8 @@
 # dir
 
-## 🔨 dir()
+## dir()
+
+🔨 dir()
 
 如果实参为空，则会返回一个由当前本地作用域中的变量名组成的**已排序列表**，列表中的项与 `locals().keys()` 或 `vars().keys()` 中的项相同。
 
@@ -24,7 +26,9 @@ func()
 """
 ```
 
-## 🔨 dir(*object*)
+## dir(*object*)
+
+🔨 dir(*object*)
 
 如果将某个对象用作实参，则会尝试返回一个由 *object* 的有效属性组成的列表，并且该列表会按照字母表的顺序排序。根据 *object* 是否拥有 `__dir__()` 方法，可分为两种清理：
 
@@ -99,7 +103,7 @@ print(dir(Base)) # 注意，输出结果中不包含元类中属性
 """
 ```
 
-## 实现细节
+### 实现细节
 
 `dir(obj)` 会在内部调用 `type(obj).__dir__(obj)`，从而使用类字典中的 `__dir__()` 方法来获取属性列表。也就是说在获取属性列表时，会跳过实例字典：
 
@@ -116,7 +120,7 @@ s.__dir__ = MethodType(__dir__, s)
 print(dir(s))
 ```
 
-## \_\_dir\_\_
+### \_\_dir\_\_
 
 > Called when [`dir()`](https://docs.python.org/3.7/library/functions.html#dir) is called on the object. A sequence must be returned. [`dir()`](https://docs.python.org/3.7/library/functions.html#dir) converts the returned sequence to a list and sorts it.
 
@@ -144,7 +148,7 @@ objB = ClassB()
 objB.grade = 123
 ```
 
-## 缺少 \_\_dict\_\_ 的情况
+### 缺少 \_\_dict\_\_ 的情况
 
 > object.\_\_dict\_\_
 > A dictionary or other mapping object used to store an object’s (writable) attributes.

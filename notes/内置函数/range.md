@@ -13,9 +13,9 @@ class range(object)
  |  When step is given, it specifies the increment (or decrement).
 ```
 
-🔨 *class* `range`(*stop*)
+🔨 *class* range(*stop*)
 
-🔨 *class* `range`(*start*, *stop*[, *step*])
+🔨 *class* range(*start*, *stop*[, *step*])
 
 在调用 range 类的构造函数时，必须使用整数作为实参。细节上而言，实参可以是 `int` 对象，或是实现任何了 `__index__` 方法的对象。
 

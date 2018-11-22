@@ -8,7 +8,9 @@ vars(...)
     With an argument, equivalent to object.__dict__.
 ```
 
-## 🔨 vars(*object*)
+## vars(*object*)
+
+🔨 vars(*object*)
 
 该函数会返回 *object* 的 [`__dict__`](https://docs.python.org/3.7/library/stdtypes.html#object.__dict__) 字段属性。*object* 必须是包含 `__dict__` 属性的对象(比如：模块、类、实例等等)，否则会抛出 `TypeError` 异常。
 
@@ -103,53 +105,7 @@ TypeError: 'mappingproxy' object does not support item assignment
 """
 ```
 
-## 🔨 vars()
-
-当实参为空时，可能出现以下两种情况：
-
-- 如果位于全局作用域中，则 `vars()`、`locals()` 和 `globals()` 三者等效。在全局字典中所做的修改会影响解释器所使用的全局变量，反之亦然：
-
-  ```python
-  >>> vars() is locals() is globals()
-  True
-  >>> globals()['update'] = "orca_j35"
-  >>> update
-  'orca_j35'
-  >>> del update
-  >>> globals().get('update','not to exist')
-  'not to exist'
-  ```
-
-- 如果位于本地作用域中，则 `vars()` 和 `locals()` 等效：
-
-  ```python
-  >>> def func():
-  	print(vars() is locals())
-  
-  	
-  >>> func()
-  True
-  ```
-
-  tiap：不要手动修改本地字典中的内容。因为就算对本地字典做出了修改，也并不会影响解释器所使用的本地变量和自由变量的值，在本地字典所做的修改均会被忽略。 
-
-  ```python
-  def vars_():
-      a_field = 'orca'
-      pprint(vars())
-      vars()['a_field'] = "j35"
-      pprint(vars())
-      pprint(a_field)
-      
-  vars_()
-  """Out:
-  {'a_field': 'orca'}
-  {'a_field': 'orca'}
-  'orca'
-  """
-  ```
-
-## \_\_dict\_\_
+### \_\_dict\_\_
 
 > object.\_\_dict\_\_
 > A dictionary or other mapping object used to store an object’s (writable) attributes.
@@ -181,9 +137,7 @@ Traceback (most recent call last):
 TypeError: vars() argument must have __dict__ attribute
 ```
 
-
-
-## MappingProxyType
+### MappingProxyType
 
 🔨 class types.[MappingProxyType](https://docs.python.org/3.7/library/types.html#types.MappingProxyType)(*mapping*)
 
@@ -251,7 +205,50 @@ Traceback (most recent call last):
 TypeError: 'mappingproxy' object does not support item assignment
 ```
 
+## vars()
 
+🔨 vars()
 
+如果实参为空，则可能出现以下两种情况：
 
+- 如果位于全局作用域中，则 `vars()`、`locals()` 和 `globals()` 三者等效。在全局字典中所做的修改会影响解释器所使用的全局变量，反之亦然：
 
+  ```python
+  >>> vars() is locals() is globals()
+  True
+  >>> globals()['update'] = "orca_j35"
+  >>> update
+  'orca_j35'
+  >>> del update
+  >>> globals().get('update','not to exist')
+  'not to exist'
+  ```
+
+- 如果位于本地作用域中，则 `vars()` 和 `locals()` 等效：
+
+  ```python
+  >>> def func():
+  	print(vars() is locals())
+  
+  	
+  >>> func()
+  True
+  ```
+
+  tiap：不要手动修改本地字典中的内容。因为就算对本地字典做出了修改，也并不会影响解释器所使用的本地变量和自由变量的值，在本地字典所做的修改均会被忽略。 
+
+  ```python
+  def vars_():
+      a_field = 'orca'
+      pprint(vars())
+      vars()['a_field'] = "j35"
+      pprint(vars())
+      pprint(a_field)
+      
+  vars_()
+  """Out:
+  {'a_field': 'orca'}
+  {'a_field': 'orca'}
+  'orca'
+  """
+  ```
