@@ -26,6 +26,13 @@ func()
 """
 ```
 
+`dir()` does not list the names of built-in functions and variables. If you want a list of those, they are defined in the standard module [`builtins`](https://docs.python.org/3/library/builtins.html#module-builtins):
+
+```
+import builtins
+dir(builtins)  
+```
+
 ## dir(*object*)
 
 🔨 dir(*object*)
