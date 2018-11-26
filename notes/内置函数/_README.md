@@ -4,5 +4,5 @@
 - [Python Reference (The Right Way) - Built-In Functions](https://python-reference.readthedocs.io/en/latest/docs/functions/index.html#built-in-functions)
 - https://www.runoob.com/python/python-built-in-functions.html
 
-除了官方文档，我主要参考了以上内容
+除了官方文档，我曾参考过以上内容
 

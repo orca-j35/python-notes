@@ -12,8 +12,10 @@
 '0b11'
 >>> bin(-10)
 '-0b1010'
-
+>>> eval(bin(-10))
+-10
 # 如果不是整数则会抛出异常
+# 浮点数实现了__int__，没有实现__index__
 >>> bin(1.1)
 Traceback (most recent call last):
   File "<pyshell#0>", line 1, in <module>
@@ -30,7 +32,7 @@ TypeError: 'float' object cannot be interpreted as an integer
 ('0b1110', '1110')
 ```
 
-如果 *x* 不是 [`int`](https://docs.python.org/3/library/functions.html#int) 对象，则 *x* 必须包含 [`__index__()`](https://docs.python.org/3/reference/datamodel.html#object.__index__) 方法，且必须返回一个整数；否则均会抛出异常。
+如果 *x* 不是 [`int`](https://docs.python.org/3/library/functions.html#int) 对象，则 *x* 必须定义 [`__index__()`](https://docs.python.org/3/reference/datamodel.html#object.__index__) 方法，且必须返回一个整数；否则均会抛出异常。
 
 ```python
 >>> class Cls:
