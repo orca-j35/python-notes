@@ -64,3 +64,7 @@ Changed in version 3.3: Added the *flush* keyword argument.
 - *flush* - whether to forcibly flush the stream —— 立即把内容输出到流文件，不做缓存。
 
   Whether output is buffered is usually determined by *file*, but if the *flush* keyword argument is true, the stream is forcibly flushed.
+
+  ```
+  
+  ```
