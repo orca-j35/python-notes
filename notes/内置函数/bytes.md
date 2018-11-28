@@ -32,7 +32,7 @@
   b'\x01\x02\x03\x04\x05'
   ```
 
-- *source* 是一个 bytes 对象，将通过缓冲器协议(buffer protocol)复制其中的二进制数据
+- *source* 是一个 **bytes 对象**，将通过缓冲器协议(buffer protocol)复制其中的二进制数据
 
   ```python
   # bytes(bytes) -> mutable copy of bytes
@@ -40,13 +40,13 @@
   b'Hi!'
   ```
 
-- *source* 是一个实现了缓冲区(buffer) API 的对象时，则会使用 *source* 的只读缓冲区来初始化 bytes 对象。
+- *source* 是一个**实现了缓冲区(buffer)** API 的对象时，则会使用 *source* 的只读缓冲区来初始化 bytes 对象。
 
   ```python
   # bytes(buffer) -> mutable copy of buffer
   ```
 
-- *source* 是一个字符串时，必须给定 *encoding* 参数。此时，构造函数 `bytes()`  会通过 [`str.encode()`](https://docs.python.org/3.7/library/stdtypes.html#str.encode) 方法将 *source* 编码(*encoding*)为字节序列。
+- *source* 是一个**字符串**时，必须给定 *encoding* 参数。此时，构造函数 `bytes()`  会通过 [`str.encode()`](https://docs.python.org/3.7/library/stdtypes.html#str.encode) 方法将 *source* 编码(*encoding*)为字节序列。
 
   - *encoding* 参数用于设置编码方案，会被传递给 `str.encode()`。在 [Standard Encodings](https://docs.python.org/3.7/library/codecs.html#standard-encodings) 中可查看编码方案列表。
   - *errors* 参数用于设置[错误处理方案](https://docs.python.org/3.7/library/codecs.html#error-handlers)，也会被传递给 `str.encode()`。如果 *errors* 为空，`str.encode()` 会使用默认方案 `'strict'`——该方案在出现编码错误时会抛出 [`UnicodeError`](https://docs.python.org/3.7/library/exceptions.html#UnicodeError)。*errors* 可以是 `'ignore'`, `'replace'`, `'xmlcharrefreplace'`, `'backslashreplace'` 或任何已通过 [`codecs.register_error()`](https://docs.python.org/3.7/library/codecs.html#codecs.register_error) 注册的名称。

@@ -58,13 +58,27 @@ Changed in version 3.3: Added the *flush* keyword argument.
   print(i, j, range(5), file=x)
   print(x.values)
   # Out: ['[1, 2, 3]', ' ', "['a', 'b', 'c']", ' ', 'range(0, 5)', '\n']
-  # 注意观察上面这个输出序列的结构
+  # 注意观察输出序列的结构
   ```
 
 - *flush* - whether to forcibly flush the stream —— 立即把内容输出到流文件，不做缓存。
 
   Whether output is buffered is usually determined by *file*, but if the *flush* keyword argument is true, the stream is forcibly flushed.
 
-  ```
+  ```python
+  >>> f_object = open('test.txt','w',encoding='utf8')
+  # 此时test.txt中没有何内容
+  >>> print('1', end=',', file=f_object)
+  >>> print('2',file=f_object)
+  # 此时test.txt中仍然没有何内容，会先将输出至文件对象的数据进行缓存，
+  # 待文件对象关闭时，才会将缓存的数据写入文件对象
+  >>> f_object.close()
+  # 此时test.txt中出现: '1,2'
   
+  >>> f_object = open('test.txt','w',encoding='utf8')
+  >>> # 此时test.txt中没有何内容
+  >>> print('1',file=f_object,flush=True)
+  # 此时test.txt中出现: '1'
+  # flush=True时不会缓存数据，会立即把内容输出到流文件,不用等文件对象关闭后再写入
+  >>> f_object.close()
   ```
