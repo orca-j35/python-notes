@@ -2,158 +2,34 @@
 
 🔨 open(*file*, *mode='r'*, *buffering=-1*, *encoding=None*, *errors=None*, *newline=None*, *closefd=True*, *opener=None*)
 
-该函数用于打开 *file* 并返回相应的 I/O 对象「也称文件对象([*file object*](https://docs.python.org/3.7/glossary.html#term-file-object))」，如果打开失败则会抛出 [`OSError`](https://docs.python.org/3.7/library/exceptions.html#OSError)。
+该函数用于打开 *file* 并返回相应的 I/O 对象「也称文件对象([*file object*](https://docs.python.org/3.7/glossary.html#term-file-object))，详见 "I/O 对象" 小节」，如果打开失败则会抛出 [`OSError`](https://docs.python.org/3.7/library/exceptions.html#OSError)。
 
 [`io.open()`](https://docs.python.org/3.7/library/io.html#io.open) 其实是 `open()` 函数的别名，而 [`os.open`](https://docs.python.org/3.7/library/os.html#os.open) 被用于创建文件描述符。新创建的文件和文件描述符都是不可继承的([non-inheritable](https://docs.python.org/3.7/library/os.html#fd-inheritance))——文件描述符具有"inheritable"标志，该标志指示子进程是否可以继承该文件描述符(可阅读 [Inheritance of File Descriptors](https://docs.python.org/3.7/library/os.html#fd-inheritance) 和 [`os.open`](https://docs.python.org/3.7/library/os.html#os.open)，以了解更多信息)
 
-## I/O 对象
+还可查看文件处理模块，以了解更多信息，例如：[`fileinput`](https://docs.python.org/3.7/library/fileinput.html#module-fileinput)、[`io`](https://docs.python.org/3.7/library/io.html#module-io) (where [`open()`](https://docs.python.org/3.7/library/functions.html#open) is declared)、[`os`](https://docs.python.org/3.7/library/os.html#module-os)、[`os.path`](https://docs.python.org/3.7/library/os.path.html#module-os.path)、[`tempfile`](https://docs.python.org/3.7/library/tempfile.html#module-tempfile)、[`shutil`](https://docs.python.org/3.7/library/shutil.html#module-shutil)。
 
-`open()` 函数返回的 I/O 对象的类型取决于 *mode* 参数：
+Changed in version 3.3:
 
-- 当以 text 模式(`'w'`, `'r'`, `'wt'`, `'rt'`, etc.)打开某个文件时，将返回 [`io.TextIOBase`](https://docs.python.org/3.7/library/io.html#io.TextIOBase) 的子类( [`io.TextIOWrapper`](https://docs.python.org/3.7/library/io.html#io.TextIOWrapper))的实例
+- 添加 *opener* 参数
+- 添加 `'x'` 模式
+- 曾经会抛出的 [`IOError`](https://docs.python.org/3.7/library/exceptions.html#IOError) 异常，现在是 [`OSError`](https://docs.python.org/3.7/library/exceptions.html#OSError) 的别名。
+- 如果以独占创建模式 (`'x'`) 打开的文件已存在，则会抛出 [`FileExistsError`](https://docs.python.org/3.7/library/exceptions.html#FileExistsError) 
 
-  ```python
-  with open('a_file.txt', 'r') as fin:
-      print(type(fin)) # Out:<class '_io.TextIOWrapper'>
-  with open('a_file.txt', 'w') as fin:
-      print(type(fin)) # Out:<class '_io.TextIOWrapper'>
-  with open('a_file.txt', 'r+') as fin:
-      print(type(fin)) # Out:<class '_io.TextIOWrapper'>
-  ```
+Changed in version 3.4:
 
-- 当以 binary 模式打开某个启用 *buffering* 的文件时，将返回 [`io.BufferedIOBase`](https://docs.python.org/3.7/library/io.html#io.BufferedIOBase) 的子类的实例，具体的子类如下：
+- file 现在属于 non-inheritable
 
-  - 在 read binary 模式下，将返回 [`io.BufferedReader`](https://docs.python.org/3.7/library/io.html#io.BufferedReader) 类的实例
-  - 在 write(or append) binary 模式下，将返回 [`io.BufferedWriter`](https://docs.python.org/3.7/library/io.html#io.BufferedWriter) 类的实例
-  - 在 read/write binary 模式下，将返回 [`io.BufferedRandom`](https://docs.python.org/3.7/library/io.html#io.BufferedRandom) 类的实例
+- 从 3.4 版本开始已弃用 `'U'` 模式，待到 4.0 版本时将移除该模式。
 
-  ```python
-  # 注意,已启用buffering,详见之后的buffering小节
-  with open('a_file.txt', 'rb') as fin:
-      print(type(fin)) # Out:<class '_io.BufferedReader'>
-  with open('a_file.txt', 'wb') as fin:
-      print(type(fin)) # Out:<class '_io.BufferedWriter'>
-  with open('a_file.txt', 'r+b') as fin:
-      print(type(fin)) # Out:<class '_io.BufferedRandom'>
-  ```
+Changed in version 3.5:
 
-- 当禁用 *buffering* 时，将返回原始流(*raw stream*)，即 [`io.RawIOBase`](https://docs.python.org/3.7/library/io.html#io.RawIOBase) 的子类([`io.FileIO`](https://docs.python.org/3.7/library/io.html#io.FileIO))的实例
+- 如果系统调用被中断，并且信号处理器(*signal handler*)没有抛出异常，`open()` 函数现在会再次尝试系统调用，而不是抛出[`InterruptedError`](https://docs.python.org/3.7/library/exceptions.html#InterruptedError) 异常( 其基本原理详见 [**PEP 475**](https://www.python.org/dev/peps/pep-0475))
+- 添加 `'namereplace'` 错误处理方案
 
-  ```python
-  # 注意,buffering=0便会禁用缓冲器,详见之后的buffering小节
-  with open('a_file.txt', 'rb', 0) as fin:
-      print(type(fin)) # Out:<class '_io.FileIO'>
-  with open('a_file.txt', 'wb', 0) as fin:
-      print(type(fin)) # Out:<class '_io.FileIO'>
-  with open('a_file.txt', 'r+b', 0) as fin:
-      print(type(fin)) # Out:<class '_io.FileIO'>
-  ```
+Changed in version 3.6:
 
-我们可以在上述类的文档中查看这些 I/O 对象中包含的属性。
-
-### I/O 类的继承链
-
-[`io`](https://docs.python.org/3.7/library/io.html#module-io) 模块中，各个 I/O 类间的继承关系如下：
-
-```
-IOBase
-|--RawIOBase
-	|--FileIO
-|--BufferedIOBase
-	|--BytesIO
-	|--BufferedReader
-	|--BufferedWriter
-	|--BufferedRandom
-	|--BufferedRWPair
-|--TextIOBase
-	|--TextIOWrapper
-	|--StringIO
-```
-
-### StringIO
-
-🔨 *class* io.StringIO(*initial_value=''*, *newline='\n'*)
-
-该构造器会在内存中创建一个 text I/O 流。在 [`StringIO`](https://docs.python.org/3.7/library/io.html#io.StringIO) 类的实例上调用 `close()` 方法时，将丢弃文本缓冲区中的数据。
-
-参数说明：
-
-- *initial_value* 用于设置缓冲区的初始值，但即便置了初始值，在流中仍会以 0 偏移量为起点
-
-- *newline* 用于设置是否启用换行符转换，其工作方式与 [`TextIOWrapper`](https://docs.python.org/3.7/library/io.html#io.TextIOWrapper) 的同名参数一致，具体行为可参考本笔记的「参数说明.*newline*」小节
-
-在 `StringIO` 中，除包含 [`TextIOBase`](https://docs.python.org/3.7/library/io.html#io.TextIOBase) 及其父类中的方法之外，还提供下述方法：
-
-- getvalue() - 返回一个包含缓冲区中全部内容的 str 对象。换行符的处理方式依赖于 *newline* 参数，具体行为可参考本笔记的「参数说明.*newline*」小节
-
-示例：
-
-```python
-import io
-
-output = io.StringIO()
-output.write('First line.\n')
-print('Second line.', file=output)
-
-# Retrieve file contents -- this will be
-# 'First line.\nSecond line.\n'
-contents = output.getvalue()
-
-# Close object and discard memory buffer --
-# .getvalue() will now raise an exception.
-output.close() # 使用完毕后，同样需要关闭
-```
-
-### BytesIO
-
-🔨 *class* io.BytesIO([*initial_bytes*])
-
-该构造器会在内存中创建一个 bytes I/O 流。[`BytesIO`](https://docs.python.org/3.7/library/io.html#io.BytesIO) 
-
-该类继承自 [`BufferedIOBase`](https://docs.python.org/3.7/library/io.html#io.BufferedIOBase)，其构造器会在内存中创建一个 bytes I/O 流。在 [`BytesIO`](https://docs.python.org/3.7/library/io.html#io.BytesIO) 类的实例上调用 `close()` 方法时，将丢弃缓冲区中的数据。
-
-*initial_bytes* 用于设置缓冲区的初始值，但即便置了初始值，在流中仍会以 0 偏移量为起点
-
-A stream implementation using an in-memory bytes buffer. It inherits [`BufferedIOBase`](https://docs.python.org/3.7/library/io.html#io.BufferedIOBase). The buffer is discarded when the [`close()`](https://docs.python.org/3.7/library/io.html#io.IOBase.close) method is called.
-
-The optional argument *initial_bytes* is a [bytes-like object](https://docs.python.org/3.7/glossary.html#term-bytes-like-object) that contains initial data.
-
-[`BytesIO`](https://docs.python.org/3.7/library/io.html#io.BytesIO) provides or overrides these methods in addition to those from [`BufferedIOBase`](https://docs.python.org/3.7/library/io.html#io.BufferedIOBase)and [`IOBase`](https://docs.python.org/3.7/library/io.html#io.IOBase):
-
-
-
-
-
-```
->>> from io import BytesIO
->>> f = BytesIO()
->>> f.write('中文'.encode('utf-8'))
-6
->>> print(f.getvalue())
-b'\xe4\xb8\xad\xe6\x96\x87'
-
->>> f.write('中文')
----------------------------------------------------------------------------
-TypeError                                 Traceback (most recent call last)
-<ipython-input-25-37d03170c78b> in <module>()
-----> 1 f.write('中文')
-
-TypeError: a bytes-like object is required, not 'str'
-```
-
-注意，写入的对象是进过 UTF-8 编码的 bytes。
-如果直接写入 `str` 会抛出 TypeError 。
-
-读取方式和文件相同：
-
-```
->>> from io import BytesIO
->>> f = BytesIO(b'\xe4\xb8\xad\xe6\x96\x87')
->>> f.read()
-b'\xe4\xb8\xad\xe6\x96\x87'
-```
-
-
+- 支持接收实现 [`os.PathLike`](https://docs.python.org/3.7/library/os.html#os.PathLike) 的对象
+- 在 Windows 上，打开控制台缓冲区可能会返回除 [`io.FileIO`](https://docs.python.org/3.7/library/io.html#io.FileIO) 之外的 [`io.RawIOBase`](https://docs.python.org/3.7/library/io.html#io.RawIOBase) 的子类。
 
 ## 参数说明
 
@@ -500,7 +376,75 @@ The following example uses the [dir_fd](https://docs.python.org/3.7/library/os.h
 >>> os.close(dir_fd)  # don't leak a file descriptor
 ```
 
+## I/O 对象
 
+`open()` 函数返回的 I/O 对象的类型取决于 *mode* 参数：
+
+- 当以 text 模式(`'w'`, `'r'`, `'wt'`, `'rt'`, etc.)打开某个文件时，将返回 [`io.TextIOBase`](https://docs.python.org/3.7/library/io.html#io.TextIOBase) 的子类( [`io.TextIOWrapper`](https://docs.python.org/3.7/library/io.html#io.TextIOWrapper))的实例
+
+  ```python
+  with open('a_file.txt', 'r') as fin:
+      print(type(fin)) # Out:<class '_io.TextIOWrapper'>
+  with open('a_file.txt', 'w') as fin:
+      print(type(fin)) # Out:<class '_io.TextIOWrapper'>
+  with open('a_file.txt', 'r+') as fin:
+      print(type(fin)) # Out:<class '_io.TextIOWrapper'>
+  ```
+
+- 当以 binary 模式打开某个启用 *buffering* 的文件时，将返回 [`io.BufferedIOBase`](https://docs.python.org/3.7/library/io.html#io.BufferedIOBase) 的子类的实例，具体的子类如下：
+
+  - 在 read binary 模式下，将返回 [`io.BufferedReader`](https://docs.python.org/3.7/library/io.html#io.BufferedReader) 类的实例
+  - 在 write(or append) binary 模式下，将返回 [`io.BufferedWriter`](https://docs.python.org/3.7/library/io.html#io.BufferedWriter) 类的实例
+  - 在 read/write binary 模式下，将返回 [`io.BufferedRandom`](https://docs.python.org/3.7/library/io.html#io.BufferedRandom) 类的实例
+
+  ```python
+  # 注意,已启用buffering,详见之后的buffering小节
+  with open('a_file.txt', 'rb') as fin:
+      print(type(fin)) # Out:<class '_io.BufferedReader'>
+  with open('a_file.txt', 'wb') as fin:
+      print(type(fin)) # Out:<class '_io.BufferedWriter'>
+  with open('a_file.txt', 'r+b') as fin:
+      print(type(fin)) # Out:<class '_io.BufferedRandom'>
+  ```
+
+- 当禁用 *buffering* 时，将返回原始流(*raw stream*)，即 [`io.RawIOBase`](https://docs.python.org/3.7/library/io.html#io.RawIOBase) 的子类([`io.FileIO`](https://docs.python.org/3.7/library/io.html#io.FileIO))的实例
+
+  ```python
+  # 注意,buffering=0便会禁用缓冲器,详见之后的buffering小节
+  with open('a_file.txt', 'rb', 0) as fin:
+      print(type(fin)) # Out:<class '_io.FileIO'>
+  with open('a_file.txt', 'wb', 0) as fin:
+      print(type(fin)) # Out:<class '_io.FileIO'>
+  with open('a_file.txt', 'r+b', 0) as fin:
+      print(type(fin)) # Out:<class '_io.FileIO'>
+  ```
+
+如果需要了解 I/O 对象包含的属性，请阅读笔记『io — Core tools for working with streams.md』
+
+### I/O 类的层次结构
+
+[`io`](https://docs.python.org/3.7/library/io.html#module-io) 模块中，各个 I/O 类间的继承关系如下：
+
+```
+IOBase
+|--RawIOBase
+	|--FileIO
+|--BufferedIOBase
+	|--BytesIO
+	|--BufferedReader
+	|--BufferedWriter
+	|--BufferedRandom
+	|--BufferedRWPair
+|--TextIOBase
+	|--TextIOWrapper
+	|--StringIO
+```
+
+### StringIO & BytesIO
+
+`StringIO()` 会在内存中创建一个 text I/O 流；`BytesIO()` 会在内存中创建一个 bytes I/O 流。
+
+详见笔记『io — Core tools for working with streams.md』
 
 ## 术语
 
