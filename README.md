@@ -18,7 +18,6 @@ Python 学习笔记
 杂项：
 
 - [Cool New Features in Python 3.7](https://realpython.com/python37-new-features/) ：详细讲述了 3.7 版本的新功能
-- 
 
 学习工具：
 
@@ -59,13 +58,17 @@ Python 学习笔记
 
   - 中文翻译：[Python 3 标准库实例教程](https://pythoncaff.com/docs/pymotw)
 
-- [Learn Python 3 the Hard Way](https://learnpythonthehardway.org/python3/)：此教程存在 Stack Overflow 较多争议，部分人认为它不适合初学者，该教程有一个进阶版 [Learn More Python the Hard Way](https://learncodethehardway.org/more-python-book/)。
-
-  - 中文译本：[笨办法学Python 3](https://item.jd.com/12372646.html?dist=jd)，在网络上流传的中文译本都是旧版本，最好直接购买纸质书。
-
 - [Effective Python: 59 Ways to Write Better Python](https://effectivepython.com/)
 
   - 中文译本：Effective Python 编写高质量Python代码的59个有效方法
+
+- [byte-of-python](https://python.swaroopch.com/)：免费书籍，该书的 GitHub 仓库是 [byte-of-python](https://github.com/swaroopch/byte-of-python)
+
+  - 中文译本：[简明 Python 教程](https://bop.mol.uno/)，该译本的 GitHub 仓库是 [byte-of-python](https://github.com/LenKiMo/byte-of-python)
+
+- [Learn Python 3 the Hard Way](https://learnpythonthehardway.org/python3/)：此教程存在 Stack Overflow 较多争议，部分人认为它不适合初学者，该教程有一个进阶版 [Learn More Python the Hard Way](https://learncodethehardway.org/more-python-book/)。
+
+  - 中文译本：[笨办法学Python 3](https://item.jd.com/12372646.html?dist=jd)，在网络上流传的中文译本都是旧版本，最好直接购买纸质书。
 
 - Intermediate Python：这本书更像是一本学习笔记，汇总了很多知识点，该书的 GitHub 仓库是 [intermediatePython](https://github.com/yasoob/intermediatePython)，在线阅读地址是 [http://book.pythontips.com](http://book.pythontips.com/)，作者博客 [Python Tips](https://pythontips.com/)
 

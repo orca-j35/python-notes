@@ -11,9 +11,77 @@
 
 `io` 模块的作用是提供处理各种 I/O 类型的工具。
 
-例如，`open()` 函数返回的 I/O 对象便是 `io` 模块中某个子类的实例。因此，我们可以在 `io` 模块中查阅这些 I/O 对象所支持的方法。
+`io` 模块为 Python 提供了处理各种 I/O 类型的主要工具。主要有三种 I/O 类型： *text I/O*, *binary I/O* 和 *raw I/O*。属于这些类别的具体对象被称为文件对象([file object](https://docs.python.org/3.7/glossary.html#term-file-object))。例如，`open()` 函数返回的对象便是文件对象，我们可以在 `io` 模块中查阅文件对象所支持的方法。
 
+## Overview
 
+### Text I/O
+
+Text I/O expects and produces [`str`](https://docs.python.org/3.7/library/stdtypes.html#str) objects. This means that whenever the backing store is natively made of bytes (such as in the case of a file), encoding and decoding of data is made transparently as well as optional translation of platform-specific newline characters.
+
+The easiest way to create a text stream is with [`open()`](https://docs.python.org/3.7/library/functions.html#open), optionally specifying an encoding:
+
+```
+f = open("myfile.txt", "r", encoding="utf-8")
+```
+
+In-memory text streams are also available as [`StringIO`](https://docs.python.org/3.7/library/io.html#io.StringIO) objects:
+
+```
+f = io.StringIO("some initial text data")
+```
+
+The text stream API is described in detail in the documentation of [`TextIOBase`](https://docs.python.org/3.7/library/io.html#io.TextIOBase).
+
+### Binary I/O
+
+Binary I/O (also called *buffered I/O*) expects [bytes-like objects](https://docs.python.org/3.7/glossary.html#term-bytes-like-object) and produces [`bytes`](https://docs.python.org/3.7/library/stdtypes.html#bytes) objects. No encoding, decoding, or newline translation is performed. This category of streams can be used for all kinds of non-text data, and also when manual control over the handling of text data is desired.
+
+The easiest way to create a binary stream is with [`open()`](https://docs.python.org/3.7/library/functions.html#open) with `'b'` in the mode string:
+
+```
+f = open("myfile.jpg", "rb")
+```
+
+In-memory binary streams are also available as [`BytesIO`](https://docs.python.org/3.7/library/io.html#io.BytesIO) objects:
+
+```
+f = io.BytesIO(b"some initial binary data: \x00\x01")
+```
+
+The binary stream API is described in detail in the docs of [`BufferedIOBase`](https://docs.python.org/3.7/library/io.html#io.BufferedIOBase).
+
+Other library modules may provide additional ways to create text or binary streams. See [`socket.socket.makefile()`](https://docs.python.org/3.7/library/socket.html#socket.socket.makefile) for example.
+
+### Raw I/O
+
+Raw I/O (also called *unbuffered I/O*) is generally used as a **low-level building-block** for binary and text streams; it is rarely useful to directly manipulate a raw stream from user code. Nevertheless, you can create a raw stream by opening a file in binary mode with buffering disabled:
+
+```
+f = open("myfile.jpg", "rb", buffering=0)
+```
+
+The raw stream API is described in detail in the docs of [`RawIOBase`](https://docs.python.org/3.7/library/io.html#io.RawIOBase).
+
+## High-level Module Interface
+
+- io.DEFAULT_BUFFER_SIZE
+
+  默认缓冲区尺寸
+
+  An int containing the default buffer size used by the module’s buffered I/O classes.[`open()`](https://docs.python.org/3.7/library/functions.html#open) uses the file’s blksize (as obtained by [`os.stat()`](https://docs.python.org/3.7/library/os.html#os.stat)) if possible.
+
+- io.open(*file*, *mode='r'*, *buffering=-1*, *encoding=None*, *errors=None*, *newline=None*, *closefd=True*, *opener=None*)
+
+  内置函数 `open()` 的别名
+
+- *exception* io.BlockingIOError
+
+  内置 [`BlockingIOError`](https://docs.python.org/3.7/library/exceptions.html#BlockingIOError) 异常的兼容性别名。
+
+- *exception* io.UnsupportedOperation
+
+  该异常继承自 [`OSError`](https://docs.python.org/3.7/library/exceptions.html#OSError) 和 [`ValueError`](https://docs.python.org/3.7/library/exceptions.html#ValueError)，如果在流上调用不支持的操作，便会抛出该异常。
 
 ## 类层次结构
 
@@ -67,13 +135,13 @@ class io.IOBase
 
 - readline(*size=-1*)
 
-- readlines(*hint=-1*)
+- readlines(*hint=-1*) - 等效于 `list(f)` 
 
 - seek(*offset*[, *whence*]) - 设置在流中位置
 
 - seekable()
 
-- tell() - 返回当前流位置
+- tell() - 返回当前流位置，以字节为单位
 
 - truncate(*size=None*) - 重置流的尺寸
 
@@ -260,9 +328,9 @@ A buffered I/O object combining two unidirectional [`RawIOBase`](https://docs.py
 
 - detach() - 分离出 `TextIOBase` 中的底层 binary 缓冲区，并返回该缓冲区。分离底层缓冲区后，`TextIOBase` 将处于不可用状态。某些 `TextIOBase` 实现(如 `StringIO`)可能没有底层缓冲区的概念，调用此方法将抛出 `UnsupportedOperation`。
 
-- read(*size=-1*) - 从流中读取最多 *size* 个字符并作为单个 str 对象返回。如果 *size* 为负或 `None`，则读取至 EOF 为止。
+- read(*size=-1*) - 从流中读取最多 *size* 个字符并作为单个 str 对象返回。如果 *size* 为负或 `None`，则读取至 EOF 为止。在读取文件时，如果文件内容两倍于机器的内存，则会出现问题。在文末重复读取时，会返回空字符 `''`。
 
-- readline(*size=-1*) - 阅读直到换行符或 EOF，并作为单个 str 对象返回。如果流已经位于 EOF，则返回空字符串。如果指定了大小，则将读取最多 *size* 个字符。
+- readline(*size=-1*) - 阅读直到换行符或 EOF，并作为单个 str 对象返回。如果流已经位于 EOF，则返回空字符串。如果指定了大小，则将读取最多 *size* 个字符。在文末重复读取时，会返回空字符 `''`。
 
 - seek(*offset*[, *whence*]) - 将流位置更改为给定的偏移量。行为取决于 *whence* 参数。*whence* 的默认值是 `SEEK_SET`。
 

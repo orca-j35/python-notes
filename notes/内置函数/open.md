@@ -6,30 +6,37 @@
 
 [`io.open()`](https://docs.python.org/3.7/library/io.html#io.open) 其实是 `open()` 函数的别名，而 [`os.open`](https://docs.python.org/3.7/library/os.html#os.open) 被用于创建文件描述符。新创建的文件和文件描述符都是不可继承的([non-inheritable](https://docs.python.org/3.7/library/os.html#fd-inheritance))——文件描述符具有"inheritable"标志，该标志指示子进程是否可以继承该文件描述符(可阅读 [Inheritance of File Descriptors](https://docs.python.org/3.7/library/os.html#fd-inheritance) 和 [`os.open`](https://docs.python.org/3.7/library/os.html#os.open)，以了解更多信息)
 
-还可查看文件处理模块，以了解更多信息，例如：[`fileinput`](https://docs.python.org/3.7/library/fileinput.html#module-fileinput)、[`io`](https://docs.python.org/3.7/library/io.html#module-io) (where [`open()`](https://docs.python.org/3.7/library/functions.html#open) is declared)、[`os`](https://docs.python.org/3.7/library/os.html#module-os)、[`os.path`](https://docs.python.org/3.7/library/os.path.html#module-os.path)、[`tempfile`](https://docs.python.org/3.7/library/tempfile.html#module-tempfile)、[`shutil`](https://docs.python.org/3.7/library/shutil.html#module-shutil)。
+还可查看文件处理模块，以了解更多信息，例如：[`fileinput`](https://docs.python.org/3.7/library/fileinput.html#module-fileinput)、[`io`](https://docs.python.org/3.7/library/io.html#module-io) (声明 [`open()`](https://docs.python.org/3.7/library/functions.html#open) 函数的模块)、[`os`](https://docs.python.org/3.7/library/os.html#module-os)、[`os.path`](https://docs.python.org/3.7/library/os.path.html#module-os.path)、[`tempfile`](https://docs.python.org/3.7/library/tempfile.html#module-tempfile)、[`shutil`](https://docs.python.org/3.7/library/shutil.html#module-shutil)。
 
-Changed in version 3.3:
+更新情况：
 
-- 添加 *opener* 参数
-- 添加 `'x'` 模式
-- 曾经会抛出的 [`IOError`](https://docs.python.org/3.7/library/exceptions.html#IOError) 异常，现在是 [`OSError`](https://docs.python.org/3.7/library/exceptions.html#OSError) 的别名。
-- 如果以独占创建模式 (`'x'`) 打开的文件已存在，则会抛出 [`FileExistsError`](https://docs.python.org/3.7/library/exceptions.html#FileExistsError) 
+- Changed in version 3.3:
 
-Changed in version 3.4:
+  - 添加 *opener* 参数
 
-- file 现在属于 non-inheritable
+  - 添加 `'x'` 模式
+  - 曾经会抛出的 [`IOError`](https://docs.python.org/3.7/library/exceptions.html#IOError) 异常，现在是 [`OSError`](https://docs.python.org/3.7/library/exceptions.html#OSError) 的别名。
+  - 如果以独占创建模式 (`'x'`) 打开的文件已存在，则会抛出 [`FileExistsError`](https://docs.python.org/3.7/library/exceptions.html#FileExistsError) 
 
-- 从 3.4 版本开始已弃用 `'U'` 模式，待到 4.0 版本时将移除该模式。
 
-Changed in version 3.5:
+- Changed in version 3.4:
 
-- 如果系统调用被中断，并且信号处理器(*signal handler*)没有抛出异常，`open()` 函数现在会再次尝试系统调用，而不是抛出[`InterruptedError`](https://docs.python.org/3.7/library/exceptions.html#InterruptedError) 异常( 其基本原理详见 [**PEP 475**](https://www.python.org/dev/peps/pep-0475))
-- 添加 `'namereplace'` 错误处理方案
+  - file 现在属于 non-inheritable
 
-Changed in version 3.6:
+  - 从 3.4 版本开始已弃用 `'U'` 模式，待到 4.0 版本时将移除该模式。
 
-- 支持接收实现 [`os.PathLike`](https://docs.python.org/3.7/library/os.html#os.PathLike) 的对象
-- 在 Windows 上，打开控制台缓冲区可能会返回除 [`io.FileIO`](https://docs.python.org/3.7/library/io.html#io.FileIO) 之外的 [`io.RawIOBase`](https://docs.python.org/3.7/library/io.html#io.RawIOBase) 的子类。
+- Changed in version 3.5:
+
+  - 如果系统调用被中断，并且信号处理器(*signal handler*)没有抛出异常，`open()` 函数现在会再次尝试系统调用，而不是抛出[`InterruptedError`](https://docs.python.org/3.7/library/exceptions.html#InterruptedError) 异常( 其基本原理详见 [**PEP 475**](https://www.python.org/dev/peps/pep-0475))
+
+  - 添加 `'namereplace'` 错误处理方案
+
+- Changed in version 3.6:
+
+  - 支持接收实现 [`os.PathLike`](https://docs.python.org/3.7/library/os.html#os.PathLike) 的对象
+
+  - 在 Windows 上，打开控制台缓冲区可能会返回除 [`io.FileIO`](https://docs.python.org/3.7/library/io.html#io.FileIO) 之外的 [`io.RawIOBase`](https://docs.python.org/3.7/library/io.html#io.RawIOBase) 的子类。
+
 
 ## 参数说明
 
@@ -57,7 +64,7 @@ open(*file*, *mode='r'*, *buffering=-1*, *encoding=None*, *errors=None*, *newlin
   """
   ```
 
-- 还可以是一个**整型文件描述符**(*integer file descriptor*)，该描述符代表一个被打包(*wrapped*)的文件，可通过 [`os.open`](https://docs.python.org/3.7/library/os.html#os.open) 创建。如果给出了文件描述符，那么当我们关闭 `open()` 返回的 I/O 对象时，该文件描述符也将被关闭，除非将 *closefd* 设置为 `False`。
+- 还可以是一个**整型文件描述符**(*integer file descriptor*)，该描述符代表一个被打包(*wrapped*)的文件，可通过 [`os.open`](https://docs.python.org/3.7/library/os.html#os.open) 创建。如果给出了文件描述符，那么当我们关闭 `open()` 返回的 I/O 对象时，该文件描述符也将被关闭，除非将 *closefd* 设置为 `False`。另外，有些文档中可能会混用文件描述符和文件句柄，需要注意区分这两个概念。
 
   ```python
   """./somefile.txt中的内容
@@ -115,8 +122,8 @@ open(*file*, *mode='r'*, *buffering=-1*, *encoding=None*, *errors=None*, *newlin
 
 | Character | Meaning                                                      |
 | --------- | ------------------------------------------------------------ |
-| `'r'`     | open for reading (default)                                   |
-| `'w'`     | open for writing , truncating the file first <br />如果文件已存在，则会清空现有内容；如果文件不存在，则会创建该文件 |
+| `'r'`     | open for reading (default)<br />必须保证文件存在，否则会抛出异常 |
+| `'w'`     | open for writing , truncating the file first <br />如果文件已存在，则会清空现有内容；如果文件不存在，则会创建该文件。必须保证文件所在目录存在，否则会抛出异常 |
 | `'x'`     | open for exclusive creation, failing if the file already exists<br />如果文件不存在，则会创建该文件，并默认以 `'wt'` 打开；如果文件已存在，则会抛出 `FileExistsError` |
 | `'a'`     | open for writing, appending to the end of the file if it exists<br />在某些 Unix 系统中，这意味着所有写入都会被附加到文件的末尾，并且无视 seek 位置 |
 | `'b'`     | binary mode (以字节形式读写数据，用于不包含文本的所有文件)<br />在读写 raw bytes 时，需使用 binary 模式，并且不需要指定编码方式 |
@@ -124,7 +131,9 @@ open(*file*, *mode='r'*, *buffering=-1*, *encoding=None*, *errors=None*, *newlin
 | `'+'`     | open a disk file for updating (reading and writing)          |
 | `'U'`     | [universal newlines](https://docs.python.org/3.7/glossary.html#term-universal-newlines) mode (deprecated), Use newline to control universal newlines mode.<br />`'U'` 模式已被弃用，在未来的 Python 版本中将会引发异常。该模式在 Python 3 中无效。 |
 
-对于二进制(*binary*)读写访问，`'w+b'` 会截断文件至 0 字节，但 `'r+b'` 不会截断文件，这两种模式在流中都以 0 偏移量为起点。
+前面四个( `'r'`、`'w'`、`'x'`、`'a'` )需要和后面三个( `'b'`、`'t'`、`'+'` )组合使用。
+
+对于二进制(*binary*)读写访问，`'w+b'` 会截断文件至 0 字节，但 `'r+b'` 不会截断文件，这两种模式在流中都以 **0 偏移量为起点**。
 
 如 `io` 模块中[概述](https://docs.python.org/3.7/library/io.html#overview)部分所言，Python 会区分 binary I/O 和 text I/O： (即使底层操作系统并不会区分这两者，Python 仍然会进行区别)
 
@@ -263,13 +272,13 @@ open(*file*, *mode='r'*, *buffering=-1*, *encoding=None*, *errors=None*, *newlin
 
 open(*file*, *mode='r'*, *buffering=-1*, *encoding=None*, *errors=None*, *newline=None*, *closefd=True*, *opener=None*)
 
-*errors* 用于设置[错误处理方案](https://docs.python.org/3.7/library/codecs.html#error-handlers)，当出现编码(或解码)错误时，便会使用此错误处理方案，该参数不能用于 binary 模式。
+*errors* 用于设置[错误处理方案](https://docs.python.org/3.7/library/codecs.html#error-handlers)，当出现编码(或解码)错误时，便会使用此错误处理方案，该参数不能用于 binary 模式，默认采用 `'strict'`。
 
 *errors* 的实参值可以是 [Error Handlers](https://docs.python.org/3.7/library/codecs.html#error-handlers) 中列出的标准错误处理方案；也可以是已在 [`codecs.register_error()`](https://docs.python.org/3.7/library/codecs.html#codecs.register_error) 注册过的任何错误处理方案的名称。
 
 标准错误处理方案包括：
 
-- `'strict'` to raise a [`ValueError`](https://docs.python.org/3.7/library/exceptions.html#ValueError) exception if there is an encoding error. The default value of `None` has the same effect.
+- `'strict'` to raise a [`ValueError`](https://docs.python.org/3.7/library/exceptions.html#ValueError) exception if there is an encoding error. The **default value** of `None` has the same effect.
 - `'ignore'` ignores errors. Note that ignoring encoding errors can lead to data loss.
 - `'replace'` causes a replacement marker (such as `'?'`) to be inserted where there is malformed data.
 - `'surrogateescape'` will represent any incorrect bytes as code points in the Unicode Private Use Area ranging from U+DC80 to U+DCFF. These private code points will then be turned back into the same bytes when the `surrogateescape` error handler is used when writing data. This is useful for processing files in an unknown encoding.
@@ -278,6 +287,22 @@ open(*file*, *mode='r'*, *buffering=-1*, *encoding=None*, *errors=None*, *newlin
 - `'namereplace'` (also only supported when writing) replaces unsupported characters with `\N{...}` escape sequences.
 
 还可阅读 `codecs.register` 的文档或是运行 `'help(codecs.Codec)'` ，来了解各种错误处理方案。
+
+```python
+with open('a_file.txt', 'w', encoding='utf8') as fin:
+    fin.write('逆戟鲸 orca_j35')
+with open('a_file.txt', 'r', encoding='utf8') as fin:
+    print(fin.read())
+with open('a_file.txt', 'r', encoding='ascii', errors='ignore') as fin:
+    print(fin.read())
+with open('a_file.txt', 'r', encoding='ascii', errors='replace') as fin:
+    print(fin.read())
+'''Out:
+逆戟鲸 orca_j35
+ orca_j35
+��������� orca_j35
+'''
+```
 
 ### *newline*
 
@@ -378,6 +403,8 @@ The following example uses the [dir_fd](https://docs.python.org/3.7/library/os.h
 
 ## I/O 对象
 
+> 如需了解以下 I/O 对象包含的属性，请查看笔记『io — Core tools for working with streams.md』
+
 `open()` 函数返回的 I/O 对象的类型取决于 *mode* 参数：
 
 - 当以 text 模式(`'w'`, `'r'`, `'wt'`, `'rt'`, etc.)打开某个文件时，将返回 [`io.TextIOBase`](https://docs.python.org/3.7/library/io.html#io.TextIOBase) 的子类( [`io.TextIOWrapper`](https://docs.python.org/3.7/library/io.html#io.TextIOWrapper))的实例
@@ -419,10 +446,6 @@ The following example uses the [dir_fd](https://docs.python.org/3.7/library/os.h
       print(type(fin)) # Out:<class '_io.FileIO'>
   ```
 
-如果需要了解 I/O 对象包含的属性，请阅读笔记『io — Core tools for working with streams.md』
-
-### I/O 类的层次结构
-
 [`io`](https://docs.python.org/3.7/library/io.html#module-io) 模块中，各个 I/O 类间的继承关系如下：
 
 ```
@@ -440,10 +463,61 @@ IOBase
 	|--StringIO
 ```
 
+### 可迭代
+
+以上提到的三种 I/O 对象均是可迭代对象：
+
+```python
+from collections import abc
+with open('a_file.txt', 'r') as fin:
+    assert isinstance(fin, abc.Iterable)
+with open('a_file.txt', 'rb') as fin:
+    assert isinstance(fin, abc.Iterable)
+with open('a_file.txt', 'rb', 0) as fin:
+    assert isinstance(fin, abc.Iterable)
+```
+
+因此， `for line in file: ...` 等效于 `for line in file.readlines()`。
+
+### 关闭 I/O 对象
+
+现代操作系统不允许普通程序直接操作磁盘，对磁盘内文件的读写功能，均由操作系统提供的。对文件进行读写，其实就是请求操作系统打开一个文件对象（通常称为文件描述符），然后通过操作系统提供的接口向该对象读/写数据。
+
+在执行写操作时，部分 I/O 对象会先将数据缓存到内存中(参考 *buffering* 小节)，并不会立刻把数据写入磁盘。只有在关闭 I/O 对象时，才会保证把没有写入的数据全部写入磁盘(也被称作 *flush*)。因此，在执行写入操作后，如果没有关闭 I/O 对象，则很有可能会丢失数据。另外，被打开的 I/O 对象还会占用系统资源。所有，在使用完 I/O 对象后，必须确保其正确关闭。
+
+关闭 I/O 对象最直接方式是调用 `close()` 方法：
+
+```python
+fin = open('a_file.txt', 'r')
+"""--snip--:操作IO对象，最后关闭IO对象"""
+fin.close()
+```
+
+这种方式的缺点是，如果在读写 I/O 对象的过程中抛出 `IOError` 异常，便无法关闭 I/O 对象。为了确保 I/O 对象被顺利关闭，可使用如下两种方法：
+
+- 使用 `try...finally` 语句
+
+  ```python
+  try:
+      fin = open('/path/to/file', 'r')
+      """--snip--:操作IO对象，最后关闭IO对象"""
+  finally:
+      fin.close()
+  ```
+
+- 使用 [`with`](https://docs.python.org/3/reference/compound_stmts.html#with) 语句
+
+  ```python
+  with open("myfile.txt") as f:
+      for line in f:
+          print(line, end="")
+  ```
+
+关于 `try...finally` 和 `with` 语句，可阅读笔记『0x11 错误、调试和测试.md 』-> 2. 处理异常
+
 ### StringIO & BytesIO
 
-`StringIO()` 会在内存中创建一个 text I/O 流；`BytesIO()` 会在内存中创建一个 bytes I/O 流。
-
+` io.StringIO` 会在内存中创建一个 text I/O 流；` io.BytesIO` 会在内存中创建一个 bytes I/O 流。
 详见笔记『io — Core tools for working with streams.md』
 
 ## 术语

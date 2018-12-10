@@ -2,9 +2,10 @@
 
 🔨getattr(*object*, *name*[, *default*]) -> value
 
-该函数用于获取 *object* 中名为 *name* 的属性(*name* 以字符串表示)，也就是说 `getattr(x, 'foobar')` 等效于 `x.foobar`。
+该函数用于获取 *object* 中名为 *name* 的属性(*name* 以字符串表示)，即 `getattr(x, 'foobar')` 等效于 `x.foobar`。
 
 如果 *object* 中包含 *name* 属性，则返回该属性；如果 *object* 没有 *name* 属性，则返回 *default*(如果提供)，否则抛出 [`AttributeError`](https://docs.python.org/3.7/library/exceptions.html#AttributeError) 异常。
+
 对于字段属性，会直接返回值；对于方法属性，会返回其引用(通过引用可调用该方法)。
 
 Tips：该函数属于反射操作；使用 `object.__class__` 的 `__mro__` 属性提供方的法解析顺序(MRO)列表，在继承链中搜索 *name* 属性。
@@ -12,17 +13,17 @@ Tips：该函数属于反射操作；使用 `object.__class__` 的 `__mro__` 属
 一个简单的示例：
 
 ```python
->>> class Foo:
-...     def __init__(self, x):
-...         self.x = x
-...
->>> f = Foo(10)
->>> getattr(f, 'x')
-10
->>> f.x
-10
->>> getattr(f, 'y', 'bar')
-'bar'
+class Foo:
+    def __init__(self, x):
+         self.x = x
+    def func(self):
+        pass
+f = Foo('orca_j35')
+getattr(f, 'func') #> <bound method Foo.func of <__main__.Foo object at 0x000001CD0B12EDA0>>
+f.func=lambda :None
+getattr(f, 'func') #> <function __main__.<lambda>>
+getattr(f, 'x') #> 'orca_j35'
+getattr(f, 'y', 'bar') #> 'bar'
 ```
 
 另一个较复杂的示例，展示了如何通过 `getattr` 获取类字段、静态方法、类方法、实例字段、实例方法。

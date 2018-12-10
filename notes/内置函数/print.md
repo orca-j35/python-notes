@@ -61,6 +61,18 @@ Changed in version 3.3: Added the *flush* keyword argument.
   # 注意观察输出序列的结构
   ```
 
+  示例 - 将 I/O 对象用作 *file* 参数
+
+  ```python
+  with open('a_file.txt', 'w') as fin:
+      print('hello', file=fin)
+      print('orca_j35', file=fin)
+  '''a_file.txt中的内容
+  hello
+  orca_j35
+  '''
+  ```
+
 - *flush* - whether to forcibly flush the stream —— 立即把内容输出到流文件，不做缓存。
 
   Whether output is buffered is usually determined by *file*, but if the *flush* keyword argument is true, the stream is forcibly flushed.
