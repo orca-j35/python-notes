@@ -4,9 +4,9 @@
 
 该内置函数本质上是 [`bytes`](https://docs.python.org/3.7/library/stdtypes.html#bytes) 类的构造函数，用于创建一个 bytes 实例。bytes 实例是一个由字节(8-bits 无符号)构成的不可变序列。可将 bytes 视作 [`bytearray`](https://docs.python.org/3.7/library/stdtypes.html#bytearray) 的不可变版本，但在 bytes 中不包含可对自身做出修改的方法 [详见： [Bytes and Bytearray Operations](https://docs.python.org/3.7/library/stdtypes.html#bytes-methods) ]。
 
-参数 *source* 、*encoding* 、*errors*  在 `bytes()` 和 `bytearray()` 中以相同方式使用：
+参数 *source* 、*encoding* 、*errors* 在 `bytes()` 和 `bytearray()` 中拥有相同的使用方法：
 
-- 没有提供任何参数时，将创建一个空实例
+- 没有提供任何参数时，将创建一个空实例：
 
   ```python
   # bytes() -> empty bytes object
@@ -14,7 +14,7 @@
   b''
   ```
 
-- *source* 是一个**整数**时，将创建一个长度为 *source* 且每个字节均为空的 bytes 对象
+- *source* 是一个**整数**时，将创建一个长度为 *source* 且每个字节均为空的 bytes 对象：
 
   ```python
   # bytes(int) -> bytes object of size given by the parameter initialized with null bytes
@@ -22,7 +22,7 @@
   b'\x00\x00\x00\x00\x00'
   ```
 
-- *source* 是一个由自然数构成的**可迭代对象**，且每个元素的值 x 均满足 0 ≤ x ≤ 255
+- *source* 是一个由自然数构成的**可迭代对象**(每个元素的值 x 均满足 0 ≤ x ≤ 255)时，将创建一个相同长度的 bytes 对象：
 
   ```python
   # bytes(iterable_of_ints) -> bytes
@@ -32,15 +32,18 @@
   b'\x01\x02\x03\x04\x05'
   ```
 
-- *source* 是一个 **bytes 对象**，将通过缓冲器协议(buffer protocol)复制其中的二进制数据
+- *source* 是一个 **bytes 对象**时，将通过缓冲器协议(buffer protocol)复制其中的二进制数据：
 
   ```python
   # bytes(bytes) -> mutable copy of bytes
-  >>> bytes(b'Hi!')
-  b'Hi!'
+  x = b'orca_j35'
+  id(x) #> 2111928068928
+  y = bytes(x)
+  id(y) #> 2111928068928
+  y #> b'orca_j35'
   ```
 
-- *source* 是一个**实现了缓冲区(buffer)** API 的对象时，则会使用 *source* 的只读缓冲区来初始化 bytes 对象。
+- *source* 是一个实现了[缓冲区(buffer) API](https://docs.python.org/3.7/c-api/buffer.html#bufferobjects) 的对象时，则会使用 *source* 的只读缓冲区来初始化 bytes 对象。
 
   ```python
   # bytes(buffer) -> mutable copy of buffer
@@ -69,15 +72,33 @@
   b''
   ```
 
-扩展阅读：
+**扩展阅读：**
 
 - [Binary Sequence Types — bytes, bytearray, memoryview](https://docs.python.org/3.7/library/stdtypes.html#binaryseq), [Bytes Objects](https://docs.python.org/3.7/library/stdtypes.html#typebytes)
 - [Bytes and Bytearray Operations](https://docs.python.org/3.7/library/stdtypes.html#bytes-methods)
--  [Buffer Protocol](https://docs.python.org/3.7/c-api/buffer.html#bufferobjects)
+- [Buffer Protocol](https://docs.python.org/3.7/c-api/buffer.html#bufferobjects)
+
+## \_\_bytes\_\_
+
+🔨 object.`__bytes__`(*self*)
+
+`__bytes__` 方法会返回对象的 byte-string 表示形式，其返回值必须是一个 [`bytes`](https://docs.python.org/3.7/library/stdtypes.html#bytes) 对象。如果自定义对象包含 `__bytes__` 方法，那么 `bytes(obj)` 会在内部调用 `type(obj).__bytes__(obj)`，从而使用类字典中的 `__bytes__` 方法来获取对象的 byte-string 表示形式。
+
+```python
+class Cls:
+    def __bytes__(self):
+        return b'orca_j35'
+obj = Cls()
+from types import MethodType
+obj.__bytes__ = MethodType(lambda self: 'whale', obj)
+bytes(obj) #> b'orca_j35'
+```
+
+如果仅考虑类和实例，这好像并没有什么意义，因为不会有人在实例字典中重新绑定 `__bytes__` 方法。但是，如果考虑到元类和类，这就很有意义了。类是元类的实例，当 *obj* 是一个类时，实际上需要调用元类中的 `__bytes__` 方法，此时我们便需要跳过类字典中 `__bytes__` 方法，使用元类中的同名方法。
 
 ## 深入理解 bytes 对象
 
-bytes 对象与 C 语言中的字节数组类似，**每个索引位置都对应一个整数 x (且 0≤x≤255)**。不同之处在于 bytes 对象会以转义序列或 ASCII 字符显示相应数值(如，将十进制整数 65 显示为字母 A)，但是 bytes 对象的每个索引位置仍然是一个数值，而非一个字符。bytes 对象是一个实实在在的**字节序列**，每个索引位置对应一个字节(byte)而不是一个字符(char)。在读取 bytes 对象的任意索引位置时，只会得到某个数值，不会得到 ASCII 字符。
+bytes 对象与 C 语言中的字节数组类似，每个索引位置都对应一个字节(8-bit 无符号数，0~255)。不同之处在于 bytes 对象会以转义序列或 ASCII 字符显示相应数值(如，将十进制整数 65 显示为字母 A)，但是 bytes 对象的每个索引位置仍然是一个数值，而非一个字符。bytes 对象是一个实实在在的**字节序列**，每个索引位置对应一个字节(byte)而不是一个字符(char)。在读取 bytes 对象的任意索引位置时，只会得到某个数值，不会得到 ASCII 字符。
 
 为了便于理解，先创建一个 C 语言字节数组：
 

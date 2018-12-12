@@ -248,9 +248,7 @@ open(*file*, *mode='r'*, *buffering=-1*, *encoding=None*, *errors=None*, *newlin
 
 如果没有给出 *buffering* 参数，默认缓冲策略的工作方式如下：
 
-- Binary files are buffered in fixed-size chunks; the size of the buffer is chosen using a heuristic trying to determine the underlying device’s “block size” and falling back on [`io.DEFAULT_BUFFER_SIZE`](https://docs.python.org/3.7/library/io.html#io.DEFAULT_BUFFER_SIZE). On many systems, the buffer will typically be 4096 or 8192 bytes long. 
-
-  即，二进制文件会以固定尺寸的缓冲器块进行缓存
+- Binary files are buffered in fixed-size chunks; the size of the buffer is chosen using a heuristic trying to determine the underlying device’s “block size” and falling back on [`io.DEFAULT_BUFFER_SIZE`](https://docs.python.org/3.7/library/io.html#io.DEFAULT_BUFFER_SIZE). On many systems, the buffer will typically be 4096 or 8192 bytes long.  大致意思是二进制文件会以固定尺寸的缓冲器块进行缓存
 
 - “Interactive” text files (files for which [`isatty()`](https://docs.python.org/3.7/library/io.html#io.IOBase.isatty) returns `True`) use line buffering. Other text files use the policy described above for binary files.
 

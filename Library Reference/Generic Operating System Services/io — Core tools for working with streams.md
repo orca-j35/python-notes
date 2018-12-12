@@ -224,11 +224,11 @@ Buffered I/O 流为 I/O 设备提供了比 raw I/O 更高级别的接口。
 - getbuffer() - 返回缓冲区中内容的可读写视图，而不是进行拷贝。如果改变视图中的内容，便会同步更新缓冲区的内容：
 
   ```python
-  >>> b = io.BytesIO(b"abcdef")
-  >>> view = b.getbuffer()
-  >>> view[2:4] = b"56"
-  >>> b.getvalue()
-  b'ab56ef'
+  import io
+  b = io.BytesIO(b"abcdef")
+  view = b.getbuffer()
+  view[2:4] = b"56"
+  b.getvalue() #> b'ab56ef'
   ```
 
   Note: 只要视图存在，就无法调整 BytesIO 对象大小，也不能关闭 BytesIO 对象。
@@ -255,11 +255,6 @@ Buffered I/O 流为 I/O 设备提供了比 raw I/O 更高级别的接口。
 
 ```python
 >>> b_io = io.BytesIO(b'orca')
->>> b.read()
-Traceback (most recent call last):
-  File "<pyshell#21>", line 1, in <module>
-    b.read()
-ValueError: I/O operation on closed file.
 >>> b_io.read()
 b'orca'
 >>> b_io.write('逆戟鲸'.encode('utf8'))

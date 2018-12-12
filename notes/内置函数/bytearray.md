@@ -16,7 +16,7 @@
   bytearray(b'')
   ```
 
-- *source* 是一个**整数**时，将创建一个长度为 *source* 且每个字节均为空的 bytearray 对象
+- *source* 是一个**整数**时，将创建一个长度为 *source* 且每个字节均为空的 bytearray 对象：
 
   ```python
   # bytearray(int) -> bytearray
@@ -24,7 +24,7 @@
   bytearray(b'\x00\x00\x00\x00\x00')
   ```
 
-- *source* 是一个由自然数构成的**可迭代对象**，且每个元素的值 x 均满足 0 ≤ x ≤ 255
+- *source* 是一个由自然数构成的**可迭代对象**(每个元素的值 x 均满足 0 ≤ x ≤ 255)时，将创建一个相同长度的 bytearray 对象：
 
   ```python
   # bytearray(iterable_of_ints) -> bytearray
@@ -34,15 +34,18 @@
   bytearray(b'\x01\x02\x03\x04\x05')
   ```
 
-- *source* 是一个 bytes 对象，将通过缓冲器协议(buffer protocol)复制其中的二进制数据
+- *source* 是一个 bytes 对象时，将通过缓冲器协议(buffer protocol)复制其中的二进制数据：
 
   ```python
   # bytearray(bytes) -> mutable copy of bytes
-  >>> bytearray(b'Hi!')
-  bytearray(b'Hi!')
+  x = b'orca_j35'
+  id(x) #> 2111928069024
+  y = bytearray(x)
+  id(y) #> 2111927409832
+  y #> bytearray(b'orca_j35')
   ```
 
-- *source* 是一个实现了缓冲区(buffer) API 的对象时，则会使用 *source* 的只读缓冲区来初始化 bytearray 对象。
+- *source* 是一个实现了[缓冲区(buffer) API](https://docs.python.org/3.7/c-api/buffer.html#bufferobjects) 的对象时，则会使用 *source* 的只读缓冲区来初始化 bytearray 对象：
 
   ```python
   # bytearray(buffer) -> mutable copy of buffer
@@ -71,7 +74,12 @@
   bytearray(b'')
   ```
 
-扩展阅读: [Binary Sequence Types — bytes, bytearray, memoryview](https://docs.python.org/3.7/library/stdtypes.html#binaryseq) 及 [Bytearray Objects](https://docs.python.org/3.7/library/stdtypes.html#typebytearray).
+**扩展阅读：**
+
+- [Binary Sequence Types — bytes, bytearray, memoryview](https://docs.python.org/3.7/library/stdtypes.html#binaryseq), [Bytes Objects](https://docs.python.org/3.7/library/stdtypes.html#typebytes)
+-  [Bytearray Objects](https://docs.python.org/3.7/library/stdtypes.html#typebytearray)
+- [Bytes and Bytearray Operations](https://docs.python.org/3.7/library/stdtypes.html#bytes-methods)
+- [Buffer Protocol](https://docs.python.org/3.7/c-api/buffer.html#bufferobjects)
 
 ## 深入理解 bytearray 对象
 
@@ -81,7 +89,7 @@
 byte bytes_array[] = {0x02, 0x03, 0x0A, 0x41}
 ```
 
-Python 中的 bytearray 对象与 C 语言中的字节数组类似，**每个索引位置都对应一个整数 x (且 0≤x≤255)**。不同之处在于 bytearray 对象会以转义序列或 ASCII 字符显示相应数值(如，将十进制整数 65 显示为字母 A)，但是 bytearray 对象的每个索引位置仍然是一个数值，而非一个字符。bytearray 对象是一个实实在在的**字节序列**，每个索引位置对应一个字节(byte)而不是一个字符(char)。
+Python 中的 bytearray 对象与 C 语言中的字节数组类似，每个索引位置都对应一个字节(8-bit 无符号数，0~255)。不同之处在于 bytearray 对象会以转义序列或 ASCII 字符显示相应数值(如，将十进制整数 65 显示为字母 A)，但是 bytearray 对象的每个索引位置仍然是一个数值，而非一个字符。bytearray 对象是一个实实在在的**字节序列**，每个索引位置对应一个字节(byte)而不是一个字符(char)。
 
 注意：不能将 bytearray 完全等同于 C 的字符数组，因为 bytearray 远比字符数组强大。
 
