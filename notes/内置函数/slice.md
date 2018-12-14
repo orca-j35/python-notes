@@ -12,6 +12,12 @@
 
 该函数用于创建切片([*slice*](https://docs.python.org/3.7/glossary.html#term-slice))对象，切片对象表示由 `range(start, stop,step)` 指定的索引的集合。 
 
+参数说明：
+
+- *start* - 起点位置
+- *stop* - 终点位置
+- *step* - 步长
+
 *start*, *stop*, *step* 可以是任意类型的值，其中 *start* 和 *step* 的默认值是 `None`。
 
 ```python
@@ -74,7 +80,7 @@ Fib()[slice(10)] #> [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
 
 - `start` is the lower bound; 
 - `stop` is the upper bound; 
-- `step`is the step value; 
+- `step` is the step value; 
 
 以上三个属性可以是任意类型的值，并且没有其他功能，但是 Numerical Python 和其它第三方扩展会使用这三个属性。如果在创建切片对象时，省略了上述某个属性，则会将其设置为 `None`。
 

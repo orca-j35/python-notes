@@ -22,7 +22,19 @@ Python 学习笔记
 学习工具：
 
 - [pythontutor](http://www.pythontutor.com/index.html)：可视化 Python 代码的执行过程
+
 - [Thonny](http://thonny.org/)：Python IDE for beginners
+
+- [zeal](https://zealdocs.org/)：文档查询
+
+  - There is a VSCode plugin available at <https://github.com/deerawan/vscode-dash>.
+  - https://kapeli.com/dash
+
+- [jupyter](https://jupyter.org/)
+
+- [ipython](https://ipython.org/index.html)
+
+  jupyter 和 ipython 的关系 -- IPython is a growing project, with increasingly language-agnostic components. IPython 3.x was the last monolithic release of IPython, containing the notebook server, qtconsole, etc. As of IPython 4.0, the language-agnostic parts of the project: the notebook format, message protocol, qtconsole, notebook web application, etc. <u>have moved to new projects under the name [Jupyter](https://jupyter.org/).</u> IPython itself is focused on interactive Python, part of which is providing a Python kernel for Jupyter.
 
 阅读建议
 
