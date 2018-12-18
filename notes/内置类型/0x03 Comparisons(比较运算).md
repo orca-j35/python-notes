@@ -1,0 +1,74 @@
+# Comparisons(比较运算)
+> GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
+>
+> 本笔记涵盖了 [Comparisons](https://docs.python.org/3.7/library/stdtypes.html#comparisons) 中全部的内容，并进行了扩展
+>
+> 相关笔记:『表达式和运算符.md』-> 2.5 比较运算符
+
+在 Python 中有 8 种比较运算，且所有比较运算都具备相同的优先级（高于布尔运算）。比较运算可进行连续比较，例如 `x < y <= z` 等效于 `x < y and y <= z`，但第一种情况只会对 y 执行一次求值（如果 `x < y` 为假，则两种情况都不会对 z 求值）。
+
+下表汇总了所有比较运算：
+
+| Operation | Meaning                 |
+| --------- | ----------------------- |
+| `<`       | strictly less than      |
+| `<=`      | less than or equal      |
+| `>`       | strictly greater than   |
+| `>=`      | greater than or equal   |
+| `==`      | equal                   |
+| `!=`      | not equal               |
+| `is`      | object identity         |
+| `is not`  | negated object identity |
+
+不同类型（除了不同的数值类型）的对象永远不会相等。此外，某些类型（例如，函数对象）的对象仅支持相等性比较。
+
+对于比较运算符 `<`, `<=`, `>` 和 `>=` ，以下几种情况会抛出 [`TypeError`](https://docs.python.org/3.7/library/exceptions.html#TypeError) 异常：
+
+- 将复数和其它内置数值类型进行比较时；
+- 当对象是无法进行比较的不同类型时；
+- 在没有定义相应的特殊方法时
+
+```python
+(1+1j) > 1.1 
+#> TypeError: '>' not supported between instances of 'complex' and 'float'
+1 > 'orca'
+#> TypeError: '>' not supported between instances of 'int' and 'str'
+class Cls:pass
+Cls() > 1
+#> TypeError: '>' not supported between instances of 'Cls' and 'int'
+```
+
+除非在类中定义了 [`__eq__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__eq__) 方法，否则通常会认为类的 Non-identical 实例不相等。
+
+```python
+class Cls:pass
+a = Cls()
+b = Cls()
+a is b #> False
+a == b #> False
+```
+
+除非在类中提供足够多的方法（ [`__lt__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__lt__), [`__le__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__le__), [`__gt__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__gt__),  [`__ge__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__ge__) ），否则不能对相同类的不同实例进行排序，也不能对不同类的实例进行排序。（如果只需比较运算符符合惯例，通常 [`__lt__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__lt__) 和 [`__eq__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__eq__) 就足够了）
+
+不能自定义运算符 [`is`](https://docs.python.org/3.7/reference/expressions.html#is) 和 [`is not`](https://docs.python.org/3.7/reference/expressions.html#is-not) 行为，任意两个对象间均可使用这两个运算符，并且永远不会抛出异常。另见笔记『表达式和运算符.md』-> c. 标识符比较运算符
+
+[iterable](https://docs.python.org/3.7/glossary.html#term-iterable) 类型或是实现了 [`__contains__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__contains__) 方法的类型支持，支持两个具备相同优先级的操作 [`in`](https://docs.python.org/3.7/reference/expressions.html#in) 和 [`not in`](https://docs.python.org/3.7/reference/expressions.html#not-in)。详见笔记『表达式和运算符.md』-> b. 成员测试运算符
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
