@@ -28,3 +28,17 @@ abs(*x*)
 16
 ```
 
+## \_\_abs\_\_
+
+> 相关笔记:『3.3. Special method names.md』-> 3.3.8. Emulating numeric types
+
+🔨 object.`__abs__`(*self*)
+
+`__abs__` 用于实现 `abs()`。调用 `abs(x)` 时，便会调用 `x.__abs__()`。
+
+```python
+class ExampleCls:
+    def __abs__(self):
+        return 'orac_j35'
+abs(ExampleCls()) #> 'orac_j35'
+```

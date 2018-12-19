@@ -1,9 +1,16 @@
-# Boolean Operations - and, or, not
+
+
+# 布尔运算(and, or, not)
+
+Boolean Operations - and, or, not
+
 > GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
+>
+> 本小节涵盖了 [Boolean Operations — and, or, not](https://docs.python.org/3.7/library/stdtypes.html#boolean-operations-and-or-not) 中的全部内容
 >
 > 相关笔记：
 >
-> - 『Truth Value Testing.md』
+> - 『真值测试.md』
 > - 『表达式和运算符.md』-> 布尔运算符
 
 下面是布尔运算(*Boolean operations*)，优先级从上至下依次增加：

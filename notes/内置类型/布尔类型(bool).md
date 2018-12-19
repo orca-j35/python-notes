@@ -1,11 +1,16 @@
-# Boolean Values
+
+
+# 布尔类型(bool)
+
+Boolean Values
+
 > GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
 >
 > 本笔记涵盖了 [Boolean Values](https://docs.python.org/3.7/library/stdtypes.html#boolean-values) 中的全部内容，并进行了扩展
 >
 > 相关笔记：
 >
-> - 『Truth Value Testing.md』
+> - 『真值测试.md』
 > - 『bool.md』
 > - 『3.2. 标准类型层次.md』
 

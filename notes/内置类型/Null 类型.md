@@ -1,4 +1,9 @@
-# The Null Object
+
+
+# Null 类型
+
+The Null Object
+
 > GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
 >
 > 本笔记涵盖了以下内容，并且进行了扩展：

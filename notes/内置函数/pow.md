@@ -1,11 +1,14 @@
 # pow
 
+> GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
+>
+> 相关笔记:『3.3. Special method names.md』-> 3.3.8. Emulating numeric types
+
 ```python
 pow(x, y, z=None, /)
     Equivalent to x**y (with two arguments) or x**y % z (with three arguments)
     
-    Some types, such as ints, are able to use a more efficient algorithm when
-    invoked using the three argument form.
+    Some types, such as ints, are able to use a more efficient algorithm when invoked using the three argument form.
 ```
 
 🔨 pow(*x*, *y*[, *z*])
@@ -65,3 +68,69 @@ ZeroDivisionError: 0.0 cannot be raised to a negative power
 (6.123233995736766e-17+1j)
 ```
 
+## \_\_pow\_\_
+
+> 相关笔记:『3.3. Special method names.md』-> 3.3.8. Emulating numeric types
+
+🔨 object.`__pow__`(*self*, *other*[, *modulo*])
+
+`__pow__` 用于实现 `pow()` (`**`)：
+
+```python
+class ExampleCls:
+    def __pow__(self,other):
+        return self,other
+pow(ExampleCls(),2)
+#> (<__main__.ExampleCls at 0x1ef59b72860>, 2)
+ExampleCls()**2
+#> (<__main__.ExampleCls at 0x1ef59bc9da0>, 2)
+```
+
+注意：如果需要 `pow()` 支持三参数形式，则应使 `__pow__()` 可接受第三个可选参数。
+
+## \_\_rpow\_\_
+
+> 相关笔记:『3.3. Special method names.md』-> 3.3.8. Emulating numeric types
+
+🔨 object.`__rpow__`(*self*, *other*)
+
+注意：以三参数形式调用 `pow()` 时，不会尝试调用 `__rpow__()`。
+
+`__rpow__` 用于为 `pow()` (`**`) 实现反射(交换)操作，只有当左操作数"不支持"相应操作，并且操作数是"不同类型"时，才会调用反射方法。
+
+```python
+class A:
+    def __pow__(self,other):
+        return NotImplemented
+class B:
+    def __rpow__(self,other):
+        return 'in B'
+class C:pass
+
+pow(A(),B()) #> in B
+pow(C(),B()) #> in B
+```
+
+"不支持"的意思是类中不包含相应方法，或虽实现了相应方法但返回值是 `NotImplemented`。如果需要强制回退至右操作数的反射方法，则不应将左操作数的方法设置为 `None`。`None` 会显示阻止回退操作，并将 `None` 直接用作返回值。
+
+```python
+class A:
+    def __pow__(self,other):
+        return None
+class B:
+    def __pow__(self,other):
+        return 'in B'
+print(pow(A(),B())) #> None
+```
+
+对于相同类型的操作数，如果非反射方法失效(例如， [`__add__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__add__))，则认为操作数不支持相应的操作，并不会调用反射方法。
+
+```python
+class A:
+    def __pow__(self,other):
+        return NotImplemented
+    def __rpow__(self,other):
+        return 'in rpow'
+pow(A(),A()) 
+#> TypeError: unsupported operand type(s) for ** or pow(): 'A' and 'A'
+```
