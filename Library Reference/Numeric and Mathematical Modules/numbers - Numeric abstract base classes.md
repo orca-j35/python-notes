@@ -33,7 +33,7 @@ assert isinstance(Decimal('1.4'),Number) is True
 数值抽象基类的层次结构如下：
 
 ```
-Number
+Number # int, float, Complex, Fraction, Decimal
 |---Complex # int, float, Complex, Fraction
 	|---Real # int, float, Fraction
 		|---Rational # int, Fraction
