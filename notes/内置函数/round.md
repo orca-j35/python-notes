@@ -1,5 +1,7 @@
 # round
 
+> GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
+
 🔨 round(*number*[, *ndigits*])
 
 该函数用于对 *number* 进行舍入，*ndigits* 用于设置精度。

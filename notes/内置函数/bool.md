@@ -1,8 +1,12 @@
 # bool
 
+> GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
+>
+> 相关笔记:『数值类型(int,float,complex)』
+
 🔨 class bool([*x*])
 
-该内置函数本质上是在调用 [bool](https://docs.python.org/3.7/library/functions.html#bool) 类的构造函数，从而获得一个布尔(*bool*)对象。bool 类仅有 `False` 和 `True` 两个实例 (详见 [Boolean Values](https://docs.python.org/3.7/library/stdtypes.html#bltin-boolean-values))。[bool](https://docs.python.org/3.7/library/functions.html#bool) 类是 [int](https://docs.python.org/3.7/library/functions.html#int) 类的子类(详见 [Numeric Types — int, float, complex](https://docs.python.org/3.7/library/stdtypes.html#typesnumeric))，但不能为 bool 类创建子类。
+该内置函数是 [bool](https://docs.python.org/3.7/library/functions.html#bool) 类的构造函数，其返回值是一个布尔(*bool*)对象。bool 类仅有 `False` 和 `True` 两个实例 (详见 [Boolean Values](https://docs.python.org/3.7/library/stdtypes.html#bltin-boolean-values))。[bool](https://docs.python.org/3.7/library/functions.html#bool) 类是 [int](https://docs.python.org/3.7/library/functions.html#int) 类的子类(详见 [Numeric Types — int, float, complex](https://docs.python.org/3.7/library/stdtypes.html#typesnumeric))，但不能为 bool 类创建子类。
 
 Tips：在数值上下文中(*numeric contexts*) ：`False` 被视作 0，`True` 被视作 1。
 

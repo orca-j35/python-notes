@@ -4,12 +4,12 @@ Numeric Types — [`int`](https://docs.python.org/3.7/library/functions.html#int
 
 > GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
 >
-> 本文涵盖了 [Numeric Types — int, float, complex](https://docs.python.org/3.7/library/stdtypes.html#numeric-types-int-float-complex) 中的内容，并进行了扩展
+> 本笔记涵盖了 [Numeric Types — int, float, complex](https://docs.python.org/3.7/library/stdtypes.html#numeric-types-int-float-complex) 中的内容，并进行了扩展
 >
 
 ## 1. 概述
 
-> 相关笔记：
+> 参考：
 >
 > - 『numbers - Numeric abstract base classes.md』
 > - 『3.2. 标准类型层次.md』-> numbers.Number
