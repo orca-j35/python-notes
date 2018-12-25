@@ -5,10 +5,11 @@
 >
 > - 『数值类型(int,float,complex)』
 > - 『2. Lexical analysis.md.md』-> 2.4.5. 整型字面值
+> - 『numbers - Numeric abstract base classes.md』
 
 该函数是 int 类型的构造函数，用于将 *x* (数字或字符串)转换为一个整数。
 
-有关整数类型的详细描述，可阅读 [Numeric Types — int, float, complex](https://docs.python.org/3.7/library/stdtypes.html#typesnumeric).
+有关整数类型的详细描述，可阅读 [Numeric Types — int, float, complex](https://docs.python.org/3.7/library/stdtypes.html#typesnumeric) 。
 
 Changed in version 3.4: If *base* is not an instance of [`int`](https://docs.python.org/3.7/library/functions.html#int) and the *base* object has a [`base.__index__`](https://docs.python.org/3.7/reference/datamodel.html#object.__index__) method, that method is called to obtain an integer for the base. Previous versions used [`base.__int__`](https://docs.python.org/3.7/reference/datamodel.html#object.__int__) instead of [`base.__index__`](https://docs.python.org/3.7/reference/datamodel.html#object.__index__).
 

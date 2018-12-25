@@ -94,7 +94,7 @@ numbers.Number # 包含 int, float, Complex, Fraction, Decimal
 | `int(x)`          | *x* converted to integer                                     | (3)(6) | [`int()`](https://docs.python.org/3.7/library/functions.html#int) |
 | `float(x)`        | *x* converted to floating point                              | (4)(6) | [`float()`](https://docs.python.org/3.7/library/functions.html#float) |
 | `complex(re, im)` | a complex number with real part*re*, imaginary part *im*. *im* defaults to zero. | (6)    | [`complex()`](https://docs.python.org/3.7/library/functions.html#complex) |
-| `c.conjugate()`   | conjugate of the complex number*c*                           |        |                                                              |
+| `c.conjugate()`   | conjugate of the complex number *c*                          |        |                                                              |
 | `divmod(x, y)`    | the pair `(x // y, x % y)`                                   | (2)    | [`divmod()`](https://docs.python.org/3.7/library/functions.html#divmod) |
 | `pow(x, y)`       | *x* to the power *y*                                         | (5)    | [`pow()`](https://docs.python.org/3.7/library/functions.html#pow) |
 | `x ** y`          | *x* to the power *y*                                         | (5)    |                                                              |
