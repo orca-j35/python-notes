@@ -8,11 +8,23 @@
 
 该内置函数是 [bool](https://docs.python.org/3.7/library/functions.html#bool) 类的构造函数，其返回值是一个布尔(*bool*)对象。bool 类仅有 `False` 和 `True` 两个实例 (详见 [Boolean Values](https://docs.python.org/3.7/library/stdtypes.html#bltin-boolean-values))。[bool](https://docs.python.org/3.7/library/functions.html#bool) 类是 [int](https://docs.python.org/3.7/library/functions.html#int) 类的子类(详见 [Numeric Types — int, float, complex](https://docs.python.org/3.7/library/stdtypes.html#typesnumeric))，但不能为 bool 类创建子类。
 
+```python
+issubclass(bool,int) #> True
+```
+
+因为 bool 是 int 的子类，所以 bool 同样支持 int 类型支持的操作，详见笔记『数值类型(int,float,complex).md』和『numbers - Numeric abstract base classes.md』
+
 Tips：在数值上下文中(*numeric contexts*) ：`False` 被视作 0，`True` 被视作 1。
 
 ```python
 >>> 1 + True
 2
+```
+
+如果将 bool 值转换为字符串，会得到  `"False"` 或 `"True"` ，而非 `'0'` 或 `'1'`。
+
+```python
+str(True),repr(False) #> ('True', 'False')
 ```
 
 对于 `bool()` ，如果省略 *x* 参数，则会返回 `False`。
@@ -41,6 +53,7 @@ True
 
 ## what's false object
 
+Python 中的所有对象均具备布尔意义。
 默认情况下，对象的真值为 true，除非存在以下两种情况：
 
 - 对象中定义了 [`__bool__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__bool__) 方法，并且该方法返回 `False` 
@@ -60,6 +73,8 @@ True
 >>> bool(a_cls)
 True
 ```
+
+如果类定义中不包含 [`__len__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__len__) 和 [`__bool__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__bool__)，则该类的所有实例均为真。
 
 下面是真值为 false 的内置对象：
 

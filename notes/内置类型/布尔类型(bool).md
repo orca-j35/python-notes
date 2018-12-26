@@ -22,17 +22,26 @@ Boolean Values
 issubclass(bool,int) #> True
 ```
 
+因为 bool 是 int 的子类，所以 bool 同样支持 int 类型支持的操作，详见笔记『数值类型(int,float,complex).md』和『numbers - Numeric abstract base classes.md』
+
 在数值上下文中（e.g., 被用作算数运算符的操作数时），`False` 和 `True` 的行为与整数 0 和 1 类似：
 
 ```python
 False + True + True #> 2
 ```
 
+如果将 bool 值转换为字符串，会得到  `"False"` 或 `"True"` ，而非 `'0'` 或 `'1'`。
+
+```python
+str(True),repr(False) #> ('True', 'False')
+```
+
 内置函数 `bool()` 用于获取对象的布尔值。
 
 ## 布尔意义
 
-Python 中的所有对象均具备布尔意义。默认情况下，对象的真值为 `True`，除非存在以下两种情况：
+Python 中的所有对象均具备布尔意义。
+默认情况下，对象的真值为 `True`，除非存在以下两种情况：
 
 - 对象中定义了 [`__bool__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__bool__) 方法，并且该方法返回 `False` 
 - 对象中定义了 [`__len__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__len__) 方法，并且该方法返回 `0` 

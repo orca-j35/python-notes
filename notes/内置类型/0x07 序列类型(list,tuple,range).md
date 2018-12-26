@@ -15,7 +15,7 @@ Python 中包含基本[序列类型](https://docs.python.org/3/library/stdtypes.
 可通过以下几种方式来构建列表：
 
 - 使用一对方括号可构建一个空列表：`[]`
-- 使用一对方括号，并在其中填充以逗号分隔的项：`[a]`, `[a, b, c]`
+- 使用一对方括号，并在其中填充以逗号分隔的项：`[a]`, `[a, b, c]` , `[*(1,2,3)]`
 - 使用列表解析(*comprehension*)：`[x for x in iterable]`
 - 使用类型构造器(*constructor*)：`list()` 或 `list(iterable)`
 

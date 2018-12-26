@@ -124,6 +124,13 @@ int('010', 0)
 #> ValueError: invalid literal for int() with base 0: '010'
 ```
 
+## 支持的操作
+
+详见笔记：
+
+- 『数值类型(int,float,complex).md』
+- 『numbers - Numeric abstract base classes.md』
+
 ## \_\_int\_\_
 
 🔨 object.[`__int__`](https://docs.python.org/3.7/reference/datamodel.html#object.__int__)(*self*)

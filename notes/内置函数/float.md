@@ -55,7 +55,7 @@ numeric_string ::=  [sign] numeric_value
 - 如果 *x* 是某个浮点数，则会返回相同的浮点值(在 Python 的浮点精度内)——假如 *x* 超出了 Pyhton 的 浮点范围，则会抛出 [`OverflowError`](https://docs.python.org/3.7/library/exceptions.html#OverflowError) 
 - 如果 *x* 是某个整数，则会将其转换为浮点数
 
-## *x* is a object of general
+## *x* is a general object
 
 如果 *x* 是某个普通的 Python 对象，`float(x)` 则会调用 `type(x).__float__(x)` 来将 *x* 转换为浮点数。`__float__()` 方法的返回值必须是浮点数，否则会抛出异常。
 
@@ -67,6 +67,13 @@ class Sample:
         return float(self._value)
 float(Sample(6)) #> 6.0
 ```
+
+## 支持的操作
+
+详见笔记：
+
+- 『数值类型(int,float,complex).md』
+- 『numbers - Numeric abstract base classes.md』
 
 ## \_\_float\_\_
 
