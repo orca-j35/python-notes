@@ -1,8 +1,8 @@
 # 映射类型(dict)
 
-> GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
+> GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库。
 >
-> 本笔记涵盖了 [Mapping Types — dict](https://docs.python.org/3.7/library/stdtypes.html#dict)，并进行了扩展
+> 本笔记涵盖了 [Mapping Types — dict](https://docs.python.org/3.7/library/stdtypes.html#dict) 中的内容，并进行了扩展。
 
 映射([*mapping*](https://docs.python.org/3/glossary.html#term-mapping))对象会将可哈希([*hashable*](https://docs.python.org/3/glossary.html#term-hashable))对象映射到另一个对象，属于可变对象。目前只有一种标准的映射类型：字典(*dictionary*)——从键到值的映射。如果想要了解其它容器类型，可以参考内置类型 ([list](https://docs.python.org/3.7/library/stdtypes.html#list)、[set](https://docs.python.org/3.7/library/stdtypes.html#set)、[tuple](https://docs.python.org/3.7/library/stdtypes.html#tuple)) 以及 [collections](https://docs.python.org/3.7/library/collections.html#module-collections) 模块。
 

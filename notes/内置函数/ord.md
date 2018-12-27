@@ -20,6 +20,15 @@
 (97, 97, 97, 97, 97)
 ```
 
+*c* 还可以是 byte-like 类型：
+
+```python
+>>> ord(b'a')
+97
+>>> ord(bytearray(b'a'))
+97
+```
+
 Tips：`chr()` 与 `ord()` 的功能正好相反。
 
 ```python

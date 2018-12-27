@@ -12,7 +12,7 @@
 
 目前有两种内置 set 类型：[set](https://docs.python.org/3.7/library/stdtypes.html#set) 和 [frozenset](https://docs.python.org/3.7/library/stdtypes.html#frozenset) 。set 类型是可变类型——可使用 `add()` 和 `remove()` 等方法来更改其内容。由于 set 是可变类型，因此 set 对象没有哈希值，且不能用作字典的键，也不能用作其它 set 对象的元素。frozenset 类型是不可变类型，并且可哈希——frozenset 对象在创建后不能被改变；因此 frozenset 对象可用作字典的键值或是其它 set 对象的元素。
 
-## 1. 构建集合(set, frozenset)
+## 1. 构建集合
 
 可通过以下几种方式来构建集合(set, frozenset)：
 
@@ -27,7 +27,15 @@
 
 - 使用类型构造器(*constructor*) - 可构建 set 或 frozenset，例如 `set()` , `set(iterable)` ,  `frozenset()` , `frozenset(iterable)`
 
+集合中的元素必须是可哈希([*hashable*](https://docs.python.org/3.7/glossary.html#term-hashable))对象，如果想构建一个内含集合(*set*)对象的 set，内层的集合必须是 frozenset 对象。
+
+```python
+{1,2,frozenset((3,4))} #> {1, 2, frozenset({3, 4})}
+```
+
 注意：`{}` 将构造一个空字典，并不会构建空集合。
+
+### a. 构造器
 
 🔨 *class* set([*iterable*])
 
@@ -42,7 +50,7 @@
   #> (set(), frozenset())
   ```
 
-- 如果给定了 *iterable* 参数，则会用 *iterable* 中的元素构建一个 set (或 frozenset)对象。*iterable* 中的元素必须都是可哈希对象，`set()` (或 `frozenset()`) 会自动剔除 *iterable* 中的重复项。如果想构建一个内含集合(*set*)对象的 set，内层的集合必须是 frozenset 对象。
+- 如果给定了 *iterable* 参数，则会用 *iterable* 中的元素构建一个 set (或 frozenset)对象。*iterable* 中的元素必须都是可哈希对象，`set()` (或 `frozenset()`) 会自动剔除 *iterable* 中的重复项。
 
   ```python
   set([1,2,2,3]) #> {1, 2, 3}
@@ -52,11 +60,15 @@
 
 ## 2. 支持的操作
 
+### a. for set & frozenset 
+
 set 和 frozenset 实例支持以下操作：
 
 - `len(s)` - 返回集合 *s* 中元素的个数，也称集合 *s* 的势(*cardinality*)
 
-- `x in s` - Test *x* for membership in *s*.
+- `x in s` - Test *x* for membership in *s*. 
+
+  *x* 可以是 set 对象，为了支持搜索与之等效的 frozenset 对象，将通过 *x* 创建一个临时的 frozenset 对象。
 
 - `x not in s` - Test *x* for non-membership in *s*.
 
@@ -111,16 +123,85 @@ set 和 frozenset 实例支持以下操作：
 
 使用以上方法可以避免像 `set('abc') & 'cbs'` 这样的错误，并且 `set('abc').intersection('cbs')` 也更加易读。
 
-set 和 frozenset 均支持集合间的比较操作： Two sets are equal if and only if every element of each set is contained in the other (each is a subset of the other). A set is less than another set if and only if the first set is a proper subset of the second set (is a subset, but is not equal). A set is greater than another set if and only if the first set is a proper superset of the second set (is a superset, but is not equal).
+set 和 frozenset 均支持集合间的比较操作：当且仅当两个集合相互包含对方的每个元素(即两个集合互为子集)时，才认为两个集合相等。当且仅当 A 集合是 B 集合的真子集(即 A 是 B 的子集，但 A 不等于 B)时，才认为集合 A 小于集合 B。当且仅当 A 集合是 B 集合的真超集(即 A 是 B 的超集，但 A 不等于 B)时，才认为集合 A 大于集合 B。
 
-set 实例和 frozenset 实例间的比较操作是基于所含成员进行的，例如：
+set 实例和 frozenset 实例间的比较操作是基于内部成员进行的，例如：
 
 ```python
 set('abc') == frozenset('abc') #> True
 set('abc') in set([frozenset('abc')]) #> Ture
 ```
 
-子集(*subset*)和相等比较不能被推广到排序函数
+子集(*subset*)和相等比较不能被推广到全(*total*)排序函数。例如，任何两个非空且无交集的集合被认为互不相等，并且均不是对方的子集，因此以下表达式均为假：
+
+```python
+# a,b是互斥且无交集的集合，以下表达式均为假
+a < b
+a == b
+a > b
+```
+
+由于集合仅定义了部分(*partial*)排序关系(子集关系)，所以在集合列表中并没有定义 [`list.sort()`](https://docs.python.org/3.7/library/stdtypes.html#list.sort) 方法的输出：
+
+```python
+sets = [{3,4},{1,2},{4,5}]
+sets.sort() # 不会改变集合间的序列顺序
+sets #> [{3, 4}, {1, 2}, {4, 5}]
+```
+
+若在二元集合操作中混用 set 和 frozenset 对象，则返回值是第一个操作数的类型。例如， `frozenset('ab') | set('bc')` 的返回值是 frozenset 对象。
+
+### a. for set
+
+以下操作仅适用于 set 对象(可变)，不能用于 frozenset 对象(不可变)：
+
+- `update`(**others*) 或 `set |= other | ...` 
+
+  Update the set, adding elements from all others.
+
+- `intersection_update`(**others*) 或 `set &= other & ...`
+
+  Update the set, keeping only elements found in it and all others.
+
+- `difference_update`(**others*) 或 `set -= other | ...`
+
+  Update the set, removing elements found in others.
+
+- `symmetric_difference_update`(*other*) 或 `set ^= other`
+
+  Update the set, keeping only elements found in either set, but not in both.
+
+- `add`(*elem*)
+
+  Add element *elem* to the set.
+
+- `remove`(*elem*)
+
+  Remove element *elem* from the set. Raises [`KeyError`](https://docs.python.org/3.7/library/exceptions.html#KeyError) if *elem* is not contained in the set.
+
+- `discard`(*elem*)
+
+  Remove element *elem* from the set if it is present.
+
+- `pop`()
+
+  Remove and return an arbitrary element from the set. Raises [`KeyError`](https://docs.python.org/3.7/library/exceptions.html#KeyError) if the set is empty.
+
+- `clear`()
+
+  Remove all elements from the set.
+
+任何可迭代对象均可用作以下方法的参数，但这些方法对应的运算符版本只能使用集合作为操作数：`update()`, `intersection_update()`, `difference_update()`, `symmetric_difference_update()`。
+
+可将 set 对象用作 [`__contains__()`](https://docs.python.org/3.7/reference/datamodel.html#object.__contains__), [`remove()`](https://docs.python.org/3.7/library/stdtypes.html#frozenset.remove) 或 [`discard()`](https://docs.python.org/3.7/library/stdtypes.html#frozenset.discard) 的 *elem* 参数。为了支持搜索与之等效的 frozenset 对象，将通过 *elem* 创建一个临时的 frozenset 对象。
+
+
+
+
+
+
+
+
 
 
 

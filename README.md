@@ -1,6 +1,8 @@
 # python_notes
 Python 学习笔记
 
+
+
 参考：
 
 - [Rreal Python](https://realpython.com/tutorials/all/)：提供了大量教程，覆盖面很广。阅读过其中一篇的译文：[Python 3.7 中的新特性](https://pythonfun.top/cool-new-features-in-python-3.7-trp/)，感觉挺不错的
@@ -36,7 +38,7 @@ Python 学习笔记
 
   jupyter 和 ipython 的关系 -- IPython is a growing project, with increasingly language-agnostic components. IPython 3.x was the last monolithic release of IPython, containing the notebook server, qtconsole, etc. As of IPython 4.0, the language-agnostic parts of the project: the notebook format, message protocol, qtconsole, notebook web application, etc. <u>have moved to new projects under the name [Jupyter](https://jupyter.org/).</u> IPython itself is focused on interactive Python, part of which is providing a Python kernel for Jupyter.
 
-阅读建议
+阅读建议：
 
 - [The Best Python Books](https://realpython.com/best-python-books/)：由 [realpython](https://realpython.com) 提供的推荐阅读列表
 
@@ -69,10 +71,19 @@ Python 学习笔记
 - [Python 3 Module of the Week](https://pymotw.com/3/index.html)
 
   - 中文翻译：[Python 3 标准库实例教程](https://pythoncaff.com/docs/pymotw)
+  - 英文勘误：[View Errata](http://www.oreilly.com/catalog/errata.csp?isbn=0636920032519)
 
 - [Effective Python: 59 Ways to Write Better Python](https://effectivepython.com/)
 
   - 中文译本：Effective Python 编写高质量Python代码的59个有效方法
+
+- [Fluent Python: Clear, Concise, and Effective Programming](http://shop.oreilly.com/product/0636920032519.do)
+
+  - 中文译本：流畅的 Python
+
+- [Effective Computation in Physics: Field Guide to Research with Python](http://shop.oreilly.com/product/0636920033424.do)
+
+  - 中文译本：[Python 物理学高效计算](https://www.epubit.com/book/detail/33360)
 
 - [byte-of-python](https://python.swaroopch.com/)：免费书籍，该书的 GitHub 仓库是 [byte-of-python](https://github.com/swaroopch/byte-of-python)
 
@@ -88,3 +99,6 @@ Python 学习笔记
 
 - [Intermediate Python](https://leanpub.com/intermediatepython)：与上一本书同名，没有发现中文 译本
 
+一些有趣的东西：
+
+- https://jakevdp.github.io/
