@@ -27,6 +27,7 @@ Python 学习笔记
 杂项：
 
 - [Cool New Features in Python 3.7](https://realpython.com/python37-new-features/) ：详细讲述了 3.7 版本的新功能
+- [Python快速教程](https://www.cnblogs.com/vamei/archive/2012/09/13/2682778.html)：没仔细看，感觉内容比较丰富
 
 学习工具：
 
@@ -87,10 +88,12 @@ Python 学习笔记
 - [Fluent Python: Clear, Concise, and Effective Programming](http://shop.oreilly.com/product/0636920032519.do)
 
   - 中文译本：流畅的 Python
+  - GitHub 仓库是 [fluentpython/example-code](https://github.com/fluentpython/example-code)
 
 - [Effective Computation in Physics: Field Guide to Research with Python](http://shop.oreilly.com/product/0636920033424.do)
 
   - 中文译本：[Python 物理学高效计算](https://www.epubit.com/book/detail/33360)
+  - GitHub 仓库是：[physics-codes/examples](https://github.com/physics-codes/examples)
 
 - [byte-of-python](https://python.swaroopch.com/)：免费书籍，该书的 GitHub 仓库是 [byte-of-python](https://github.com/swaroopch/byte-of-python)
 
