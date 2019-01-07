@@ -36,7 +36,66 @@ New in version 3.2.
 
 🔨 @functools.lru_cache(*maxsize=128*, *typed=False*)
 
-该装饰器实现了备忘(*memoization*)功能，会让某函数具有最近最小缓存机制。所有传递过来的参数都会被哈希化，用于后续结果的映射。之后再次调用相同的参数时会从缓存中直接调取出结果而不再经过函数运算。同时此装饰器还给原函数加了一个用于检测缓存状态的方法(`cache_info()`)和一个清空缓存的方法(`cache_clear()`)。
+该装饰器实现了备忘(*memoization*)功能，会让某函数具有最近最小缓存机制([*Least* *Recently* *Used* (LRU) *cache*](https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU)))。所有传递过来的参数都会被哈希化，用于后续结果的映射。之后再次调用相同的参数时会从缓存中直接调取出结果而不再经过函数运算。同时此装饰器还给原函数加了一个用于检测缓存状态的方法(`cache_info()`)和一个清空缓存的方法(`cache_clear()`)。
+
+The `maxsize` parameter specifies how many recent calls are cached. The default value is 128, but you can specify `maxsize=None` to cache all function calls. However, be aware that this can cause memory problems if you are caching many large objects.
+
+You can use the `.cache_info()` method to see how the cache performs, and you can tune it if needed. 
+
+```python
+import functools
+
+@functools.lru_cache(maxsize=4)
+def fibonacci(num):
+    print(f"Calculating fibonacci({num})")
+    if num < 2:
+        return num
+    return fibonacci(num - 1) + fibonacci(num - 2)
+```
+
+ In our example, we used an artificially small `maxsize` to see the effect of elements being removed from the cache:
+
+```python
+>>> fibonacci(10)
+Calculating fibonacci(10)
+Calculating fibonacci(9)
+Calculating fibonacci(8)
+Calculating fibonacci(7)
+Calculating fibonacci(6)
+Calculating fibonacci(5)
+Calculating fibonacci(4)
+Calculating fibonacci(3)
+Calculating fibonacci(2)
+Calculating fibonacci(1)
+Calculating fibonacci(0)
+55
+
+>>> fibonacci(8)
+21
+
+>>> fibonacci(5)
+Calculating fibonacci(5)
+Calculating fibonacci(4)
+Calculating fibonacci(3)
+Calculating fibonacci(2)
+Calculating fibonacci(1)
+Calculating fibonacci(0)
+5
+
+>>> fibonacci(8)
+Calculating fibonacci(8)
+Calculating fibonacci(7)
+Calculating fibonacci(6)
+21
+
+>>> fibonacci(5)
+5
+
+>>> fibonacci.cache_info()
+CacheInfo(hits=17, misses=20, maxsize=4, currsize=4)
+```
+
+
 
 ## 🔨total_ordering
 

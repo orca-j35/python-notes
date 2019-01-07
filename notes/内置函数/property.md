@@ -2,6 +2,8 @@
 
 [TOC]
 
+> 扩展阅读：[Descriptor HowTo Guide](https://docs.python.org/3/howto/descriptor.html#id1) -> [Properties](https://docs.python.org/3/howto/descriptor.html#id7)
+
 ## 1. 函数形式
 
 🔨class property(*fget=None*, *fset=None*, *fdel=None*, *doc=None*) -> property attribute
