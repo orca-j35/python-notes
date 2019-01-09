@@ -49,7 +49,16 @@ See [variable annotation](https://docs.python.org/3.7/glossary.html#term-variabl
 
 > 扩展阅读：
 >
-> - [PEP 526 -- Syntax for Variable Annotations](https://www.python.org/dev/peps/pep-0526/)
+> - [What are variable annotations in Python 3.6?](https://stackoverflow.com/questions/39971929/what-are-variable-annotations-in-python-3-6)
+>
+> - [**PEP 484**](https://www.python.org/dev/peps/pep-0484) - Type Hints
+>
+>   Definition of a standard meaning for annotations: type hints.
+>
+> - [**PEP 526**](https://www.python.org/dev/peps/pep-0526) - Syntax for Variable Annotations
+>
+>   Ability to type hint variable declarations, including class variables and instance variables
+>
 > - What’s New In Python 3.6 -> [PEP 526: Syntax for variable annotations](https://docs.python.org/3.7/whatsnew/3.6.html?highlight=annotation#pep-526-syntax-for-variable-annotations)
 
 变量注解([*variable* *annotation*](https://docs.python.org/3.7/glossary.html#term-variable-annotation))用于为变量或类属性提供注解。
@@ -57,14 +66,6 @@ See [variable annotation](https://docs.python.org/3.7/glossary.html#term-variabl
 在对变量或类进行注解时，可以不进行赋值操作：
 
 ```python
-primes: List[int] = []
-
-captain: str  # Note: no initial value!
-
-class Starship:
-    stats: Dict[str, int] = {}
-        
-
 class C:
     field: 'annotation'
 
@@ -74,7 +75,23 @@ print(C.__annotations__) #> {'field': 'annotation'}
 通常会将变量注解用作类型提示([*type* *hint*](https://docs.python.org/3.7/glossary.html#term-type-hint))，例如下面这个变量期望获得 [`int`](https://docs.python.org/3.7/library/functions.html#int) 类型的值：
 
 ```python
-count: int = 0
+from typing import Dict, ClassVar, get_type_hints
+class Starship:
+    hitpoints: int = 50
+    stats: ClassVar[Dict[str, int]] = {}
+    primes: List[int] = []
+    shield: int = 100
+    captain: str
+    def __init__(self, captain: str) -> None:
+        ...
+
+assert get_type_hints(Starship) == {'hitpoints': int,
+                                    'stats': ClassVar[Dict[str, int]],
+                                    'shield': int,
+                                    'captain': str}
+
+assert get_type_hints(Starship.__init__) == {'captain': str,
+                                             'return': None}
 ```
 
 变量注解的语法在 [Annotated assignment statements](https://docs.python.org/3.7/reference/simple_stmts.html#annassign) 中进行了解释。
@@ -83,7 +100,42 @@ See [function annotation](https://docs.python.org/3.7/glossary.html#term-functio
 
 ### 函数注解
 
-函数注解([function annotation](https://docs.python.org/3.7/glossary.html#term-function-annotation))用于为函数形参或返回值提供注解。
+> 参考:
+>
+> - [Python 的函数注解](https://segmentfault.com/a/1190000005173184)
+> - [4.7.7. Function Annotations](https://docs.python.org/3/tutorial/controlflow.html#function-annotations)
+>
+> 扩展阅读:
+>
+> - [**PEP 3107**](https://www.python.org/dev/peps/pep-3107) - Function Annotations
+>
+>   The original specification for function annotations.
+>
+> - [**PEP 484**](https://www.python.org/dev/peps/pep-0484) - Type Hints
+>
+>   Definition of a standard meaning for annotations: type hints.
+>
+> - [**PEP 526**](https://www.python.org/dev/peps/pep-0526) - Syntax for Variable Annotations
+>
+>   Ability to type hint variable declarations, including class variables and instance variables
+>
+> - [**PEP 563**](https://www.python.org/dev/peps/pep-0563) - Postponed Evaluation of Annotations
+>
+>   Support for forward references within annotations by preserving annotations in a string form at runtime instead of eager evaluation.
+>
+> - [variable annotation](https://docs.python.org/3.7/glossary.html#term-variable-annotation)
+
+函数注解([*function* *annotation*](https://docs.python.org/3.7/glossary.html#term-function-annotation))用于为函数形参或返回值提供注解，在 [Function definitions](https://docs.python.org/3.7/reference/compound_stmts.html#function) 对函数注解的语法进行了解释。
+
+```python
+def dog(name:str, age:(1, 99), species:'品种') -> tuple:
+    return (name, age, species)
+```
+
+- `: expression`：用于对参数逐个进行注解，可对任何参数进行注解，包括 `*args` 和 `**kwargs` 
+- “`-> expression`”：用于对返回值进行注解。
+
+任何有效的 Python 表达式均可被用作注解，注解的存在不会改变函数的语义。
 
 通常会将函数注解用作类型提示([*type* *hint*](https://docs.python.org/3.7/glossary.html#term-type-hint))，例如下面这个函数期望获得两个 [`int`](https://docs.python.org/3.7/library/functions.html#int) 类型的实参，并且还应该具备 [`int`](https://docs.python.org/3.7/library/functions.html#int) 类型的返回值：
 
@@ -92,11 +144,24 @@ def sum_two_numbers(a: int, b: int) -> int:
    return a + b
 ```
 
-在 [Function definitions](https://docs.python.org/3.7/reference/compound_stmts.html#function) 对函数注解的语法进行了解释。
+函数注解以字典的形式被存储在该函数的 `__annotations__` 属性中，对函数的其它部分没有任何影响。
 
-See [variable annotation](https://docs.python.org/3.7/glossary.html#term-variable-annotation) and [**PEP 484**](https://www.python.org/dev/peps/pep-0484), which describe this functionality.
+```python
+In [7]: dog.__annotations__
+Out[7]: {'age': (1, 99), 'name': str, 'return': tuple, 'species': '品种'}
+```
 
 ### 类型提示
+
+> 扩展阅读:
+>
+> - [`typing`](https://docs.python.org/3.7/library/typing.html#module-typing) — Support for type hints
+>
+> - [**PEP 484**](https://www.python.org/dev/peps/pep-0484) - Type Hints
+>
+>   Definition of a standard meaning for annotations: type hints.
+>
+> - What’s New In Python 3.5 -> [PEP 484 - Type Hints](https://docs.python.org/3.7/whatsnew/3.5.html?highlight=annotation#pep-484-type-hints)
 
 类型提示([*type* *hint*](https://docs.python.org/3.7/glossary.html#term-type-hint))其实就是一个注解，该注解用于指定变量、类属性、函数形参、函数返回值期望的类型。
 
@@ -104,66 +169,7 @@ See [variable annotation](https://docs.python.org/3.7/glossary.html#term-variabl
 
 可使用 [`typing.get_type_hints()`](https://docs.python.org/3.7/library/typing.html#typing.get_type_hints) 访问全局变量、类属性、函数的类型提示，但是不能访问本地变量的类型提示。
 
-See [`typing`](https://docs.python.org/3.7/library/typing.html#module-typing) and [**PEP 484**](https://www.python.org/dev/peps/pep-0484), which describe this functionality.
 
-### 
-
-
-
-“[Python 的函数注解](https://segmentfault.com/a/1190000005173184)”
-
-Python 3.x 引入了函数注解。
-
-https://www.python.org/dev/peps/pep-3107/
-
-普通的自定义函数如下：
-
-```
-def dog(name, age, species):
-    return (name, age, species)
-```
-
-添加函数注解后的代码：
-
-```
-def dog(name:str, age:(1, 99), species:'品种') -> tuple:
-    return (name, age, species)
-```
-
-- `:` 冒号：用于对参数逐个进行注解，注解的内容可以是任何形式，比如参数的类型、作用、取值范围等等
-- `->` ：用于定义返回注解 (Return annotations)
-
-函数注解以字典的形式被存储在该函数的 `__annotations__` 属性中，对函数的其它部分没有任何影响。
-
-```
-In [7]: dog.__annotations__
-Out[7]: {'age': (1, 99), 'name': str, 'return': tuple, 'species': '品种'}
-```
-
-默认参数的添加位置：
-
-```
-In [8]: def dog(name:str ='dobi', age:(1, 99) =3, species:'品种' ='Labrador') -> tuple:
-   ...:     return (name, age, species)
-   ...:
-
-In [9]: dog()
-Out[9]: ('dobi', 3, 'Labrador')
-```
-
-示例：
-
-```
->>> def f(ham: str, eggs: str = 'eggs') -> str:
-...     print("Annotations:", f.__annotations__)
-...     print("Arguments:", ham, eggs)
-...     return ham + ' and ' + eggs
-...
->>> f('spam')
-Annotations: {'ham': <class 'str'>, 'return': <class 'str'>, 'eggs': <class 'str'>}
-Arguments: spam eggs
-'spam and eggs'
-```
 
 
 

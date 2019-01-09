@@ -1,8 +1,9 @@
 # Subscriptions & Slicings
 
-GitHub@[orca-j35](https://github.com/orca-j35) /📦[python_notes](https://github.com/orca-j35/python_notes) 
+> GitHub@[orca-j35](https://github.com/orca-j35) /📦[python_notes](https://github.com/orca-j35/python_notes) 
+>
 
-## aSubscriptions
+## Subscriptions
 
 ### a. 语法
 
@@ -192,7 +193,7 @@ Fib()[slice(10)] #> [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
 
 - `start` is the lower bound; 
 - `stop` is the upper bound; 
-- `step`is the step value; 
+- `step` is the step value; 
 
 以上三个属性可以是任意类型的值，并且没有其他功能，但是 Numerical Python 和其它第三方扩展会使用这三个属性。如果在创建切片对象时，省略了上述某个属性，则会将其设置为 `None`。
 
