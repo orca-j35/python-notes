@@ -179,7 +179,7 @@ dict(iterable) -> new dictionary initialized as if via:
 
 #### a. 类方法
 
-classmethod fromkeys(*seq*[, *value*])
+🔨 classmethod fromkeys(*seq*[, *value*])
 
 该类方法会创建一个新的字典实例。在创建实例的过程中，会将 *seq* 中的元素作为键， 并将各个键的值设为 *value* (*value* 的默认值是 `None` )。
 
