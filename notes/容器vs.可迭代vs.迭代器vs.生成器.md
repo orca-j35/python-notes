@@ -425,7 +425,7 @@ print(list(a_iterator))
 
 generator [^4][^7][^9]
 
-本质上来说，生成器([generator](https://docs.python.org/3.7/glossary.html#term-generator))就是一个函数，它提供了一种实现迭代器协议的便捷方式。生成器与普通函数的区别在于它包含 [`yield`](https://docs.python.org/3.7/reference/simple_stmts.html#yield) 表达式，并且不需要定义 `__iter__()`和`__next__()`。也就是说，使用 [`yield`](https://docs.python.org/3.6/reference/simple_stmts.html#yield) 语句的函数或方法便可被称为生成器函数( *generator function* )。关于 `yield` 可参考 [The yield statement](https://docs.python.org/3.6/reference/simple_stmts.html#yield) 和  [the documentation for the yield expression](https://docs.python.org/3.7/reference/expressions.html#yieldexpr). 
+本质上来说，生成器([generator](https://docs.python.org/3.7/glossary.html#term-generator))就是一个函数，它提供了一种实现迭代器协议的便捷方式。生成器与普通函数的区别在于它包含 [`yield`](https://docs.python.org/3.7/reference/simple_stmts.html#yield) 表达式，并且不需要定义 `__iter__()` 和 `__next__()`。也就是说，使用 [`yield`](https://docs.python.org/3.6/reference/simple_stmts.html#yield) 语句的函数或方法便可被称为生成器函数( *generator function* )。关于 `yield` 可参考 [The yield statement](https://docs.python.org/3.6/reference/simple_stmts.html#yield) 和  [the documentation for the yield expression](https://docs.python.org/3.7/reference/expressions.html#yieldexpr). 
 
 ```python
 # 一个生成器函数的示例：
