@@ -109,6 +109,11 @@ Python 学习笔记
 
 - [Intermediate Python](https://leanpub.com/intermediatepython)：与上一本书同名，没有发现中文 译本
 
+爬虫：
+
+- Python3 网络爬虫开发实战：作者[崔庆才](https://cuiqingcai.com/author/cqcre)，GitHub [仓库](https://github.com/Python3WebSpider)，GitBook [预览](https://germey.gitbooks.io/python3webspider/content/)
+  - 该作者还提供了一套付费视频教程 [Python3网络爬虫实战案例](https://cuiqingcai.com/4320.html) 和两套免费教程 [爬取知乎所有用户详细信息](https://edu.hellobi.com/course/163)、[Python3爬虫三大案例实战分享](https://edu.hellobi.com/course/156) -- 视频资源在 B 站上均有
+
 一些有趣的东西：
 
 - https://jakevdp.github.io/
