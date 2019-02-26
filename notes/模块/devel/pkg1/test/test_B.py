@@ -1,1 +1,0 @@
-print('in test_B')
