@@ -1,7 +1,7 @@
 # python_notes
 Python 学习笔记
 
-目录结构：
+本笔记的目录结构：
 
 - Language Reference - 「[Library Reference](https://docs.python.org/3.7/library/index.html)」的笔记
 - Library Reference - 「[Language Reference](https://docs.python.org/3.7/reference/index.html)」的笔记
@@ -9,25 +9,6 @@ Python 学习笔记
 - notes_of_PyQt -  PyQt 的笔记
 - notes_of_crawler - 爬虫的笔记
 - 待整理笔记 - 待整理的笔记
-
-参考：
-
-- [Rreal Python](https://realpython.com/tutorials/all/)：提供了大量教程，覆盖面很广。阅读过其中一篇的译文：[Python 3.7 中的新特性](https://pythonfun.top/cool-new-features-in-python-3.7-trp/)，感觉挺不错的
-
-博客：
-
-- [欢乐蟒](https://pythonfun.top/)：翻译了一些技术文章，比如 [Python 3.7 中的新特性](https://pythonfun.top/cool-new-features-in-python-3.7-trp/) 
-- [Python 之旅](http://funhacks.net/2017/01/03/explore_python/)：内容层次清晰，有作者自己的理解，很不错 - [在线阅读](https://funhacks.net/explore-python/)
-- [Python 之禅](https://foofish.net/)：博客
-- [Python 学习之旅](https://segmentfault.com/blog/python3)：有几篇总结性的文章很不错
-- [Python Reference (The Right Way) - DRAFT](https://python-reference.readthedocs.io/en/latest/index.html)：适用于Python 2.7.X，提供了有关内置函数、列表推导式、容器数据、运算符、语句等的快速参考
-- [〖十月狐狸〗](https://www.cnblogs.com/sesshoumaru/)：提供了 Python 3.6 中所有内置函数的笔记
-- [Yixiaohan](https://github.com/Yixiaohan)/[codeparkshare](https://github.com/Yixiaohan/codeparkshare) 整理并推荐了一些学习资料
-
-杂项：
-
-- [Cool New Features in Python 3.7](https://realpython.com/python37-new-features/) ：详细讲述了 3.7 版本的新功能
-- [Python快速教程](https://www.cnblogs.com/vamei/archive/2012/09/13/2682778.html)：没仔细看，感觉内容比较丰富
 
 学习工具：
 
@@ -52,12 +33,13 @@ Python 学习笔记
 
 - [What tutorial should I read?](https://sopython.com/wiki/What_tutorial_should_I_read%3F)：由 [sopython](https://sopython.com/) 提供的推荐阅读列表
 
+- [Rreal Python](https://realpython.com/tutorials/all/)：提供了大量教程，覆盖面很广。阅读过其中一篇的译文：[Python 3.7 中的新特性](https://pythonfun.top/cool-new-features-in-python-3.7-trp/)，感觉挺不错的
+
 - [Think Python 2e](https://greenteapress.com/wp/think-python-2e/)：免费书籍，该书的 GitHub 仓库是 [ThinkPython2](https://github.com/AllenDowney/ThinkPython2/tree/master/code)
 
   该书有如下中文译本：
 
-  - [ThinkPython2-CN](http://codingpy.com/books/thinkpython2/)：该译本的 GitHub 仓库是 [ThinkPython-CN](https://github.com/bingjin/ThinkPython2-CN) ⭐
-  - [Think Python 第二版中文版](https://legacy.gitbook.com/book/cycleuser/think-python/details)(GitBook)：该译本的 GitHub 仓库是 [ThinkPython-CN](https://github.com/cycleuser/ThinkPython-CN)(GitHub)
+  - [ThinkPython2-CN](http://codingpy.com/books/thinkpython2/)：该译本的 GitHub 仓库是 [ThinkPython-CN](https://github.com/bingjin/ThinkPython2-CN)
   - 像计算机科学家一样思考Python 第2版：目前在销售的中文译本
 
 - [Python Crash Course](https://ehmatthes.github.io/pcc/)：[作者的网站](https://ehmatthes.github.io/pcc/)提供了示例代码、速查列表、勘误等内容
@@ -99,6 +81,11 @@ Python 学习笔记
 
   - 中文译本：[简明 Python 教程](https://bop.mol.uno/)，该译本的 GitHub 仓库是 [byte-of-python](https://github.com/LenKiMo/byte-of-python)
 
+- [The Python Tutorial](https://docs.python.org/3.7/tutorial/index.html)：官方教程
+
+  - 中文译本：[Python 官方文档：入门教程](https://learnku.com/docs/tutorial/3.7.0)
+  - 中文译本：[Python 入门指南](http://www.pythondoc.com/pythontutorial3/index.html)
+
 - [Learn Python 3 the Hard Way](https://learnpythonthehardway.org/python3/)：此教程存在 Stack Overflow 较多争议，部分人认为它不适合初学者，该教程有一个进阶版 [Learn More Python the Hard Way](https://learncodethehardway.org/more-python-book/)。
 
   - 中文译本：[笨办法学Python 3](https://item.jd.com/12372646.html?dist=jd)，在网络上流传的中文译本都是旧版本，最好直接购买纸质书。
@@ -117,3 +104,18 @@ Python 学习笔记
 一些有趣的东西：
 
 - https://jakevdp.github.io/
+
+博客：
+
+- [欢乐蟒](https://pythonfun.top/)：翻译了一些技术文章，比如 [Python 3.7 中的新特性](https://pythonfun.top/cool-new-features-in-python-3.7-trp/) 
+- [Python 之旅](http://funhacks.net/2017/01/03/explore_python/)：内容层次清晰，有作者自己的理解，很不错 - [在线阅读](https://funhacks.net/explore-python/)
+- [Python 之禅](https://foofish.net/)：博客
+- [Python 学习之旅](https://segmentfault.com/blog/python3)：有几篇总结性的文章很不错
+- [Python Reference (The Right Way) - DRAFT](https://python-reference.readthedocs.io/en/latest/index.html)：适用于Python 2.7.X，提供了有关内置函数、列表推导式、容器数据、运算符、语句等的快速参考
+- [〖十月狐狸〗](https://www.cnblogs.com/sesshoumaru/)：提供了 Python 3.6 中所有内置函数的笔记
+- [Yixiaohan](https://github.com/Yixiaohan)/[codeparkshare](https://github.com/Yixiaohan/codeparkshare) 整理并推荐了一些学习资料
+
+杂项：
+
+- [Cool New Features in Python 3.7](https://realpython.com/python37-new-features/) ：详细讲述了 3.7 版本的新功能
+- [Python快速教程](https://www.cnblogs.com/vamei/archive/2012/09/13/2682778.html)：没仔细看，感觉内容比较丰富

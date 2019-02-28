@@ -3,9 +3,11 @@
 >
 > 参考: 
 >
-> - [6. Modules](https://docs.python.org/3.7/tutorial/modules.html#modules)
+> - [6. Modules - The Python Tutorial](https://docs.python.org/3.7/tutorial/modules.html#modules)
+>   - [6. 模块](https://learnku.com/docs/tutorial/3.7.0/modules/3508#c776ac) | [6. 模块](http://www.pythondoc.com/pythontutorial3/modules.html)
+> - [模块 - 廖雪峰](https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014318447437605e90206e261744c08630a836851f5183000)
+> - byte of python - 模块
 > - 数据结构(python语言描述) ->  1.1.1 程序和模块
-> - [廖雪峰 - 模块](https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014318447437605e90206e261744c08630a836851f5183000)
 
 ## 1. 概述
 
@@ -13,10 +15,12 @@
 
 简短的 Python 程序也称为脚本(*script*)，可以包含在单个模块之中。较为复杂的程序通常会包含一个主模块和一个或多个支持模块——主模块包含了程序执行的起点，支持模块则包含了函数定义和类定义。
 
-模块等级的语句被用于初始化模块，会在第一次导入(*import*) 模块(或直接运行模块)时被执行，例如：
+模块等级的语句被用于初始化模块，会在第一次导入(*import*) 模块「或直接运行模块」时被执行，例如：
 
 - 模块中位于函数定义和方法定义之外的语句会被执行
 - 模块等级的"函数定义"和"类定义"语句会将"函数名"和"类名"导入模块的全局符号表中。
+
+每个模块都有自己的私有"符号表"(*private* *symbol* *table*)，在模块中定义的所有函数都会将模块的"私有符号"表当作"全局符号表"使用。因此，模块的作者可以在模块内部使用全局变量，且无需担心它与某个用户的全局变量意外冲突。模块的用于可以使用 `modname.itemname` 来访问模块的全局变量。
 
 示例 - module_1.py 和 module_2.py 位于同一目录下：
 
@@ -60,9 +64,35 @@ out 模块1
 
 通过上面这个示例，可以观察到在不同的模块中可以使用相同的函数名和变量名，但尽量不要与 [内置函数](https://docs.python.org/3/library/functions.html#built-in-functions) 冲突。
 
-每个模块都有自己的**私有符号表**，模块内所有函数定义都会将模块的私有符号表当作**全局符号表**使用。因此，模块的作者可以在模块内部使用全局变量，而无需担心它与某个用户的全局变量意外冲突。可以使用 `modname.itemname` 访问模块的全局变量。
+## 2. 模块的属性
 
-## 2. 模块的注释
+模块中的属性可分为以下三类：
+
+- 公共属性(*public*) - 以 `xxx` 命名，不以 `_` 开头
+- 私有属性(*private*) - 以 `_xxx` 或 `__xxx` 命名
+- 特殊属性 - 以 `__xxx__` 命名
+
+以上三类属性均可通过 `module.attribute_name` 直接访问，Python 并不能限制对私有属性的访问，但我们"不应该"访问这些属性。模块和类不同，类会自动修改 `__xxx` 变量的名称，但是模块不会。
+
+示例 - 私有属性的使用：
+
+```python
+def _private_1(name): # 私有属性
+    return 'Hello, %s' % name
+
+def _private_2(name): # 私有属性
+    return 'Hi, %s' % name
+
+def greeting(name): # 公共属性
+    if len(name) > 3:
+        return _private_1(name)
+    else:
+        return _private_2(name)
+```
+
+`greeting()` 是公共函数，其内部逻辑被两个私有函数进行了隐藏。在调用 `greeting()` 函数时，不用关心模块内部私有函数的实现细节。这是一种非常有用的代码封装和抽象的方法：将外部不需要引用的函数全部定义成私有，只有外部需要引用的函数才定义为公共。
+
+## 3. 模块的注释
 
 示例 - 展示模块注释的使用方法：
 
@@ -96,43 +126,94 @@ if __name__=='__main__':
 - 第6行使用 `__author__` 变量表示作者名
 - 第7行使用 `__version__` 变量表示版本
 
-## 3. 模块的属性
+## 4. 导入模块
 
-模块中的属性可分为以下三类：
+### import...as...
 
-- 公共属性(*public*) - 以 `xxx` 命名，不以 `_` 开头
+此方法用于在当前模块中导入另一个模块，被导入的模块名会被添加到当前模块的全局符号表中，但并不会将被导入模块中的属性添加到当前模块的全局符号表中。
 
-- 私有属性(*private*) - 以 `_xxx` 或 `__xxx` 命名
-
-- 特殊属性 - 以 `__xxx__` 命名
-
-以上三类属性均可通过 `module.attribute_name` 直接访问，Python 并不能限制对私有属性的访问，但我们"不应该"访问这些属性。模块和类不同，类会自动修改 `__xxx` 变量的名称，但是模块不会。
-
-示例 - 私有属性的使用：
+例如，在 `A` 模块中导入 `B` 模块后，`B` 模块的名称会被放置到 `A` 模块的全局符号表中：
 
 ```python
-def _private_1(name): # 私有属性
-    return 'Hello, %s' % name
-
-def _private_2(name): # 私有属性
-    return 'Hi, %s' % name
-
-def greeting(name): # 公共属性
-    if len(name) > 3:
-        return _private_1(name)
-    else:
-        return _private_2(name)
+>>> dir()
+['__annotations__', '__builtins__', '__doc__', '__loader__', '__name__', '__package__', '__spec__']
+>>> import sys
+>>> dir()
+['__annotations__', '__builtins__', '__doc__', '__loader__', '__name__', '__package__', '__spec__', 'sys']
 ```
 
-`greeting()` 是公共函数，其内部逻辑被两个私有函数进行了隐藏。在调用 `greeting()` 函数时，不用关心模块内部私有函数的实现细节。这是一种非常有用的代码封装和抽象的方法：将外部不需要引用的函数全部定义成私有，只有外部需要引用的函数才定义为公共。
+如果某函数很常用，还可为其分配本地名称：
 
-## 编译 python 文件
+```python
+>>> path_=sys.path
+>>> dir()
+['__annotations__', '__builtins__', '__doc__', '__loader__', '__name__', '__package__', '__spec__', 'path_', 'sys']
+```
 
-> 注意：旧版本的 Python 通常会在 `.py` 文件所在目录下直接创建相应的 `.pyc` 文件。另外，如果 Python 没有相应目录的写入权限，则无法创建 `.pyc` 文件
+还可使用 `as` 来重命名被导入的模块：
+
+```python
+import sys as sys_rename
+sys_rename.path
+```
+
+### from...import...as...
+
+此方法用于将另一个模块中的特定属性导入当前模块的符号表中，但不会向当前模块的符号表中添加被导入模块的名称。
+
+警告：应该尽量避免使用 `from..import` 语句，而是使用 `import` 语句。这样可避免命名冲突，并且也更易阅读。
+
+```python
+>>> from math import sqrt
+>>> print("Square root of 16 is", sqrt(16))
+>>> math
+Traceback (most recent call last):
+  File "<pyshell#2>", line 1, in <module>
+    math
+NameError: name 'math' is not defined
+```
+
+还可使用 `as` 来重命名被导入的属性：
+
+```python
+>>> from math import sqrt as sqr
+>>> sqr(16)
+4.0
+```
+
+### from...import *
+
+此方法会将另一个模块中的所有属性(以 `_` 开头的属性除外)导入当前模块的符号表中。
+
+在大多数情况下，不要使用该方法。因为它可能会向解释器中引入了一些使用者未知的名称，这可能会与当前符号表中已定义的名称相冲突。另外，该方法还会影响程序的可读性。
+
+## 5. 模块重载
+
+出于效率的原因，每个模块在每个解释器会话中只会导入一次。 因此，在更改模块后，则必须重新启动解释器，或对模块进行重载:
+
+```python
+import importlib
+importlib.reload(modulename)
+```
+
+## 6. 执行模块
+
+可通过以下两种方式来执行 Python 模块：
+
+- ⌨ `python <module-name>.py [arg] ... `
+- ⌨ `python -m <module-name> [arg] ... `
+
+在执行模块时，以上两种方法均会将 `__name__` 设置为 `"__main_"`，详见笔记﹝将模块作为脚本执行(python -m).md﹞
+
+## 7. 编译 python 文件
+
+> 对旧版本的 Python 而言，通常会在 `.py` 文件所在目录下创建相应的 `.pyc` 文件。
 >
-> 对旧版本的 Python 而言，通常会在 `.py` 文件所在目录下创建相应的 `.pyc` 文件。如果 Python 没有相应目录的写入权限，则无法创建 `.pyc` 文件。
+> 如果 Python 没有相应目录的写入权限，则无法创建 `.pyc` 文件。
+>
+> 编译得到的 `.pyc` 文件中存放的是字节码(*bytecode*)，而非本地计算机的机器语言。在执行 `.pyc` 文件时，仍然需要将字节码翻译为计算机的本地语言。在执行 `.py` 文件时，Python 会先将源代码转换为字节码，然后再将字节码翻译为计算机的本地语言。
 
-为了提高模块的加载速度，Python 会在 `__pycache__` 目录下以 `module.*version*.pyc` 名字缓存每个模块编译后的版本，这里的 version 编码了文件编译后的格式；version 中通常包含了 Python 的版本号。例如，在 CPython 发布 3.3 中 `spam.py` 的编译版本将被缓存为 `__pycache__/spam.cpython-33.pyc`。这种命名约定允许由不同发布和不同版本的 Python 编译的模块同时存在。
+为了提高模块的加载速度，Python 会在 `__pycache__` 目录下以 `module.version.pyc` 名字缓存每个模块编译后的版本，这里的 version 编码了文件编译后的格式；version 中通常包含了 Python 的版本号。例如，在 CPython 发布 3.3 中 `spam.py` 的编译版本将被缓存为 `__pycache__/spam.cpython-33.pyc`。这种命名约定允许由不同发布和不同版本的 Python 编译的模块同时存在。
 
 Python 针对编译版本，特别检查源的修改日期，以查看它是否过期，并需要重新编译。这是一个完全自动的过程。此外，编译的模块是与平台无关的，因此可以在具有不同架构的系统之间共享相同的库。
 
@@ -145,9 +226,11 @@ Python 在两种情况下不检查缓存。首先，对于直接从命令行加�
 - 模块 [`compileall`](../library/compileall.html#module-compileall) 可以为目录中的所有模块创建 `.pyc` 文件。
 - 在 [**PEP 3147**](https://www.python.org/dev/peps/pep-3147)中有关于这个过程的更多细节，包括决策的流程图。
 
-## 标准模块
+## 8. 标准模块
 
-Python 带有一个标准模块库，并发布有独立的文档，名为 Python 库参考手册（此后称其为"库参考手册"）。有一些模块内置于解释器之中，这些操作的访问接口不是语言内核的一部分，但是已经内置于解释器了。这既是为了提高效率，也是为了给系统调用等操作系统原生访问提供接口。这类模块集合是一个依赖于底层平台的配置选项。例如，[winreg](https://docs.python.org/3/library/winreg.html#module-winreg) 模块只提供在 Windows 系统上才有。有一个具体的模块值得注意： [sys](https://docs.python.org/3/library/sys.html#module-sys) ，这个模块内置于所有的 Python 解释器。变量 `sys.ps1` 和 `sys.ps2`定义了主提示符和辅助提示符字符串：
+Python 还附带一个由标准模块构成的库，并该库撰写了独立文档(Python Library Reference)。部分标准模块被内置在解释器中，这些模块提供了对那些不属于语言核心但仍属于内置操作的访问方法，其目的在于提高效率或提供对操作系统的原生访问(如系统调用)。例如，[`winreg`](https://docs.python.org/3.7/library/winreg.html#module-winreg) 模块尽在 Windows 系统中提供。
+
+另外，需要注意一下 [`sys`](https://docs.python.org/3.7/library/sys.html#module-sys) 模块，它被内置在所有 Python 解释器中。`sys` 中的变量 `sys.ps1` 和 `sys.ps2` 被用于定义主提示符和辅助提示符(这两个变量只在解释器的交互模式下有意义)：
 
 ```python
 >>> import sys
@@ -161,69 +244,9 @@ Yuck!
 C>
 ```
 
-这两个变量只在解释器的交互模式下有意义。
+变量 `sys.path` 用于确定解释器的模块搜索路径，详见笔记﹝模块搜索路径.md﹞
 
-## 模块重载
-
-出于效率的原因，每个模块在每个解释器会话中只导入一次。 因此，如果模块进行了更改，则必须重新启动解释器；或者重载该模块 `importlib.reload()`, 
-
-```python
-import importlib
-importlib.reload(modulename)
-```
-
-## 导入模块
-
-### import ... as ...
-
-在 `A` 模块中导入 `B` 模块时，`B` 模块的名称会被放置到 `A` 模块的全局符号表中。
-
-```python
->>> dir()
-['__annotations__', '__builtins__', '__doc__', '__loader__', '__name__', '__package__', '__spec__']
->>> import sys
->>> dir()
-['__annotations__', '__builtins__', '__doc__', '__loader__', '__name__', '__package__', '__spec__', 'sys']
-```
-
-`import` 语句并不会向当前作用域中直接导入 `sys` 模块中的属性，只会将 `sys` 的模块名，添加到了当前作用域中。
-
-如果某函数很常用，还可为其分配本地名称：
-
-```python
->>> path_=sys.path
->>> dir()
-['__annotations__', '__builtins__', '__doc__', '__loader__', '__name__', '__package__', '__spec__', 'path_', 'sys']
-```
-
-如果需要重命名被导入的模块，可以使用 `as` 限定符：
-
-```
-import sys as sys_rename
-sys_rename.path
-```
-
-### from ... import ...
-
-直接将模块中的相应名称导入到当前作用域中。
-注意：此方法不会向**当前作用域**的**本地符号表**中引入被导入模块的名称。
-
-警告：应该尽量避免使用 `from..import` 语句，而是使用`import` 语句。这样可避免命名冲突，并且也更易阅读。
-
-```python
-from math import sqrt
-print("Square root of 16 is", sqrt(16))
-```
-
-
-
-### from module import *
-
-这种方法会向**当前作用域**的**本地符号表**中导入 `module ` 中除下划线 `_` 开头的所有名称。
-
-在大多数情况下，不要使用该语句。因为它会向解释器中引入了一组未知的名称，这可能会与当前作用域中已定义的名称相冲突。
-
-## 为模块构建"发布"
+## 7. 为模块构建"发布"
 
 在 PyPI 上共享自己编写的模块时，需要为模块准备一个“发布”。
 “发布 distribution” 是指一个文件集合，该集合会有效组织其中的文件，以允许构建/打包/发布模块。构建好 distribution 后，便可把相应的模块安装到本地 Py 副本中，也可以把模块上传到 PyPI。
@@ -335,19 +358,7 @@ Writing C:\Python361\Lib\site-packages\nester-1.0.0-py3.6.egg-info
 登陆完成后，输入 `python setup.py sdlist upload` ，上传发布。
 注意，上传后得到`Server response (200): OK` ，才表示上传成功。
 
-
-
-
-
-
-
-
-
-
-
-
-
-## 术语
+## 8. 术语
 
 > 参考: [Glossary](https://docs.python.org/3.7/glossary.html#glossary)
 
