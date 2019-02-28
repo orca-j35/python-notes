@@ -26,11 +26,38 @@ func()
 """
 ```
 
-`dir()` does not list the names of built-in functions and variables. If you want a list of those, they are defined in the standard module [`builtins`](https://docs.python.org/3/library/builtins.html#module-builtins):
+`dir()` 会列出所有类型的名称，包括变量、模块、函数等等。例如：
 
+```python
+''' save as fibo.py
+# Fibonacci numbers module
+def fib(n):    # write Fibonacci series up to n
+    a, b = 0, 1
+    while a < n:
+        print(a, end=' ')
+        a, b = b, a+b
+    print()
+
+def fib2(n):   # return Fibonacci series up to n
+    result = []
+    a, b = 0, 1
+    while a < n:
+        result.append(a)
+        a, b = b, a+b
+    return result
+'''
+a = [1, 2, 3, 4, 5]
+import fibo
+fib = fibo.fib
+dir() #> ['__builtins__', '__name__', 'a', 'fib', 'fibo', 'sys']
 ```
-import builtins
-dir(builtins)  
+
+`dir()` 函数不会列出内置函数和内置变量的名称，这两者的定义被放置在标准模块 [`builtins`](https://docs.python.org/3/library/builtins.html#module-builtins) 中：
+
+```python
+>>> import builtins
+>>> dir(builtins)
+['ArithmeticError', 'AssertionError', 'AttributeError', 'BaseException', 'BlockingIOError', 'BrokenPipeError', 'BufferError', 'BytesWarning', 'ChildProcessError', 'ConnectionAbortedError', 'ConnectionError', 'ConnectionRefusedError', 'ConnectionResetError', 'DeprecationWarning', 'EOFError', 'Ellipsis', 'EnvironmentError', 'Exception', 'False', 'FileExistsError', 'FileNotFoundError', 'FloatingPointError', 'FutureWarning', 'GeneratorExit', 'IOError', 'ImportError', 'ImportWarning', 'IndentationError', 'IndexError', 'InterruptedError', 'IsADirectoryError', 'KeyError', 'KeyboardInterrupt', 'LookupError', 'MemoryError', 'ModuleNotFoundError', 'NameError', 'None', 'NotADirectoryError', 'NotImplemented', 'NotImplementedError', 'OSError', 'OverflowError', 'PendingDeprecationWarning', 'PermissionError', 'ProcessLookupError', 'RecursionError', 'ReferenceError', 'ResourceWarning', 'RuntimeError', 'RuntimeWarning', 'StopAsyncIteration', 'StopIteration', 'SyntaxError', 'SyntaxWarning', 'SystemError', 'SystemExit', 'TabError', 'TimeoutError', 'True', 'TypeError', 'UnboundLocalError', 'UnicodeDecodeError', 'UnicodeEncodeError', 'UnicodeError', 'UnicodeTranslateError', 'UnicodeWarning', 'UserWarning', 'ValueError', 'Warning', 'WindowsError', 'ZeroDivisionError', '__build_class__', '__debug__', '__doc__', '__import__', '__loader__', '__name__', '__package__', '__spec__', 'abs', 'all', 'any', 'ascii', 'bin', 'bool', 'breakpoint', 'bytearray', 'bytes', 'callable', 'chr', 'classmethod', 'compile', 'complex', 'copyright', 'credits', 'delattr', 'dict', 'dir', 'divmod', 'enumerate', 'eval', 'exec', 'exit', 'filter', 'float', 'format', 'frozenset', 'getattr', 'globals', 'hasattr', 'hash', 'help', 'hex', 'id', 'input', 'int', 'isinstance', 'issubclass', 'iter', 'len', 'license', 'list', 'locals', 'map', 'max', 'memoryview', 'min', 'next', 'object', 'oct', 'open', 'ord', 'pow', 'print', 'property', 'quit', 'range', 'repr', 'reversed', 'round', 'set', 'setattr', 'slice', 'sorted', 'staticmethod', 'str', 'sum', 'super', 'tuple', 'type', 'vars', 'zip']
 ```
 
 ## dir(*object*)
@@ -71,7 +98,14 @@ dir(builtins)
   具体而言，`dir()` 的默认机制会对不同类型的对象会表现出不同的行为，因为 `dir()` 会尝试生成相关度最高的非完整信息。
 
   - 如果 *object* 是模块对象，则输出列表中将包含该模块中的属性名，即 `module.__dict__.keys()`；
+
+    ```python
+    >>> dir(sys)  
+    ['__displayhook__', '__doc__', '__excepthook__', '__loader__', '__name__',...]
+    ```
+
   - 如果 *object* 是类(或类型)对象，则输出列表中将包含该类(或类型)对象中的属性名，并递归地包含其基类中的属性名。也就是说，会通过遍历该类(或类型)及其所有基类的 `__dict__` 来创建属性列表；
+
   - 如果 *object* 是实例对象，则输出列表中将包含 *object* 中的属性名，以及构造 *object* 的类中的属性名，并递归地包含其基类中的属性名。也就是说，会通过遍历该实例及其类(或类型)和所有基类的 `__dict__` 来创建属性列表。
 
 示例：
@@ -195,10 +229,11 @@ TypeError: vars() argument must have __dict__ attribute
 
 ## 参考
 
-- [dir() 与 __dict__，__slots__ 的区别](https://www.cnblogs.com/ifantastic/p/3768415.html)
+- [dir() 与 `__dict__`，`__slots__` 的区别](https://www.cnblogs.com/ifantastic/p/3768415.html)
 - [python 查看对象属性相关方法(__dict__, dir(), vars(), locals())](https://www.cnblogs.com/elie/p/6685413.html)
 - [what's the biggest difference between dir and __dict__ in python](https://stackoverflow.com/questions/14361256/whats-the-biggest-difference-between-dir-and-dict-in-python)
 - [Difference between dir(…) and vars(…).keys() in Python?](https://stackoverflow.com/questions/980249/difference-between-dir-and-vars-keys-in-python)
+- [6.3. The `dir()` Function](https://docs.python.org/3.7/tutorial/modules.html#the-dir-function)
 
 
 
