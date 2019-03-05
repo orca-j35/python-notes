@@ -130,6 +130,16 @@ if __name__=='__main__':
 
 ## 4. 导入模块
 
+> 相关笔记：
+>
+> - ﹝包(package).md﹞-> 2. 包导入
+>
+> 扩展阅读：
+>
+> - [PEP 328 -- Imports: Multi-Line and Absolute/Relative](https://www.python.org/dev/peps/pep-0328/)
+> - [PEP 366 -- Main module explicit relative imports](https://www.python.org/dev/peps/pep-0366/)
+> - [7.11. The `import` statement](https://docs.python.org/3.7/reference/simple_stmts.html#the-import-statement)
+
 ### import...as...
 
 此方法用于在当前模块中导入另一个模块，被导入的模块名会被添加到当前模块的全局符号表中，但并不会将被导入模块中的属性添加到当前模块的全局符号表中。
@@ -191,12 +201,43 @@ NameError: name 'math' is not defined
 
 ## 5. 模块重载
 
-出于效率的原因，每个模块在每个解释器会话中只会导入一次。 因此，在更改模块后，则必须重新启动解释器，或对模块进行重载:
+> 参考:
+>
+> - [【Python学习笔记】1. import reload 以及__import__注意点](https://www.cnblogs.com/MaggieXiang/archive/2013/06/05/3118156.html)
+> - [5.3.1. The module cache](https://docs.python.org/3/reference/import.html#the-module-cache)
+
+出于效率的原因，每个模块在每个解释器会话中只会导入一次。因此，重复使用 `import` 语句并不会重复加载同一模块。在导入模块时，首先会搜索 [`sys.modules`](https://docs.python.org/3/library/sys.html#sys.modules)——先前导入过的模块均会被缓存在 `sys.modules` 中。如果在 `sys.modules` 中已包含被导入的模块，便会直接使用该模块，不会再次进行导入。例如：
+
+```python
+# 以下两个脚本在同一个目录中
+main.py -> import test
+		-> import os
+		-> print(id(os),'in main.py')
+test.py -> import os
+		-> print(id(os),'in test.py')
+```
+
+执行效果：
+
+```python
+$ python main.py
+2103924143912 in test.py
+2103924143912 in main.py
+```
+
+因此，在修改模块后，必须重新启动解释器，或对模块进行重载:
 
 ```python
 import importlib
 importlib.reload(modulename)
+# 必需先加载模块，然后才能使用reload，如
+import os
+importlib.reload(os)
 ```
+
+`reload` 会对已加载的模块进行重载，但是原模块已产生的实例会继续使用旧模块，新产生的实例会使用重载后的模块。模块经 `reload` 重载后，原有内存地址不会发生改变。
+
+`reload` 不支持对通过 `from...import...` 语句导入的模块进行重载。
 
 ## 6. 执行模块
 

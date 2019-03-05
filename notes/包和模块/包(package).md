@@ -97,6 +97,12 @@ Packages 可以拥有多级目录结构。
 
 ## 2. 包导入
 
+> 扩展阅读：
+>
+> - [PEP 328 -- Imports: Multi-Line and Absolute/Relative](https://www.python.org/dev/peps/pep-0328/)
+> - [PEP 366 -- Main module explicit relative imports](https://www.python.org/dev/peps/pep-0366/)
+> - [7.11. The `import` statement](https://docs.python.org/3.7/reference/simple_stmts.html#the-import-statement)
+
 在导入包时，Python 会搜索 `sys.path` 中的目录，找到包中的子目录。
 
 示例 - 设计了一个用于处理声音文件和声音数据的模块包：
@@ -296,7 +302,15 @@ say: effects_ package
 '''
 ```
 
-### 2.4 包内引用(相对导入)
+### 2.4 相对导入
+
+> 扩展阅读：
+>
+> - [PEP 328 -- Imports: Multi-Line and Absolute/Relative](https://www.python.org/dev/peps/pep-0328/)
+> - [PEP 366 -- Main module explicit relative imports](https://www.python.org/dev/peps/pep-0366/)
+> - [7.11. The `import` statement](https://docs.python.org/3.7/reference/simple_stmts.html#the-import-statement)
+
+#### 包内引用
 
 使用包内引用(*Intra*-*package* *References*)的前提是存在包结构，也就是说每个包目录必需包含 `__init__.py`。
 
@@ -376,7 +390,7 @@ print(f"in {__name__},and {__package__ if __package__ != '' else 'null str'}")
 
 执行效果如下：
 
-```
+```bash
 $ python main.py
 Traceback (most recent call last):
 --snip--
@@ -387,6 +401,10 @@ Traceback (most recent call last):
 --snip--
 ImportError: attempted relative import with no known parent package
 ```
+
+#### 主模块显式相对导入
+
+如果需要在主模块中显式使用相对导入，可参考: [PEP 366 -- Main module explicit relative imports](https://www.python.org/dev/peps/pep-0366/)
 
 ## 3. Packages in Multiple Directories
 

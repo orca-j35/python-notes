@@ -54,6 +54,8 @@ else:
   - 顶层模块的 `__package__` 属性将被设置为空字符串(`python -m xxx`)或 `None` (`python xxx.py`)；与顶层模块同目录的其余模块的 `__package__` 属性将被设置为空字符串
   - 子模块的 `__package__` 属性将被设置为父包的名称。
 
+在进行相对导入时，如果存在 `__package__` 属性，那么将基于此属性进行导入；如果不存在此属性，才会使用模块的 `__name__` 属性来完成相对导入。
+
 See [**PEP 366**](https://www.python.org/dev/peps/pep-0366) for further details.This attribute is used instead of `__name__` to calculate explicit relative imports for main modules, as defined in [**PEP 366**](https://www.python.org/dev/peps/pep-0366). It is expected to have the same value as `__spec__.parent`.
 
 Changed in version 3.6: The value of `__package__` is expected to be the same as `__spec__.parent`.

@@ -27,6 +27,8 @@ Python 学习笔记
 
   jupyter 和 ipython 的关系 -- IPython is a growing project, with increasingly language-agnostic components. IPython 3.x was the last monolithic release of IPython, containing the notebook server, qtconsole, etc. As of IPython 4.0, the language-agnostic parts of the project: the notebook format, message protocol, qtconsole, notebook web application, etc. <u>have moved to new projects under the name [Jupyter](https://jupyter.org/).</u> IPython itself is focused on interactive Python, part of which is providing a Python kernel for Jupyter.
 
+- [Python Code Examples](https://www.programcreek.com/python/)：用于检索示例代码
+
 阅读建议：
 
 - [The Best Python Books](https://realpython.com/best-python-books/)：由 [realpython](https://realpython.com) 提供的推荐阅读列表
@@ -95,6 +97,11 @@ Python 学习笔记
   - 中文译本的 GitHub 仓库是 [interpy-zh](https://github.com/eastlakeside/interpy-zh)，在线阅读[Python进阶](http://interpy.eastlakeside.com/)
 
 - [Intermediate Python](https://leanpub.com/intermediatepython)：与上一本书同名，没有发现中文 译本
+
+在线教程：
+
+- [CheckIO](https://checkio.org/)：通过有趣的编程任务来提高编程技能
+- [Learn Python Programming - The Definitive Guide](https://www.programiz.com/python-programming)：内容全面，包含教程、内置函数解释、示例、测试
 
 爬虫：
 
