@@ -1,7 +1,7 @@
 # python_notes
 Python 学习笔记
 
-本笔记的目录结构：
+## 目录结构
 
 - Language Reference - 「[Library Reference](https://docs.python.org/3.7/library/index.html)」的笔记
 - Library Reference - 「[Language Reference](https://docs.python.org/3.7/reference/index.html)」的笔记
@@ -10,26 +10,28 @@ Python 学习笔记
 - notes_of_crawler - 爬虫的笔记
 - 待整理笔记 - 待整理的笔记
 
-学习工具：
+## 资源索引
+
+- PyPI(包索引)：https://pypi.org/
+
+- awesome-python：https://github.com/vinta/awesome-python
+
+- awesome-python-cn：https://github.com/jobbole/awesome-python-cn
+
+## 相关工具
 
 - [pythontutor](http://www.pythontutor.com/index.html)：可视化 Python 代码的执行过程
-
 - [Thonny](http://thonny.org/)：Python IDE for beginners
-
+- [Anaconda](https://www.anaconda.com/)：用于科学计算的 Python 发行版，支持 Linux, Mac, Windows, 包含了众多流行的科学计算、数据分析的 Python 包，文档[docs.anaconda.com](http://docs.anaconda.com/anaconda/)，在使用时可能需要管理员权限。如果下载速度不理想，可使用清华大学镜像(详见 [Anaconda 镜像使用帮助](https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/))或[中科大镜像](https://mirrors.ustc.edu.cn/)，还可使用它们提供 Anaconda 仓库镜像(重新配置仓库镜像时，可能需要删除用户目录下的 `.condarc` 文件)
+- Conda：多编程语言包、依赖、环境管理工具，文档 [docs.conda.io](https://conda.io/en/latest/)，在使用时可能需要管理员权限
 - [zeal](https://zealdocs.org/)：文档查询
-
   - There is a VSCode plugin available at <https://github.com/deerawan/vscode-dash>.
   - https://kapeli.com/dash
-
 - [jupyter](https://jupyter.org/)
-
-- [ipython](https://ipython.org/index.html)
-
-  jupyter 和 ipython 的关系 -- IPython is a growing project, with increasingly language-agnostic components. IPython 3.x was the last monolithic release of IPython, containing the notebook server, qtconsole, etc. As of IPython 4.0, the language-agnostic parts of the project: the notebook format, message protocol, qtconsole, notebook web application, etc. <u>have moved to new projects under the name [Jupyter](https://jupyter.org/).</u> IPython itself is focused on interactive Python, part of which is providing a Python kernel for Jupyter.
-
+- [ipython](https://ipython.org/index.html)：jupyter 和 ipython 的关系——IPython is a growing project, with increasingly language-agnostic components. IPython 3.x was the last monolithic release of IPython, containing the notebook server, qtconsole, etc. As of IPython 4.0, the language-agnostic parts of the project: the notebook format, message protocol, qtconsole, notebook web application, etc. <u>have moved to new projects under the name [Jupyter](https://jupyter.org/).</u> IPython itself is focused on interactive Python, part of which is providing a Python kernel for Jupyter.
 - [Python Code Examples](https://www.programcreek.com/python/)：用于检索示例代码
 
-阅读建议：
+## 阅读建议
 
 - [The Best Python Books](https://realpython.com/best-python-books/)：由 [realpython](https://realpython.com) 提供的推荐阅读列表
 
@@ -98,21 +100,13 @@ Python 学习笔记
 
 - [Intermediate Python](https://leanpub.com/intermediatepython)：与上一本书同名，没有发现中文 译本
 
-在线教程：
+## 在线教程
 
 - [CheckIO](https://checkio.org/)：通过有趣的编程任务来提高编程技能
 - [Learn Python Programming - The Definitive Guide](https://www.programiz.com/python-programming)：内容全面，包含教程、内置函数解释、示例、测试
+- [Python 3 教程 - 菜鸟教程](http://www.runoob.com/python3/python3-tutorial.html)
 
-爬虫：
-
-- Python3 网络爬虫开发实战：作者[崔庆才](https://cuiqingcai.com/author/cqcre)，GitHub [仓库](https://github.com/Python3WebSpider)，GitBook [预览](https://germey.gitbooks.io/python3webspider/content/)
-  - 该作者还提供了一套付费视频教程 [Python3网络爬虫实战案例](https://cuiqingcai.com/4320.html) 和两套免费教程 [爬取知乎所有用户详细信息](https://edu.hellobi.com/course/163)、[Python3爬虫三大案例实战分享](https://edu.hellobi.com/course/156) -- 视频资源在 B 站上均有
-
-一些有趣的东西：
-
-- https://jakevdp.github.io/
-
-博客：
+## 博客
 
 - [欢乐蟒](https://pythonfun.top/)：翻译了一些技术文章，比如 [Python 3.7 中的新特性](https://pythonfun.top/cool-new-features-in-python-3.7-trp/) 
 - [Python 之旅](http://funhacks.net/2017/01/03/explore_python/)：内容层次清晰，有作者自己的理解，很不错 - [在线阅读](https://funhacks.net/explore-python/)
@@ -122,7 +116,8 @@ Python 学习笔记
 - [〖十月狐狸〗](https://www.cnblogs.com/sesshoumaru/)：提供了 Python 3.6 中所有内置函数的笔记
 - [Yixiaohan](https://github.com/Yixiaohan)/[codeparkshare](https://github.com/Yixiaohan/codeparkshare) 整理并推荐了一些学习资料
 
-杂项：
+## 杂项
 
 - [Cool New Features in Python 3.7](https://realpython.com/python37-new-features/) ：详细讲述了 3.7 版本的新功能
 - [Python快速教程](https://www.cnblogs.com/vamei/archive/2012/09/13/2682778.html)：没仔细看，感觉内容比较丰富
+- https://jakevdp.github.io/
