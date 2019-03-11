@@ -14,6 +14,8 @@
 ```shell
 # 更新conda
 conda update conda
+# 如果位于非base环境中，在更新base时，需要选择base环境
+conda update -n base conda
 # 版本信息
 conda --version
 # 帮助信息
@@ -74,6 +76,8 @@ source deactivate # in Linux and macOS
 ```shell
 conda create --name $new_env_name --clone $old_env_name
 ```
+
+不能直接克隆当前所在环境(base除外)
 
 ### 2.6 删除环境
 
