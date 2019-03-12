@@ -1,6 +1,4 @@
-# 配置 Tesserocr (填坑)
-
-[TOC]
+# 配置 Tesserocr
 
 > GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
 >
@@ -202,7 +200,7 @@ PS C:\Users\iwhal\Desktop\PyTest> cat result.txt
 
 ## 附件
 
-![image](安装 Tesserocr (填坑).assets/image.png)
+![image](配置 Tesserocr.assets/image.png)
 
 
 

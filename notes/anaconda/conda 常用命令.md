@@ -7,6 +7,9 @@
 > - [Command reference](https://conda.io/projects/conda/en/latest/commands.html#)
 > - [canda 常用命令](https://www.cnblogs.com/Jimc/archive/2018/09/13/9641963.html)
 
+注意: conda 是一个完全独立于 Python 的包&环境管理器，Python 对于 conda 来说只是 conda 的一个包，就如同 Linux 把 conda 当成一个包一样，
+scipy、jupyter 对于 conda 来说也都是包——详见 [conda & pip](bicmr.pku.edu.cn/~wenzw/pages/conda.html) 。
+
 ## 1. 管理 conda
 
 > 详见: [Managing conda](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-conda.html#managing-conda)
