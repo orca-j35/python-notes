@@ -7,6 +7,10 @@
 > - [Command reference](https://conda.io/projects/conda/en/latest/commands.html#)
 > - [canda 常用命令](https://www.cnblogs.com/Jimc/archive/2018/09/13/9641963.html)
 
+[Anaconda](https://www.anaconda.com/)：用于科学计算的 Python 发行版，包含了众多用于科学计算、数据分析的 Python 包，文档 [docs.anaconda.com](http://docs.anaconda.com/anaconda/)，在安装和使用时务必需要管理员权限，否则可能出现一些意料之外的异常。可使用清华大学镜像(详见 [Anaconda 镜像使用帮助](https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/))或[中科大镜像](https://mirrors.ustc.edu.cn/)来提高包下载速度。在使用第三方镜像进行配置后，配置信息被保存在 `user/.condarc` 中。
+
+Conda：多编程语言包、依赖、环境管理工具，文档 [docs.conda.io](https://conda.io/en/latest/)，在使用时可能需要管理员权限
+
 注意: conda 是一个完全独立于 Python 的包&环境管理器，Python 对于 conda 来说只是 conda 的一个包，就如同 Linux 把 conda 当成一个包一样，
 scipy、jupyter 对于 conda 来说也都是包——详见 [conda & pip](bicmr.pku.edu.cn/~wenzw/pages/conda.html) 。
 

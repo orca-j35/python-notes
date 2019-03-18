@@ -1,4 +1,4 @@
-# 《python3网络爬虫开发实战》笔记
+# 《python3网络爬虫开发实战》
 > GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
 
 本书相关资源：

@@ -21,15 +21,20 @@ Python 学习笔记
 ## 相关工具
 
 - [pythontutor](http://www.pythontutor.com/index.html)：可视化 Python 代码的执行过程
-- [Thonny](http://thonny.org/)：Python IDE for beginners
+- [Thonny](http://thonny.org/)：适合初学者的 IDE
 - [Anaconda](https://www.anaconda.com/)：用于科学计算的 Python 发行版，包含了众多用于科学计算、数据分析的 Python 包，文档 [docs.anaconda.com](http://docs.anaconda.com/anaconda/)，在安装和使用时务必需要管理员权限，否则可能出现一些意料之外的异常。可使用清华大学镜像(详见 [Anaconda 镜像使用帮助](https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/))或[中科大镜像](https://mirrors.ustc.edu.cn/)来提高包下载速度。在使用第三方镜像进行配置后，配置信息被保存在 `user/.condarc` 中。
 - Conda：多编程语言包、依赖、环境管理工具，文档 [docs.conda.io](https://conda.io/en/latest/)，在使用时可能需要管理员权限
 - [zeal](https://zealdocs.org/)：文档查询
   - There is a VSCode plugin available at <https://github.com/deerawan/vscode-dash>.
   - https://kapeli.com/dash
 - [jupyter](https://jupyter.org/)
+  - [Jupyter Notebook Quickstart](https://jupyter.readthedocs.io/en/latest/content-quickstart.html)
+  - [The Jupyter Notebook](https://jupyter-notebook.readthedocs.io/en/stable/index.html)
+  - https://pypi.org/project/jupyter/
 - [ipython](https://ipython.org/index.html)：jupyter 和 ipython 的关系——IPython is a growing project, with increasingly language-agnostic components. IPython 3.x was the last monolithic release of IPython, containing the notebook server, qtconsole, etc. As of IPython 4.0, the language-agnostic parts of the project: the notebook format, message protocol, qtconsole, notebook web application, etc. <u>have moved to new projects under the name [Jupyter](https://jupyter.org/).</u> IPython itself is focused on interactive Python, part of which is providing a Python kernel for Jupyter.
+- WinPython
 - [Python Code Examples](https://www.programcreek.com/python/)：用于检索示例代码
+- [Geany](https://www.geany.org/)：IDE
 
 ## 阅读建议
 
