@@ -10,3 +10,6 @@
 
 该作者还有一套付费视频教程 [Python3网络爬虫实战案例](https://cuiqingcai.com/4320.html) 和两套免费教程 [爬取知乎所有用户详细信息](https://edu.hellobi.com/course/163)、[Python3爬虫三大案例实战分享](https://edu.hellobi.com/course/156) -- 视频资源在 B 站上均有。
 
+资源收集:
+
+- [测试教程网](http://www.testclass.net/all): http://www.testclass.net/crawler
