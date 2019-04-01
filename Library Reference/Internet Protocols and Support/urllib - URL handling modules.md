@@ -13,7 +13,5 @@
 
 - [`urllib.robotparser`](https://docs.python.org/3/library/urllib.robotparser.html#module-urllib.robotparser) - 用于解析网站提供的 `robots.txt` 文件，行为良好的爬虫会利用 `robots.txt` 来判断网站可被爬取的部分。
 
-`urllib` 能够使程序完成各种 HTTP 请求。比如当需要模拟特定浏览器的请求时，可以先监控浏览器的请求格式，然后根据 `User-Agent` 进行伪装。
-
 
 

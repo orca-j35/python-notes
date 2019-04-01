@@ -24,6 +24,7 @@ URI(Uniform Resource Identifier) - 统一资源标识符，RFC2396 分别对这 
 - tel:+1-816-555-1212
 - telnet://192.0.2.16:80/
 - urn:oasis:names:specification:docbook:dtd:xml:4.1.2
+- file:robots.txt
 
 URL 和 URN 均属于 URI 的子集，URI/URL/URN 三者的关系如下:
 
