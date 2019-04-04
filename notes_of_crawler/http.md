@@ -1,6 +1,10 @@
 # HTTP
 > GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
 
+## 工具
+
+[httpbin](http://httpbin.org/) - A simple HTTP Request & Response Service. 可利用 [httpbin](http://httpbin.org/) 来测试 HTTP 请求，并观察响应结果。
+
 ## URI/URL/URN
 
 ### URI

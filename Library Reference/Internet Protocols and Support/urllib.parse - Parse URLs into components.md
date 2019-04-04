@@ -499,9 +499,9 @@ print(urljoin(
 本模块中的 URL 解析函数不仅可处理 [`str`](https://docs.python.org/3/library/stdtypes.html#str) 对象，还可处理 [`bytes`](https://docs.python.org/3/library/stdtypes.html#bytes) (或 [`bytearray`](https://docs.python.org/3/library/stdtypes.html#bytearray))对象：
 
 - 如果向解析函数传递 `str` 类型的数据，那么其返回值中将包含 `str` 类型的数据
-- 如果向解析函数传递 `byte` (或 `byteattay`)类型的数据，那么其返回值中将包含 `byte` (或 `byteattay`)类型的数据
+- 如果向解析函数传递 `bytes` (或 `byteattay`)类型的数据，那么其返回值中将包含 `bytes` (或 `byteattay`)类型的数据
 
-如果在调用解析函数时混用 `str` 和 `byte` (或 `byteattay`)，则会抛出 [`TypeError`](https://docs.python.org/3/library/exceptions.html#TypeError)；如果尝试传入非 ASCII 字节值，则会抛出 [`UnicodeDecodeError`](https://docs.python.org/3/library/exceptions.html#UnicodeDecodeError)。
+如果在调用解析函数时混用 `str` 和 `bytes` (或 `byteattay`)，则会抛出 [`TypeError`](https://docs.python.org/3/library/exceptions.html#TypeError)；如果尝试传入非 ASCII 字节值，则会抛出 [`UnicodeDecodeError`](https://docs.python.org/3/library/exceptions.html#UnicodeDecodeError)。
 
 ```python
 from urllib.parse import urlparse
