@@ -4,6 +4,9 @@
 > 参考:
 >
 > - [`urllib.request`](https://docs.python.org/3/library/urllib.request.html#module-urllib.request) — Extensible library for opening URLs
+>
+> 扩展阅读:
+>
 > - [urllib.request — Network Resource Access](https://pymotw.com/3/urllib.request/index.html#module-urllib.request)
 > - [13.3. urllib.request — 访问网络资源](https://learnku.com/docs/pymotw/urllibrequest-network-resource-access/3433)
 > - [HOWTO Fetch Internet Resources Using The urllib Package](https://docs.python.org/3/howto/urllib2.html)
@@ -35,30 +38,31 @@ httpbin 用于提供 HTTP 请求测试，当 httpbin 服务器获得请求消息
 
 Note: 如果没有处理程序处理请求，则可能会返回 `None` (尽管默认安装的全局 [`OpenerDirector`](https://docs.python.org/3/library/urllib.request.html#urllib.request.OpenerDirector) 会使用 [`UnknownHandler`](https://docs.python.org/3/library/urllib.request.html#urllib.request.UnknownHandler) 处理程序来确保永远不会发生这种情况)。
 
-此外，如果检测到代理设置(例如，当设置了像 `http_proxy` 这样的 `*_proxy` 环境变量时)，则会默认安装 [`ProxyHandler`](https://docs.python.org/3/library/urllib.request.html#urllib.request.ProxyHandler) 并确保通过代理处理请求。
+此外，如果检测到代理设置(比如，设置了像 `http_proxy` 这样的 `*_proxy` 环境变量)，则会默认安装 [`ProxyHandler`](https://docs.python.org/3/library/urllib.request.html#urllib.request.ProxyHandler) 并确保通过代理处理请求。
 
-来自 Python 2.6 及更早版本的遗留函数 `urllib.urlopen` 已停止使用；[`urllib.request.urlopen()`](https://docs.python.org/3/library/urllib.request.html#urllib.request.urlopen) 对应于旧的 `urllib.urlopen`。Proxy handling, which was done by passing a dictionary parameter to `urllib.urlopen`, can be obtained by using [`ProxyHandler`](https://docs.python.org/3/library/urllib.request.html#urllib.request.ProxyHandler) objects.
+来自 Python 2.6 及更早版本的遗留函数 `urllib.urlopen` 已停止使用；[`urllib.request.urlopen()`](https://docs.python.org/3/library/urllib.request.html#urllib.request.urlopen) 对应于旧的 `urllib2.urlopen`。Proxy handling, which was done by passing a dictionary parameter to `urllib.urlopen`, can be obtained by using [`ProxyHandler`](https://docs.python.org/3/library/urllib.request.html#urllib.request.ProxyHandler) objects.
 
-*Changed in version 3.2:* *cafile* and *capath* were added.
-
-*Changed in version 3.2:* HTTPS virtual hosts are now supported if possible (that is, if[`ssl.HAS_SNI`](https://docs.python.org/3/library/ssl.html#ssl.HAS_SNI) is true).
-
-*New in version 3.2:* *data* can be an iterable object.
-
-*Changed in version 3.3:* *cadefault* was added.
-
-*Changed in version 3.4.3:* *context* was added.
-
-*Deprecated since version 3.6:* *cafile*, *capath* and *cadefault* are deprecated in favor of *context*. Please use [`ssl.SSLContext.load_cert_chain()`](https://docs.python.org/3/library/ssl.html#ssl.SSLContext.load_cert_chain) instead, or let[`ssl.create_default_context()`](https://docs.python.org/3/library/ssl.html#ssl.create_default_context) select the system’s trusted CA certificates for you.
+> *Changed in version 3.2:* *cafile* and *capath* were added.
+>
+> *Changed in version 3.2:* HTTPS virtual hosts are now supported if possible (that is, if[`ssl.HAS_SNI`](https://docs.python.org/3/library/ssl.html#ssl.HAS_SNI) is true).
+>
+> *New in version 3.2:* *data* can be an iterable object.
+>
+> *Changed in version 3.3:* *cadefault* was added.
+>
+> *Changed in version 3.4.3:* *context* was added.
+>
+> *Deprecated since version 3.6:* *cafile*, *capath* and *cadefault* are deprecated in favor of *context*. Please use [`ssl.SSLContext.load_cert_chain()`](https://docs.python.org/3/library/ssl.html#ssl.SSLContext.load_cert_chain) instead, or let[`ssl.create_default_context()`](https://docs.python.org/3/library/ssl.html#ssl.create_default_context) select the system’s trusted CA certificates for you.
 
 #### 参数说明
 
 - *url* - 被请求的 URL，可以是字符串或 [`Request`](https://docs.python.org/3/library/urllib.request.html#urllib.request.Request) 对象。
 
-- *data* - 需要发送给服务器的附加数据，*data* 必须是 `bytes` 类型的数据。如果不需要附加数据，将其设为 `None` 即可，详见﹝[Request()📦](#Request()📦)﹞小节。如果没有提供 *data* 参数，便会使用 GET 方法；如果提供了 *data* 参数，则会使用 POST 方法:
+- *data* - 需要发送给服务器的附加数据，*data* 必须是 `bytes` 类型的数据。如果不需要附加数据，将其设为 `None` 即可，详见﹝[Request](#Request)﹞小节。如果没有提供 *data* 参数，便会使用 GET 方法；如果提供了 *data* 参数，则会使用 POST 方法:
 
   ```python
   from urllib import request, parse
+  # http://127.0.0.1 as httpbin server
   url_post = 'http://127.0.0.1/post'
   data = parse.urlencode({'id': 'orca-j35', '鲸': '鱼'})
   print(data)
@@ -160,6 +164,7 @@ Note: 自 Python 3.6 起，已弃用 *cafile*、*capath*、*cadefault*，请改�
 ```python
 from urllib import request
 with request.urlopen('http://127.0.0.1/get?id=orca-j35') as rp:
+    # http://127.0.0.1 as httpbin server
     print(f'geturl-->\n{rp.geturl()}')
     print(f'info-->\n{rp.info()}')
     print(f'getcode-->\n{rp.getcode()}')
@@ -238,11 +243,340 @@ ImportError: DLL load failed: 找不到指定的模块。
 
 这个问题会导致在 PyChram 中无法使用 conda 环境中的 Python 解释器，因为 PyChram 在运行脚本时不会激活 conda 环境，它会直接使用解释器运行脚本，如果脚本中调用了 `request.urlopen()` 便会抛出异常。VScode 在运行脚本时会先激活选定的 conda 环境，因此能正常调用  `request.urlopen()`。
 
+### install_opener()🔨
+
+🔨urllib.request.install_opener(*opener*)
+
+### build_opener()🔨
+
+🔨urllib.request.build_opener([*handler*, ...])
+
+### pathname2url()🔨
+
+🔨urllib.request.pathname2url(*path*)
+
+Convert the pathname *path* from the local syntax for a path to the form used in the path component of a URL. This does not produce a complete URL. The return value will already be quoted using the [`quote()`](https://docs.python.org/3/library/urllib.parse.html#urllib.parse.quote) function.
+
+```python
+# 将本地路径path转换为percent-encoded URL
+from urllib.parse import quote
+print(request.pathname2url(r'127.0.0.1/鲸鱼'))
+#> print(request.pathname2url(r'127.0.0.1/鲸鱼'))
+```
+
+将路径名 *path* 转换为 URL 所需
+
+### url2pathname()🔨
+
+🔨urllib.request.url2pathname(*path*)
+
+Convert the path component *path* from a percent-encoded URL to the local syntax for a path. This does not accept a complete URL. This function uses [`unquote()`](https://docs.python.org/3/library/urllib.parse.html#urllib.parse.unquote) to decode *path*.
+
+```python
+# 将percent-encoded URL转换为本地路径
+from urllib.parse import quote
+print(request.url2pathname(r'Users/%E9%B2%B8%E9%B1%BC'))
+#> Users\鲸鱼
+```
+
+### getproxies()🔨
+
+🔨urllib.request.getproxies()
+
+This helper function returns a dictionary of scheme to proxy server URL mappings. It scans the environment for variables named `<scheme>_proxy`, in a case insensitive approach, for all operating systems first, and when it cannot find it, looks for proxy information from Mac OSX System Configuration for Mac OS X and Windows Systems Registry for Windows. If both lowercase and uppercase environment variables exist (and disagree), lowercase is preferred.
+
+```shell
+# 返回系统环境中以设置的代理类服务器
+C:\Users\iwhal>set http_proxy=http://127.0.0.1:8080
+C:\Users\iwhal>python
+Python 3.7.2 (default, Feb 21 2019, 17:35:59) 
+--snip--
+>>> from urllib import request
+>>> request.getproxies()
+{'http': 'http://127.0.0.1:8080'}
+```
+
+Note: If the environment variable `REQUEST_METHOD` is set, which usually indicates your script is running in a CGI environment, the environment variable `HTTP_PROXY`(uppercase `_PROXY`) will be ignored. This is because that variable can be injected by a client using the “Proxy:” HTTP header. If you need to use an HTTP proxy in a CGI environment, either use `ProxyHandler` explicitly, or make sure the variable name is in lowercase (or at least the `_proxy` suffix).
+
 ## classes
 
 [`urllib.request`](https://docs.python.org/3/library/urllib.request.html#module-urllib.request) 模块提供了如下类
 
-### Request()📦
+### Request
+
+🔨class urllib.request.Request(*url*, *data*=None, *headers*={}, *origin_req_host*=None, *unverifiable*=False, *method*=None)
+
+`Request()` 是 URL 请求的抽象，用于帮助我们构建一个完整的请求。如需了解 `Request` 实例提供的属性，可查看﹝[Request Objects](#Request Objects)﹞小节
+
+参数说明:
+
+- *url* - 包含有效 URL 的字符串
+
+- *data* - 需要发送给服务器的附加数据，可以是 `bytes` 、file-like 和 iterable 对象。如果不需要附加数据，将其设为 `None` 即可。如果没有提供 *data* 参数，便会使用 GET 方法；如果提供了 *data* 参数，则会使用 POST 方法。目前 HTTP 请求时唯一使用 *data* 的请求。
+
+  > For an HTTP POST request method, *data* should be a buffer in the standard *application/x-www-form-urlencoded* format. The [`urllib.parse.urlencode()`](https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlencode) function takes a mapping or sequence of 2-tuples and returns an ASCII string in this format. It should be encoded to bytes before being used as the *data* parameter.
+  >
+  > If no `Content-Length` nor `Transfer-Encoding` header field has been provided, [`HTTPHandler`](https://docs.python.org/3/library/urllib.request.html#urllib.request.HTTPHandler) will set these headers according to the type of *data*. `Content-Length` will be used to send bytes objects, while `Transfer-Encoding: chunked` as specified in [**RFC 7230**](https://tools.ietf.org/html/rfc7230.html), Section 3.3.1 will be used to send files and other iterables.
+
+- *headers* - 应是一个字典，可 `Request` 实例的 `header_items()` 方法用于查看 *headers* 中的内容，[`add_header()`](https://docs.python.org/3/library/urllib.request.html#urllib.request.Request.add_header) 用于添加 header 数据。`urlib` 库默认使用 `"Python-urllib"` 作为 User-Agent。
+
+  > This is often used to “spoof” the `User-Agent` header value, which is used by a browser to identify itself – some HTTP servers only allow requests coming from common browsers as opposed to scripts. For example, Mozilla Firefox may identify itself as `"Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127Firefox/2.0.0.11"`, while [`urllib`](https://docs.python.org/3/library/urllib.html#module-urllib)’s default user agent string is `"Python-urllib/2.6"` (on Python 2.6).
+  >
+  > An appropriate `Content-Type` header should be included if the *data* argument is present. If this header has not been provided and *data* is not None, `Content-Type:application/x-www-form-urlencoded` will be added as a default.
+
+- *origin_req_host* - 原始事务的 request-host，由 [**RFC 2965**](https://tools.ietf.org/html/rfc2965.html) 定义。默认值是 `http.cookiejar.request_host(self)` —— 由用户发起的原始请求的 host 名或 IP 地址。*origin_req_host* 仅对正确处理第三方 HTTP cookies 感兴趣。
+
+  > For example, if the request is for an image in an HTML document, this should be the request-host of the request for the page containing the image.
+
+- *unverifiable* - 表明请求是否无法验证，由 [**RFC 2965**](https://tools.ietf.org/html/rfc2965.html) 定义。默认值是 `False`，意思是用户没有足够的权限来选择接收这个请求。例如，我们请求一个 HTML 文档中的图片，但是我们没有自动抓取图像的权限，这时 unverifiable 的值就是 True。*unverifiable* 仅对正确处理第三方 HTTP cookies 感兴趣。
+
+  > An unverifiable request is one whose URL the user did not have the option to approve. For example, if the request is for an image in an HTML document, and the user had no option to approve the automatic fetching of the image, this should be true.
+
+- *method* - 一个字符串，表示将要使用的 HTTP 请求的方法(e.g. `'HEAD'`)。如果 *data* 的值是 `None`，那么 *method* 的默认值将是 `'GET'`；如果 *data* 的值不是 `None`，那么 *method* 的默认值将是 `'POST'`。
+
+  > If provided, its value is stored in the [`method`](https://docs.python.org/3/library/urllib.request.html#urllib.request.Request.method) attribute and is used by [`get_method()`](https://docs.python.org/3/library/urllib.request.html#urllib.request.Request.get_method). 
+  >
+  > Subclasses may indicate a different default method by setting the [`method`](https://docs.python.org/3/library/urllib.request.html#urllib.request.Request.method) attribute in the class itself.
+
+示例代码
+
+```python
+from urllib import request, parse
+# http://127.0.0.1 as httpbin server
+url_post = 'http://127.0.0.1/post'
+data = parse.urlencode({'id': 'orca-j35', '鲸': '鱼'})
+headers = {'-Test': 'Field of test'}
+r = request.Request(url_post, data=data.encode('ascii'), headers=headers)
+with request.urlopen(r) as rp:
+    print(f'==={rp._method}===')
+    for line in rp:
+        print(line)
+```
+
+执行结果:
+
+```
+===POST===
+b'{\n'
+b'  "args": {}, \n'
+b'  "data": "", \n'
+b'  "files": {}, \n'
+b'  "form": {\n'
+b'    "id": "orca-j35", \n'
+b'    "\\u9cb8": "\\u9c7c"\n'
+b'  }, \n'
+b'  "headers": {\n'
+b'    "-Test": "Field of test", \n'
+b'    "Accept-Encoding": "identity", \n'
+b'    "Connection": "close", \n'
+b'    "Content-Length": "31", \n'
+b'    "Content-Type": "application/x-www-form-urlencoded", \n'
+b'    "Host": "127.0.0.1", \n'
+b'    "User-Agent": "Python-urllib/3.7"\n'
+b'  }, \n'
+b'  "json": null, \n'
+b'  "origin": "172.17.0.1", \n'
+b'  "url": "http://127.0.0.1/post"\n'
+b'}\n'
+```
+
+Note: The request will not work as expected if the data object is unable to deliver its content more than once (e.g. a file or an iterable that can produce the content only once) and the request is retried for HTTP redirects or authentication. The *data* is sent to the HTTP server right away after the headers. There is no support for a 100-continue expectation in the library.
+
+*Changed in version 3.3:* [`Request.method`](https://docs.python.org/3/library/urllib.request.html#urllib.request.Request.method) argument is added to the Request class.
+
+*Changed in version 3.4:* Default [`Request.method`](https://docs.python.org/3/library/urllib.request.html#urllib.request.Request.method) may be indicated at the class level.
+
+*Changed in version 3.6:* Do not raise an error if the `Content-Length` has not been provided and *data* is neither `None` nor a bytes object. Fall back to use chunked transfer encoding instead.
+
+### OpenerDirector
+
+class urllib.request.OpenerDirector
+
+### HTTPPasswordMgr
+
+class urllib.request.HTTPPasswordMgr
+
+### HTTPPasswordMgrWithDefaultRealm
+
+class urllib.request.HTTPPasswordMgrWithDefaultRealm
+
+### HTTPPasswordMgrWithPriorAuth
+
+class urllib.request.HTTPPasswordMgrWithPriorAuth
+
+## handler classes
+
+### BaseHandler
+
+class urllib.request.BaseHandler
+
+所有已注册的 handler 的基类，仅会处理简单的注册机制。 
+
+### HTTPDefaultErrorHandler
+
+class urllib.request.HTTPDefaultErrorHandler
+
+### HTTPRedirectHandler
+
+class urllib.request.HTTPRedirectHandler
+
+### HTTPCookieProcessor
+
+class urllib.request.HTTPCookieProcessor(cookiejar=None)
+
+### ProxyHandler
+
+class urllib.request.ProxyHandler(proxies=None)
+
+```python
+from urllib.error import URLError
+from urllib.request import ProxyHandler, build_opener
+# 假设已在9743端口建立了代理
+proxy_handler = ProxyHandler({
+    'http': 'http://127.0.0.1:9743',
+    'https': 'https://127.0.0.1:9743'
+})
+opener = build_opener(proxy_handler)
+try:
+    response = opener.open('https://www.baidu.com')
+    print(response.read().decode('utf-8'))
+except URLError as e:
+    print(e.reason)
+```
+
+
+
+### AbstractBasicAuthHandler
+
+class urllib.request.AbstractBasicAuthHandler(password_mgr=None)
+
+### HTTPBasicAuthHandler
+
+class urllib.request.HTTPBasicAuthHandler(password_mgr=None)
+
+
+
+```python
+from urllib import request, error
+
+username = 'orca'
+password = 'j35'
+url = f'http://127.0.0.1/basic-auth/{username}/{password}'
+
+p = request.HTTPPasswordMgrWithDefaultRealm()
+p.add_password(None, url, username, password)
+auth_handler = request.HTTPBasicAuthHandler(p)
+opener = request.build_opener(auth_handler)
+
+try:
+    with opener.open(url) as result:
+        for line in result:
+            print(line)
+except error.URLError as e:
+    print(e.reason)
+    raise e
+```
+
+BASIC认证过程的基本步骤：
+
+1. 客户端访问一个受 http 基本认证保护的资源。
+
+2. 服务器返回 401 状态，要求客户端提供用户名和密码进行认证。验证失败的时候，响应头会加上 WWW-Authenticate: Basic realm="请求域"。
+
+   ```
+   401 Unauthorized
+   WWW-Authenticate： Basic realm="WallyWorld"
+   ```
+
+   例如:
+
+   ```python
+   from urllib import request, error
+   
+   username = 'orca'
+   password = 'j35'
+   url = f'http://127.0.0.1/basic-auth/{username}/{password}'
+   
+   auth_handler = request.HTTPBasicAuthHandler()
+   opener = request.build_opener(auth_handler)
+   
+   try:
+       with opener.open(url) as result:
+           for line in result:
+               print(line)
+   except error.URLError as e:
+       print(e.code, e.reason)
+       print(e.headers)
+   ```
+
+   输出
+
+   ```
+   401 UNAUTHORIZED
+   Server: gunicorn/19.9.0
+   Date: Mon, 08 Apr 2019 05:36:46 GMT
+   Connection: close
+   WWW-Authenticate: Basic realm="Fake Realm"
+   Access-Control-Allow-Origin: *
+   Access-Control-Allow-Credentials: true
+   Content-Length: 0
+   ```
+
+3. 客户端将输入的用户名密码用 Base64 进行编码后，采用非加密的明文方式传送给服务器。
+
+   ```
+   Authorization: Basic xxxxxxxxxx.
+   ```
+
+4. 服务器将 Authorization 头中的用户名密码解码并取出，进行验证，如果认证成功，则返回相应的资源。如果认证失败，则仍返回401状态，要求重新进行认证。
+
+### ProxyBasicAuthHandler
+
+class urllib.request.ProxyBasicAuthHandler(password_mgr=None)
+
+### AbstractDigestAuthHandler
+
+class urllib.request.AbstractDigestAuthHandler(password_mgr=None)
+
+### HTTPDigestAuthHandler
+
+class urllib.request.HTTPDigestAuthHandler(password_mgr=None)
+
+### ProxyDigestAuthHandler
+
+class urllib.request.ProxyDigestAuthHandler(password_mgr=None)
+
+### HTTPHandler
+
+class urllib.request.HTTPHandler
+
+### HTTPSHandler
+
+class urllib.request.HTTPSHandler(debuglevel=0, context=None, check_hostname=None)
+
+### FileHandler
+
+class urllib.request.FileHandler
+
+### DataHandler
+
+class urllib.request.DataHandler
+
+### FTPHandler
+
+class urllib.request.FTPHandler
+
+### CacheFTPHandler
+
+class urllib.request.CacheFTPHandler
+
+### UnknownHandler
+
+class urllib.request.UnknownHandler
+
+### HTTPErrorProcessor
+
+class urllib.request.HTTPErrorProcessor
 
 
 
