@@ -10,6 +10,7 @@
 > - [urllib.request — Network Resource Access](https://pymotw.com/3/urllib.request/index.html#module-urllib.request)
 > - [13.3. urllib.request — 访问网络资源](https://learnku.com/docs/pymotw/urllibrequest-network-resource-access/3433)
 > - [HOWTO Fetch Internet Resources Using The urllib Package](https://docs.python.org/3/howto/urllib2.html)
+> - [urllib — 廖雪峰](https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432688314740a0aed473a39f47b09c8c7274c9ab6aee000)
 
 该模块中包含用于打开 URL(主要是 HTTP) 的函数和类 — basic and digest authentication, redirections, cookies and more. 
 
