@@ -5,7 +5,7 @@
 
 - PyPI: https://pypi.org/project/requests/
 - GitHub: https://github.com/kennethreitz/requests
-- Docs-EN: http://docs.python-requests.org/en/master/
+- Docs-EN: http://docs.python-requests.org/en/master/ 🍰
 - Docs-CN: http://docs.python-requests.org/zh_CN/latest/
 - 教程 - [测试教程网](http://www.testclass.net/all): http://www.testclass.net/requests
 

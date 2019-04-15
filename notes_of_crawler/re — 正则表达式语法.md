@@ -4,9 +4,17 @@
 > 参考:
 >
 > - [Regular Expression HOWTO](https://docs.python.org/3/howto/regex.html#regex-howto) 🍰
+> - [learn-regex — GitHub](https://github.com/ziishaned/learn-regex)
+> - https://github.com/ziishaned/learn-regex
 > - [`re`](https://docs.python.org/3/library/re.html#module-re) — Regular expression operations
+> - [正则表达式 - 廖雪峰](https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/00143193331387014ccd1040c814dee8b2164bb4f064cff000)
 > - http://www.runoob.com/regexp/regexp-syntax.html
 > - http://www.runoob.com/regexp/regexp-metachar.html
+>
+> 工具:
+>
+> - https://regex101.com/
+> - [在线正则表达式测试 - 开源中国](http://tool.oschina.net/regex)
 
 Note: 在本笔记中我会使用 `Style without quotes` 来表示正则表达式(*Regular* *Expression* - RE)，同时会使用 `'Style without quotes'` 来表示被匹配的字符串。例如，可使用正则表达式 `hello` 来匹配字符串 `'hello'`。
 
@@ -35,7 +43,7 @@ RE pattern 和 string 可以是 Unicode string([`str`](https://docs.python.org/3
 
 ## raw 字符串和 `'\'`
 
-反斜线字符(`'\'`)在正则表达式中有以下两种用法:
+反斜线字符( `'\'` )在正则表达式中有以下两种用法:
 
 - 表示特殊格式 - 比如，使用 `\w` 来匹配字符和字母
 - 用来屏蔽特殊字符的含义 - 比如，使用 `\\` 来匹配 `'\'`，使用 `\.` 来匹配 `'.'`
@@ -90,57 +98,147 @@ r'\n','\n'
 > - https://docs.python.org/3/howto/regex.html#more-metacharacters
 > - 
 
-元字符(*metacharacters*)的完整列表如下(在标准库的文档中，有时会将"元字符"称为"特殊字符"):
+元字符(*metacharacters*)的完整列表如下(在标准库文档中，有时会将"元字符"称为"特殊字符"):
 
 ```
 . ^ $ * + ? { } [ ] \ | ( )
 ```
 
-我们可以将多个元字符组合使用，例如 `*?`、`{m,n}?`
+我们可以将多个元字符组合使用，例如 `*?`、`{m,n}?`。
+
+如果要使用元字符的字面值，只需在元字符前添加 `\` 即可:
+
+```python
+re.findall(r"\.ar", "car.ar")
+#> ['.ar\\k']
+```
 
 ### `.`
 
 在默认情况下 `.` (*Dot*) 用于匹配除换行符之外的单个任意字符串。如果设置 [`DOTALL`](https://docs.python.org/3/library/re.html#re.DOTALL) flag，则会匹配包括换行符在内的单个任意字符。
 
-### `^`
+```python
+re.findall(r".ar", "The car parked in the garage.")
+#> ['car', 'par', 'gar']
+```
 
-从字符串的开头开始匹配
+### 锚点 `^`  `$`
 
-### `### 
+📌`^` (Caret)表示匹配字符串的第一个字符:
 
+```python
+re.findall(r'[Tt]he','The car is parked in the garage.')
+#> ['The', 'the']
+re.findall(r'^[Tt]he','The car is parked in the garage.')
+#> ['The']
+```
 
+如果设置了 [`MULTILINE`](https://docs.python.org/3/library/re.html#re.MULTILINE) flag，则会在每个换行符后进行匹配:
 
-### `*`
+```python
+re.findall(r'^[T|t]he',
+           'The car is parked in the garage,\n'
+           'the plane is parked at the airport',
+          flags=re.MULTILINE)
+3> ['The', 'the']
+```
 
+📌`$` 表示匹配字符串的最后一个字符，或是匹配字符串末尾处换行符的前一个字符。如果设置了 [`MULTILINE`](https://docs.python.org/3/library/re.html#re.MULTILINE) flag，则会在每个换行符前进行匹配。
 
+```python
+re.findall(r'\wat$','The fat cat sat\n on the mat\n')
+#> ['mat']
+re.findall(r'\wat$','The fat cat sat\n on the mat\n',flags=re.MULTILINE)
+#> ['sat', 'mat']
+```
 
-### `+`
+> Note: searching for a single `$` in `'foo\n'` will find two (empty) matches: one just before the newline, and one at the end of the string.
 
+### 重复匹配 `*`  `+`  `?`
 
+📌`*` 表示重复匹配 0 到多次，且采用贪婪匹配(*greedy*)
 
-### `?`
+> Causes the resulting RE to match 0 or more repetitions of the preceding RE, as many repetitions as are possible. `ab*` will match ‘a’, ‘ab’, or ‘a’ followed by any number of ‘b’s.
 
+```python
+re.findall(r'ab*','a ab abbb')
+#> ['a', 'ab', 'abbb']
+```
 
+📌`+` 表示重复匹配 1 到多次，且采用贪婪匹配(*greedy*)
 
-### `*?`, `+?`, `??`
+> Causes the resulting RE to match 1 or more repetitions of the preceding RE. `ab+` will match ‘a’ followed by any non-zero number of ‘b’s; it will not match just ‘a’.
 
+```python
+re.findall(r'ab+','a ab abbb')
+#> ['ab', 'abbb']
+```
 
+📌`?` 表示重复匹配 0 或 1 次，且采用贪婪匹配(*greedy*)
 
-### `{m}`
+> Causes the resulting RE to match 0 or 1 repetitions of the preceding RE. `ab?` will match either ‘a’ or ‘ab’.
 
+```python
+re.findall(r'ab?','a ab abbb')
+#> ['a', 'ab', 'ab']
+```
 
+### 惰性匹配 `*?`, `+?`, `??`
 
-### `{m,n}`
+`*` , `+` , `?` 均采用贪婪匹配，它们会匹配尽可能多的文本。可以使用 `?` 后缀将贪婪匹配转换为惰性(*lazy*)匹配。
 
+```python
+re.findall(r"<.*>",'<a> b <c>')
+#> ['<a> b <c>']
+re.findall(r"<.*?>",'<a> b <c>')
+#> ['<a>', '<c>']
+```
 
+### `{m}` `{m,n}` `{m,n}?`
 
-### `{m,n}?`
+📌`{m}` 用于设定准确的重复匹配的次数
 
+> Specifies that exactly *m* copies of the previous RE should be matched; fewer matches cause the entire RE not to match. For example, `a{6}` will match exactly six `'a'` characters, but not five.
 
+```python
+re.findall(r'a{6}','a'*6)
+#> ['aaaaaa']
+re.findall(r'a{6}','a'*5)
+#> []
+```
+
+📌`{m,n}` 重复匹配为 m~n 次(包含 n)，且采用贪婪匹配(*greedy*)。可以省略 m 或 n —— `{,n}` 表示 `{0,n}`，`{m,}` 表示 m 到无穷大。
+
+> Causes the resulting RE to match from *m* to *n* repetitions of the preceding RE, attempting to match as many repetitions as possible. For example, `a{3,5}` will match from 3 to 5 `'a'` characters. Omitting *m* specifies a lower bound of zero, and omitting *n*specifies an infinite upper bound. As an example, `a{4,}b` will match `'aaaab'` or a thousand `'a'` characters followed by a `'b'`, but not `'aaab'`. The comma may not be omitted or the modifier would be confused with the previously described form.
+
+```python
+re.findall(r'a{3,5}','a'*4)
+#> ['aaaa']
+re.findall(r'<.{1,6}>','<a> b <c>')
+#> ['<a>', '<c>']
+```
+
+📌`{m,n}?` 重复匹配为 m~n 次(包含 n)，且采用惰性匹配。
+
+> Causes the resulting RE to match from *m* to *n* repetitions of the preceding RE, attempting to match as *few* repetitions as possible. This is the non-greedy version of the previous qualifier. For example, on the 6-character string `'aaaaaa'`, `a{3,5}` will match 5 `'a'` characters, while `a{3,5}?` will only match 3 characters.
+
+```python
+re.findall(r'<.{0,}>','<a> b <c>')
+#> ['<a> b <c>']
+re.findall(r'<.{0,}?>','<a>b<c>')
+#> ['<a>', '<c>']
+```
 
 ### `\`
 
+`\` 有如下两种功能:
 
+- 
+
+反斜线字符( `'\'` )在正则表达式中有以下两种用法:
+
+- 表示特殊格式 - 比如，使用 `\w` 来匹配字符和字母
+- 用来屏蔽特殊字符的含义 - 比如，使用 `\\` 来匹配 `'\'`，使用 `\.` 来匹配 `'.'`
 
 ### `[]`
 
