@@ -4,9 +4,8 @@
 > 参考:
 >
 > - [Regular Expression HOWTO](https://docs.python.org/3/howto/regex.html#regex-howto) 🍰
-> - [learn-regex — GitHub](https://github.com/ziishaned/learn-regex)
-> - https://github.com/ziishaned/learn-regex
-> - [`re`](https://docs.python.org/3/library/re.html#module-re) — Regular expression operations
+> - [learn-regex — GitHub](https://github.com/ziishaned/learn-regex) 🍰
+> - [`re`](https://docs.python.org/3/library/re.html#module-re) — Regular expression operations 🍰
 > - [正则表达式 - 廖雪峰](https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/00143193331387014ccd1040c814dee8b2164bb4f064cff000)
 > - http://www.runoob.com/regexp/regexp-syntax.html
 > - http://www.runoob.com/regexp/regexp-metachar.html
@@ -41,14 +40,14 @@ RE pattern 和 string 可以是 Unicode string([`str`](https://docs.python.org/3
 
 > This avoids ambiguity with the non-greedy modifier suffix `?`, and with other modifiers in other implementations. To apply a second repetition to an inner repetition, parentheses may be used. For example, the expression `(?:a{6})*` matches any multiple of six `'a'` characters.
 
-## raw 字符串和 `'\'`
+## raw 字符串和 `\`
 
-反斜线字符( `'\'` )在正则表达式中有以下两种用法:
+反斜线字符( `\` )在正则表达式中有以下两种用法:
 
 - 表示特殊格式 - 比如，使用 `\w` 来匹配字符和字母
-- 用来屏蔽特殊字符的含义 - 比如，使用 `\\` 来匹配 `'\'`，使用 `\.` 来匹配 `'.'`
+- 用来屏蔽元字符或特殊序列的含义 - 比如，使用 `\\` 来匹配 `'\'`，使用 `\.` 来匹配 `'.'`
 
-正则表达式中 `'\'` 字符的用法与 Python 在 string literals 中用法有冲突，例如：
+正则表达式中 `\` 字符的用法与 Python 在 string literals 中用法有冲突，例如：
 
 ```python
 # 当我们在utf-8编码的文本文件中看到一个反斜线'\'字符时
@@ -113,7 +112,7 @@ re.findall(r"\.ar", "car.ar")
 #> ['.ar\\k']
 ```
 
-### `.`
+### 任意字符 `.`
 
 在默认情况下 `.` (*Dot*) 用于匹配除换行符之外的单个任意字符串。如果设置 [`DOTALL`](https://docs.python.org/3/library/re.html#re.DOTALL) flag，则会匹配包括换行符在内的单个任意字符。
 
@@ -122,7 +121,7 @@ re.findall(r".ar", "The car parked in the garage.")
 #> ['car', 'par', 'gar']
 ```
 
-### 锚点 `^`  `$`
+### 锚点 `^`  `###  
 
 📌`^` (Caret)表示匹配字符串的第一个字符:
 
@@ -140,7 +139,7 @@ re.findall(r'^[T|t]he',
            'The car is parked in the garage,\n'
            'the plane is parked at the airport',
           flags=re.MULTILINE)
-3> ['The', 'the']
+#> ['The', 'the']
 ```
 
 📌`$` 表示匹配字符串的最后一个字符，或是匹配字符串末尾处换行符的前一个字符。如果设置了 [`MULTILINE`](https://docs.python.org/3/library/re.html#re.MULTILINE) flag，则会在每个换行符前进行匹配。
@@ -194,7 +193,7 @@ re.findall(r"<.*?>",'<a> b <c>')
 #> ['<a>', '<c>']
 ```
 
-### `{m}` `{m,n}` `{m,n}?`
+### 量词 `{m}` `{m,n}` `{m,n}?`
 
 📌`{m}` 用于设定准确的重复匹配的次数
 
@@ -229,82 +228,417 @@ re.findall(r'<.{0,}?>','<a>b<c>')
 #> ['<a>', '<c>']
 ```
 
-### `\`
+### 转义符 `\`
 
 `\` 有如下两种功能:
 
-- 
+- 表示特殊序列 - 比如，使用 `\w` 来匹配字符和字母
+- 用来屏蔽元字符或特殊序列的含义 - 比如，使用 `\\` 来匹配 `'\'`，使用 `\.` 来匹配 `'.'`
 
-反斜线字符( `'\'` )在正则表达式中有以下两种用法:
+```python
+re.findall(r"\.\\", ".\\")
+#> ['.\\']
+re.findall("[fcm]at\.?",'The fat cat sat on the mat.')
+#> ['fat', 'cat', 'mat.']
+```
 
-- 表示特殊格式 - 比如，使用 `\w` 来匹配字符和字母
-- 用来屏蔽特殊字符的含义 - 比如，使用 `\\` 来匹配 `'\'`，使用 `\.` 来匹配 `'.'`
+建议在 pattern 中使用 raw 字符串，否则会出现以下问题:
 
-### `[]`
+> If you’re not using a raw string to express the pattern, remember that Python also uses the backslash as an escape sequence in string literals; if the escape sequence isn’t recognized by Python’s parser, the backslash and subsequent character are included in the resulting string. However, if Python would recognize the resulting sequence, the backslash should be repeated twice. This is complicated and hard to understand, so it’s highly recommended that you use raw strings for all but the simplest expressions.
+
+### 字符集 `[]`
+
+`[]` 表示一组字符，有以下两种用法:
+
+- 直接在 `[]` 中列出需要的字符，例如 `[amk]` 可匹配 `'a'`, `'m'`, `'k'`
+
+- 在 `[]` 给出字符集的范围，例如:
+
+  - `[a-z]` will match any lowercase ASCII letter, 
+  - `[0-5][0-9]` will match all the two-digits numbers from `00` to `59`
+  - `[0-9A-Fa-f]` will match any hexadecimal digit. 
+
+  在下述两种情况中，`-` 被用于匹配字面值 `'-'`:
+
+  - If `-` is escaped (e.g. `[a\-z]`) 
+  - if it’s placed as the first or last character (e.g. `[-a]` or `[a-]`)
+
+在 `[]` 中的元字符不再拥有特殊含义，仅匹配相应的字面值，例如:
+
+```python
+re.findall("[(+*)]",'(+*)')
+#> ['(', '+', '*', ')']
+```
+
+在 `[]` 中可使用像 `\w` 或 `\s` 这样的字符集类(注意，`\w` 或 `\s` 代表的字符集依赖于  [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) 或 [`LOCALE`](https://docs.python.org/3/library/re.html#re.LOCALE) flag)。
+
+```python
+re.findall("[\w]",'abc')
+#> ['a', 'b', 'c']
+```
+
+如果在字符集后放置量词，则会重复匹配该字符集:
+
+```python
+re.findall(r'[a-zA-Z][0-9a-zA-Z]{0,19}','orca')
+#> ['orca']
+```
+
+如果需要在字符集中匹配 `']'`，可以使用 `\]` 或将 `]` 置于字符集的起始位置:\
+
+```python
+re.findall(r"[()[\]{}]", "[]")
+#> ['[', ']']
+re.findall(r"[]()[{}]", "[]")
+#> ['[', ']']
+```
+
+> Support of nested sets and set operations as in [Unicode Technical Standard #18](https://unicode.org/reports/tr18/)might be added in the future. This would change the syntax, so to facilitate this change a [`FutureWarning`](https://docs.python.org/3/library/exceptions.html#FutureWarning) will be raised in ambiguous cases for the time being. That includes sets starting with a literal `'['` or containing literal character sequences `'--'`, `'&&'`, `'~~'`, and `'||'`. To avoid a warning escape them with a backslash.
+
+*Changed in version 3.7:* [`FutureWarning`](https://docs.python.org/3/library/exceptions.html#FutureWarning) is raised if a character set contains constructs that will change semantically in the future.
+
+#### 否定字符集 `[^]`
+
+可以在 `[]` 中使用 `^` 来设置一个否定字符集，此时将匹配否定字符集中未包含的所有字符。例如:
+
+- `[^5]` will match any character except `'5'`
+- `[^^]` will match any character except `'^'`. `^` has no special meaning if it’s not the first character in the set.
+
+```python
+re.findall("[^^5]",'^456abc')
+#> ['4', '6', 'a', 'b', 'c']
+```
+
+仅当 `^` 被用作 `[]` 中的第一个字符时，才具备特殊含义。
 
 
 
-### `|`
+### 或运算 `|`
+
+例如，`(?:T|t)he|car` 将匹配 `(?:T|t)he` 或 `car`:
+
+```python
+re.findall(r"(?:T|t)he|car", "The car is parked in the garage.")
+#> ['The', 'car', 'the']
+```
+
+注意，可以在 group 中使用 `|` 
+
+> `A|B`, where *A* and *B* can be arbitrary REs, creates a regular expression that will match either *A* or *B*. An arbitrary number of REs can be separated by the `'|'` in this way. 
+>
+> This can be used inside groups (see below) as well. 
+>
+> As the target string is scanned, REs separated by `'|'` are tried from left to right. When one pattern completely matches, that branch is accepted. This means that once *A* matches, *B* will not be tested further, even if it would produce a longer overall match. In other words, the `'|'` operator is never greedy. To match a literal `'|'`, use `\|`, or enclose it inside a character class, as in `[|]`.
+
+### 捕获组 `(...)`
+
+捕获组(*capturing* *group*)是一组被置于括号中 sub-pattern，在执行匹配后可检索 group 捕获到的内容:
+
+```python
+m = re.match(r"(ab.) \1", "abc abc")
+m.groups()
+#> ('abc',)
+```
+
+可使用 `\number` 来引用 group 捕获到的内容(详见﹝[`\number`](#`\number`)﹞小节):
+
+```python
+# 会使用第一次匹配到的内容进行二次匹配，
+# 并不是重复使用(ab.)进行匹配
+re.match(r"(ab.) \1", "abc abc")
+#> <re.Match object; span=(0, 7), match='abc abc'>
+re.match(r"(ab.) \1", "abc abd")
+#> None
+```
+
+如果在 group 后放置量词，则会重复匹配该 sub-pattern:
+
+```python
+m = re.match(r"(ab.)*", "abcabd")
+m
+#> <re.Match object; span=(0, 6), match='abcabd'>
+m.groups()
+#> ('abd',)
+```
+
+在 group 中可使用 `|`:
+
+```python
+re.findall(r"(c|g|p)ar", "The car is parked in the garage.")
+#> ['c', 'p', 'g']
+```
+
+如果需要匹配 `'('` 或 `')'`，可采用以下两种方法:
+
+- use `\(` or `\)`
+- enclose them inside a character class: `[(]`, `[)]`
+
+#### 非捕获组 `(?:...)`
+
+非捕获组(*Non*-*capturing* *group*) 与捕获组的区别如下:
+
+- 通过 `(?:...)` 匹配到的子字符串不能单独检索
+- 不可使用 `\number` 来引用 `(?:...)` 匹配到的子字符串
+
+```python
+m = re.match(r"(ab.)-(?:ab.)", "abc-abc")
+m.groups()
+#> ('abc',)
+```
+
+#### 命名组 `(?P<name>...)`
+
+命名组 `(?P<name>...)` 类似于编号组 `(...)`，但是命名组可通过组名 `name` 来访问捕获到的子字符串。组名 `name` 必须是有效的 Python 标识符，并且在同一个 pattern 中不可重复定义相同的组名。命名组是对编号组的扩展，我们仍然通过组号来操作命名组。比如，可使用 `\number` 来引用命名组捕获到的内容:
+
+```python
+# 会使用命名组匹配到的内容进行二次匹配，
+# 并不是重复使用正则表达式 ab. 进行匹配
+re.match(r"(?P<quote>ab.) \1 (?P=quote)", "abc abc abc")
+#> <re.Match object; span=(0, 7), match='abc abc'>
+re.match(r"(?P<quote>ab.) (?P=quote)", "abc abd")
+#> None
+```
+
+在下面的表格中展示了在不同 context 中引用命名组的方法——假设 pattern 为 `(?P<quote>['"]).*?(?P=quote)`，可匹配用单引号(或双引号)引用的字符串。
+
+| Context of reference to group “quote”                   | Ways to reference it                                         |
+| :------------------------------------------------------ | :----------------------------------------------------------- |
+| in the same pattern itself                              | - `(?P=quote)` (as shown)<br />- `\1`                        |
+| when processing match object *m*                        | - `m.group('quote')`<br />- `m.group(1)`<br />- `m.end('quote')` (etc.) |
+| in a string passed to the *repl* argument of `re.sub()` | - `\g<quote>`<br />- `\g<1>`<br />- `\1`                     |
+
+#### 引用命名组 `(?P=name)`
+
+用于引用命名组匹配到的内容
+
+```python
+# 会使用命名组匹配到的内容进行二次匹配，
+# 并不是重复使用正则表达式 ab. 进行匹配
+re.match(r"(?P<quote>ab.) \1 (?P=quote)", "abc abc abc")
+#> <re.Match object; span=(0, 7), match='abc abc'>
+re.match(r"(?P<quote>ab.) (?P=quote)", "abc abd")
+#> None
+```
 
 
 
-### `(...)`
+### 扩展符号 `(?...)`
+
+`(?...)` 被称为扩展符号，如 `(?aiLmsux)`, `(?:...)`, `(?aiLmsux-imsx:...)` 等。扩展符号的含义和语法取决于 `?` 后面的第一个字符。在扩展符号的中只有 `(?P<name>...)` 会创建 group，其余扩展符号均不会创建 group。
+
+以下是当前支持的扩展符号:
+
+#### `(?aiLmsux)`
+
+可使用 `'a'`, `'i'`, `'L'`, `'m'`, `'s'`, `'u'`, `'x'` 中的一个或多个来组建该扩展符号，并将其置于 pattern 的开始处，例如:
+
+```python
+re.match(r"(?a)\w", "鲸")
+#> None
+re.match(r'\w','鲸')
+#> <re.Match object; span=(0, 1), match='鲸'>
+```
+
+`'a'`, `'i'`, `'L'`, `'m'`, `'s'`, `'u'`, `'x'` 表示相应的 flage:
+
+- [`re.A`](https://docs.python.org/3/library/re.html#re.A) (ASCII-only matching)
+- [`re.I`](https://docs.python.org/3/library/re.html#re.I) (ignore case)
+- [`re.L`](https://docs.python.org/3/library/re.html#re.L) (locale dependent)
+- [`re.M`](https://docs.python.org/3/library/re.html#re.M) (multi-line)
+- [`re.S`](https://docs.python.org/3/library/re.html#re.S) (dot matches all)
+- `re.U` (Unicode matching)
+- [`re.X`](https://docs.python.org/3/library/re.html#re.X) (verbose)
+
+需要使用 flag 时，我们通常会向 [`re.compile()`](https://docs.python.org/3/library/re.html#re.compile) 函数传递 flag 参数。但是，我们还可以直接在正则表达式中使用 `(?aiLmsux)` 来设置 flag，这样便无需使用 `re.compile()` 函数。
+
+```python
+# 以下两种方法等效
+re.match(r"(?a)\w", "a")
+#> <re.Match object; span=(0, 1), match='a'>
+r = re.compile(r'(?a)\w',flags=re.A)
+r.match('a')
+#> <re.Match object; span=(0, 1), match='a'>
+```
 
 
 
-### `(?...)`
+#### `(?:...)`
+
+详见﹝[非捕获组 `(?:...)`](#非捕获组 `(?:...)`)﹞小节
 
 
 
-### `(?aiLmsux)`
+#### `(?aiLmsux-imsx:...)`
+
+`(?aiLmsux-imsx:...)` 由两部分构成，其用法与 `(?aiLmsux)` 类似
+
+- `-` 前的部分可由 `'a'`, `'i'`, `'L'`, `'m'`, `'s'`, `'u'`, `'x'` 中 0 个或多个组成，表示添加相应的 flag
+- `-` 后的部分可由  `'i'`, `'m'`, `'s'`, `'x'` 中的 1 或多个组成，表示移除相应 flag。注: `-` 及其之后的部分为可选部分
+
+> The letters `'a'`, `'L'` and `'u'` are mutually exclusive when used as inline flags, so they can’t be combined or follow `'-'`. Instead, when one of them appears in an inline group, it overrides the matching mode in the enclosing group. In Unicode patterns `(?a:...)`switches to ASCII-only matching, and `(?u:...)` switches to Unicode matching (default). In byte pattern `(?L:...)` switches to locale depending matching, and `(?a:...)` switches to ASCII-only matching (default). This override is only in effect for the narrow inline group, and the original matching mode is restored outside of the group.
+
+*New in version 3.6.*
+
+*Changed in version 3.7:* The letters `'a'`, `'L'` and `'u'` also can be used in a group.
+
+#### `(?P<name>...)`
+
+详见﹝[命名组 `(?P<name>...)`](#命名组 `(?P<name>...)`)﹞小节
 
 
 
-### `(?:...)`
+#### `(?P=name)`
+
+详见﹝[引用命名组 `(?P=name)`](#引用命名组 `(?P=name)`)﹞小节
 
 
 
-### `(?aiLmsux-imsx:...)`
+#### `(?#...)`
+
+`(?#...)` 用于提供注释，其中的内容不参与匹配:
+
+```python
+re.match(r"(?#comment)\w", "V")
+#> <re.Match object; span=(0, 1), match='V'>
+```
+
+#### 零宽度断言(前后预查)
+
+| Symbol | Description         |
+| ------ | ------------------- |
+| ?=     | Positive Lookahead  |
+| ?!     | Negative Lookahead  |
+| ?<=    | Positive Lookbehind |
+| ?<!    | Negative Lookbehind |
 
 
 
-### `(?P<name>...)`
+##### `(?=...)`
+
+`(?=...)` 被称为 Positive Lookahead Assertion，仅当 `(?=...)` 部分匹配成功后，才会匹配 `(?=...)` 之前的部分，并且 `(?=...)` 本身不会消耗任何字符串，也不会出现在匹配结果中。例如:
+
+```python
+# 只有在\sfat匹配成功时，才会匹配[T|t]he
+re.findall(r"[T|t]he(?=\sfat)", "The fat cat sat on the mat.")
+#> ['The']
+# 注意对比下面这两句代码
+re.findall('[0-9\.]+(?=%)','4.44% and 10.88%')
+#> ['4.44', '10.88']
+re.findall('[0-9\.]*(?=%)','4.44% and 10.88%')
+#> ['4.44', '', '10.88', '']
+```
 
 
 
-### `(?P=name)`
+##### `(?!...)`
+
+`(?!...)` 被称为 Negative Lookahead Assertion，仅当 `(?!...)` 部分匹配失败后，才会匹配 `(?!...)` 之前的部分，并且 `(?!...)` 本身不会消耗任何字符串，也不会出现在匹配结果中。例如:
+
+```python
+# 只有在\sfat匹配失败时，才会匹配[T|t]he
+re.findall(r"[T|t]he(?!\sfat)", "The fat cat sat on the mat.")
+#> ['the']
+re.findall(r".(?!ab)", "cab")
+#> ['a', 'b']
+```
 
 
 
-### `(?#...)`
+##### `(?<=...)`
+
+`(?<=...)` 被称为 Positive Lookbehind Assertion，仅当 `(?<=...)` 部分匹配成功后，才会匹配 `(?<=...)` 之后的部分，并且 `(?<=...)` 不会出现在匹配结果中。例如:
+
+```python
+re.findall(r"(?<=[T|t]he\s).at", "The fat cat sat on the mat.")
+#> ['fat', 'mat']
+```
+
+`(?<=...)` 只能表示固定长度的字符串，比如允许使用 `(?<=abc)` 或 `(?<=a|b)`，但不能使用 `(?<=a*)` 或 `(?<=a{3,4})`:
+
+```python
+re.findall(r"(?<=a|b).", "abab")
+#> ['b', 'a', 'b']
+re.findall(r"(?<=a*).", "abab")
+#> error: look-behind requires fixed-width pattern
+```
+
+> Note: That patterns which start with positive lookbehind assertions will not match at the beginning of the string being searched; you will most likely want to use the [`search()`](https://docs.python.org/3/library/re.html#re.search) function rather than the [`match()`](https://docs.python.org/3/library/re.html#re.match) function:
+
+```python
+re.search('(?<=abc)def', 'abcdef')
+#> <re.Match object; span=(3, 6), match='def'>
+re.match('(?<=abc)def', 'abcdef')
+#> None
+```
+
+*Changed in version 3.5:* Added support for group references of fixed length.
 
 
 
-### `(?=...)`
+##### `(?<!...)`
+
+`(?<!...)` 被称为 Negative Lookbehind Assertion，仅当 `(?<!...)` 部分匹配失败后，才会匹配 `(?<!...)` 之后的部分，并且 `(?<!...)` 不会出现在匹配结果中。例如:
+
+```python
+re.findall(r"(?<![T|t]he\s).at", "The fat cat sat on the mat.")
+#> ['cat', 'sat']
+```
+
+`(?<!...)` 只能表示固定长度的字符串，比如允许使用 `(?<!abc)` 或 `(?<!a|b)`，但不能使用 `(?<!a*)` 或 `(?<!a{3,4})`:
+
+```python
+re.findall(r"(?<!a).", "abc")
+#> ['a', 'c']
+re.findall(r"(?<!a*).", "abc")
+#> error: look-behind requires fixed-width pattern
+```
+
+> Note: Patterns which start with negative lookbehind assertions may match at the beginning of the string being searched.
+
+```python
+re.match(r"(?<!a).", "abc")
+#> <re.Match object; span=(0, 1), match='a'>
+re.search(r"(?<!a).", "abc")
+#> <re.Match object; span=(0, 1), match='a'>
+```
 
 
 
-### `(?!...)`
+#### `(?(id/name)yes-pattern|no-pattern)`
 
+如果存在具备给定 id 或 name 的 group，则尝试匹配 `yes-pattern`；如果不存在相应的 group，则尝试匹配 `no-pattern`。另外，`no-pattern` 属于可选部分，可省略。
 
+> 示例 - `(<)?(\w+@\w+(?:\.\w+)+)(?(1)>|$)` is a poor email matching pattern, which will match with `'<user@host.com>'` as well as `'user@host.com'`, but not with `'<user@host.com'` nor `'user@host.com>'`.
 
-### `(?<=...)`
+```python
+re.match(r"(<)*(\w+@\w+(?:.\w+)+)(?(1)>|$)", "<user@host.com>")
+#> <re.Match object; span=(0, 15), match='<user@host.com>'>
+re.match(r"(<)*(\w+@\w+(?:.\w+)+)(?(1)>|$)", "user@host.com")
+#> <re.Match object; span=(0, 13), match='user@host.com'>
+re.match(r"(<)*(\w+@\w+(?:.\w+)+)(?(1)>|$)", "<user@host.com")
+#> None
+re.match(r"(<)*(\w+@\w+(?:.\w+)+)(?(1)>|$)", "user@host.com>")
+#> None
+```
 
+在使用 `(?(id/name)yes-pattern|no-pattern)` 时，需要注意 `match()`,  `search()`, `findall()` 之间的区别。`match()` 必须从最右侧起完全匹配，而 `search()` 和 `findall()` 则可以从任意位置开始匹配。例如:
 
+```python
+re.match(r"(<)*(\w+@\w+(?:.\w+)+)(?(1)>|$)", "<user@host.com")
+#> None
+re.search(r"(<)*(\w+@\w+(?:.\w+)+)(?(1)>|$)", "<user@host.com")
+#> <re.Match object; span=(1, 14), match='user@host.com'>
+re.findall(r"(<)*(\w+@\w+(?:.\w+)+)(?(1)>|$)", "<user@host.com")
+#> [('', 'user@host.com')]
+```
 
-### `(?<!...)`
-
-
-
-### `(?(id/name)yes-pattern|no-pattern)`
+可以看到 `search()` 和 `findall()` 会将 `user@host.com` 作为匹配对象。
 
 
 
 ## special sequences
 
-The special sequences consist of `'\'` and a character from the list below. If the ordinary character is not an ASCII digit or an ASCII letter, then the resulting RE will match the second character. For example, `\$` matches the character `'$'`.
-
-正则表达式解析器可接收以下两种特殊序列:
+特殊序列由 `\` 和字符组成，正则表达式解析器可接收以下两种特殊序列:
 
 - Python 字符串字面值转义序列:
 
@@ -332,15 +666,69 @@ re.match('\w','h') # or re.match(r'\w','h')
 #> <re.Match object; span=(0, 1), match='h'>
 ```
 
+如果 `\` 后的字符不是 ASCII 数字和字母，则以此构建的正则表达式将匹配第二个字符，例如 `\$` 将匹配 `$`
 
+```python
+re.findall(r'\$\鲸','$鲸')
+#> ['$鲸']
+```
 
 ### `\number`
 
-Matches the contents of the group of the same number. Groups are numbered starting from 1. For example, `(.+) \1` matches `'the the'` or `'55 55'`, but not `'thethe'` (note the space after the group). This special sequence can only be used to match one of the first 99 groups. If the first digit of *number* is 0, or *number* is 3 octal digits long, it will not be interpreted as a group match, but as the character with octal value *number*. Inside the`'['` and `']'` of a character class, all numeric escapes are treated as characters.
+可使用 `\number` 来引用 group 捕获到的内容:
+
+```python
+# 会使用第一次匹配到的内容进行二次匹配，
+# 并不会重复使用(ab.)进行匹配
+re.match(r"(ab.) \1", "abc abc")
+#> <re.Match object; span=(0, 7), match='abc abc'>
+re.match(r"(ab.) \1", "abc abd")
+#> None
+```
+
+group 编号从 1 开始，`\number` 可引用编号为 1~99 的 group。
+
+如果出现以下两种情况，则会将 `\number` 视为一个八进制数:
+
+- `\number` 左侧第一位数为 0
+- `\number` 是 3 位八进制数
+
+此时不会将 `\number` 解释为 group 编号，而是会将其解释为该八进制数对应的字符，例如:
+
+```python
+re.findall(r'\070\176','8~')
+#> ['8~']
+```
+
+在 `[]` 中的 `\number` 不再拥有特殊含义，此时 `\number` 将被解释为八进制数对应的字符，例如:
+
+```python
+re.findall(r'[\70\176]','8~')
+#> ['8', '~']
+```
 
 ### `\A`
 
-Matches only at the start of the string.
+`\A` 表示从字符串的第一个字符开始匹配:
+
+> `\A` 和 `^` 的区别:
+>
+> When not in `MULTILINE` mode, `\A` and `^` are effectively the same. In `MULTILINE` mode, they’re different: `\A` still matches only at the beginning of the string, but `^` may match at any location inside the string that follows a newline character.
+
+```python
+re.findall(r'^[T|t]he',
+           'The car is parked in the garage,\n'
+           'the plane is parked at the airport',
+          flags=re.MULTILINE)
+#> ['The', 'the']
+re.findall(r'\A[T|t]he',
+           'The car is parked in the garage,\n'
+           'the plane is parked at the airport',
+          flags=re.MULTILINE)
+#> ['The']
+```
+
+
 
 ### `\b`
 
