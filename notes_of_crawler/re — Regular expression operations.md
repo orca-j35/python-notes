@@ -17,6 +17,122 @@ Note: 在本笔记中我会使用 `Style without quotes` 来表示正则表达�
 
 See also: 第三方模块 [regex](https://pypi.org/project/regex/) 的 API 与标准库 `re` 模块兼容，同时还提供了一些额外的功能，对 Unicode 的支持也更加全面。
 
+## Module Contents
+
+本节将介绍 `re` 模块中定义的函数、常量、异常。部分函数是已编译的正则表达式的全功能方法的简化版本。
+
+*Changed in version 3.6:* Flag constants are now instances of `RegexFlag`, which is a subclass of [`enum.IntFlag`](https://docs.python.org/3/library/enum.html#enum.IntFlag).
+
+### compile()🔨
+
+🔨re.compile(*pattern*, *flags=0*)
+
+该函数可将正则表达式 *pattern* 编译为正则表达式对象([*regular* *expression* *object*](https://docs.python.org/3/library/re.html#re-objects)) —— `re.Pattern`
+
+*flag* 用于设置正则表达式对象的行为，可利用 `|` 运算符(bitwise OR)将多个 flag 组合使用。
+
+```python
+p = re.compile('ab*', re.IGNORECASE)
+```
+
+如果需要多次使用某个 pattern 进行匹配，可利用 `re.compile()` 将其编译为 `re.Pattern` 对象，并使用该 `re.Pattern` 对象进行匹配，这样便可省略每次匹配时编译 pattern 的过程，如:
+
+```python
+prog = re.compile(pattern)
+result = prog.match(string)
+```
+
+直接调用 `re.match()` 函数也可以完成匹配，但是每次都要重新编译 pattern，如:
+
+```python
+result = re.match(pattern, string)
+```
+
+> Note: The compiled versions of the most recent patterns passed to [`re.compile()`](https://docs.python.org/3/library/re.html#re.compile)and the module-level matching functions are cached, so programs that use only a few regular expressions at a time needn’t worry about compiling regular expressions.
+
+### Flag 常量
+
+flag 常量用于向 `compile()` 函数传递 *flag* 参数。对同一个 flag 常量而言，其短名称和长名称在使用过程中完全等效。
+
+#### re.A & re.ASCII🚩
+
+如果使用了 `re.A` flag，那么下述特殊序列将执行 ASCII-only 匹配，不再执行 full-Unicode 匹配。该 flag 仅对 Unicode pattern 有意义，byte pattern 将忽略该 flag。
+
+```
+ \w, \W, \b, \B, \d, \D, \s, \S 
+```
+
+`re.A` 对应于内联 flag `(?a)`。
+
+> Note that for backward compatibility, the `re.U` flag still exists (as well as its synonym `re.UNICODE` and its embedded counterpart `(?u)`), but these are redundant in Python 3 since matches are Unicode by default for strings (and Unicode matching isn’t allowed for bytes).
+
+
+
+#### re.DEBUG🚩
+
+显式已编译表达式的调试信息，没有对应的内联 flag。
+
+
+
+#### re.I & re.IGNORECASE🚩
+
+如果使用了 `re.I` flag，那么在执行匹配时将不会区分大小写，因此像 `[A-Z]` 这样的表达式也可以匹配到小写字母。对应于内联 flag `?i`。
+
+> Full Unicode matching (such as `Ü` matching `ü`) also works unless the [`re.ASCII`](https://docs.python.org/3/library/re.html#re.ASCII)flag is used to disable non-ASCII matches. The current locale does not change the effect of this flag unless the [`re.LOCALE`](https://docs.python.org/3/library/re.html#re.LOCALE) flag is also used.
+>
+> Note that when the Unicode patterns `[a-z]` or `[A-Z]` are used in combination with the [`IGNORECASE`](https://docs.python.org/3/library/re.html#re.IGNORECASE) flag, they will match the 52 ASCII letters and 4 additional non-ASCII letters: ‘İ’ (U+0130, Latin capital letter I with dot above), ‘ı’ (U+0131, Latin small letter dotless i), ‘ſ’ (U+017F, Latin small letter long s) and ‘K’ (U+212A, Kelvin sign). If the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag is used, only letters ‘a’ to ‘z’ and ‘A’ to ‘Z’ are matched.
+
+
+
+#### re.L & re.LOCALE🚩
+
+如果使用了 `re.L` flag，那么将根据当前环境(*locale*)来设置 `\w`, `\W`, `\b`, `\B`，并且还会设置是否区分大小写。不鼓励使用该 flag，因为环境机制非常不可靠。环境机制一次仅处理一种 "culture"，且仅适用于 8-bit 环境。默认情况下，Python 3 中已为 Unicode(str) pattern 启用了 Unicode 匹配。
+
+*Changed in version 3.6:* [`re.LOCALE`](https://docs.python.org/3/library/re.html#re.LOCALE) can be used only with bytes patterns and is not compatible with [`re.ASCII`](https://docs.python.org/3/library/re.html#re.ASCII).
+
+*Changed in version 3.7:* Compiled regular expression objects with the [`re.LOCALE`](https://docs.python.org/3/library/re.html#re.LOCALE) flag no longer depend on the locale at compile time. Only the locale at matching time affects the result of matching.
+
+#### re.M & re.MULTILINE🚩
+
+如果使用了 `re.M` flag，则会影响 `^` 和 `$` 的行为:
+
+- the pattern character `'^'` matches at the beginning of the string and at the beginning of each line (immediately following each newline).
+
+  By default, `'^'` matches only at the beginning of the string
+
+- The pattern character `'$'` matches at the end of the string and at the end of each line (immediately preceding each newline). 
+
+  By default, `'$'` only at the end of the string and immediately before the newline (if any) at the end of the string.
+
+对应于内联 flag `?m`。
+
+#### re.S & re.DOTALL🚩
+
+如果使用了 `re.S` flag，元字符 `.` 将可以匹配包括换行符(*newline*)在内的所有字符；如果没有使用 `re.S`，`.` 将匹配除换行符以外的所有字符。对应于内联 flag `?s`。
+
+#### re.X & re.VERBOSE🚩
+
+如果使用了 `re.X` flag，则可以以更易读的方式来编写正则表达式 pattern。 `re.X` flag 允许在视觉上拆分 pattern，并且可以为每个部分添加注释。对应于内联 flag `?x`。
+
+如果使用了 `re.X` 则会忽略 pattern 中的空白符(*whitespace*)，但以下几种情况除外:
+
+- whitespace in a character class `[]`
+- when preceded by an unescaped backslash
+- within tokens like `*?`, `(?:` or `(?P<...>`
+
+`#` 用于添加注释，规则如下:
+
+> When a line contains a `#` that is not in a character class and is not preceded by an unescaped backslash, all characters from the leftmost such `#` through the end of the line are ignored.
+
+示例 - 以下两个用于匹配十进制数的正则表达式对象完全等效:
+
+```python
+a = re.compile(r"""\d +  # the integral part
+                   \.    # the decimal point
+                   \d *  # some fractional digits""", re.X)
+b = re.compile(r"\d+\.\d*")
+```
+
 
 
 ## Match Objects

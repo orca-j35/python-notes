@@ -40,57 +40,9 @@ RE pattern 和 string 可以是 Unicode string([`str`](https://docs.python.org/3
 
 > This avoids ambiguity with the non-greedy modifier suffix `?`, and with other modifiers in other implementations. To apply a second repetition to an inner repetition, parentheses may be used. For example, the expression `(?:a{6})*` matches any multiple of six `'a'` characters.
 
-## raw 字符串和 `\`
-
-反斜线字符( `\` )在正则表达式中有以下两种用法:
-
-- 表示特殊格式 - 比如，使用 `\w` 来匹配字符和字母
-- 用来屏蔽元字符或特殊序列的含义 - 比如，使用 `\\` 来匹配 `'\'`，使用 `\.` 来匹配 `'.'`
-
-正则表达式中 `\` 字符的用法与 Python 在 string literals 中用法有冲突，例如：
-
-```python
-# 当我们在utf-8编码的文本文件中看到一个反斜线'\'字符时
-# 如果我们将该字符读取到Python解释器中，则会得到下面这个字符串
-s = '\\'
-# 如果我们要使用正则表达式来匹配s，那么pattern字符串应为
-pattern = '\\\\'
-```
-
-建议在 pattern 中使用 raw 字符串，例如:
-
-```python
-# 当我们在utf-8编码的文本文件中看到'\n'时，如果我们将其读取到Python解释器中，则会得到如下字符串
-s1 = '\\n'
-# 如果我们要使用正则表达式来匹配s1，那么pattern字符串如下
-p1 = '\\\\n'
-re.match('\\\\n','\\n') # or re.match(r'\\n','\\n')
-#> <re.Match object; span=(0, 2), match='\\n'>
-
-# 当我们在utf-8编码的文本文件中看到'\s'时，如果我们将其读取到Python解释器中，则会得到如下字符串
-s2 = '\\s'
-# 如果我们要使用正则表达式来匹配s1，那么pattern字符串如下
-p2 = '\\\\s'
-re.match('\\\\s','\\s') # or re.match(r'\\s','\\s')
-#> <re.Match object; span=(0, 2), match='\\s'>
-
-# 还可以思考以下示例
-re.match('\\\\s','\s') # or re.match(r'\\s','\s')
-#> <re.Match object; span=(0, 2), match='\\s'>
-re.match('\\\s','\s')
-#> <re.Match object; span=(0, 2), match='\\s'>
-```
-
-通过上面的示例，可以看到如果在 pattern 中使用普通字符串的话，可能需要大量使用 `\`，这会大大降低 pattern 的可读性，因此我们需要在 pattern 中使用 raw 字符串，以减少 `\` 的用来。raw 字符串中不会对 `\` 进行特殊处理(例如， `r"\n"` 表示两个字符 `'\'` 和 `'n'` ，而 `"\n"` 则被视作一个换行符。
-
-```python
-r'\n','\n'
-#> ('\\n', '\n')
-```
 
 
-
-## metacharacters
+## 元字符
 
 > 参考:
 >
@@ -142,6 +94,8 @@ re.findall(r'^[T|t]he',
 #> ['The', 'the']
 ```
 
+------
+
 📌`$` 表示匹配字符串的最后一个字符，或是匹配字符串末尾处换行符的前一个字符。如果设置了 [`MULTILINE`](https://docs.python.org/3/library/re.html#re.MULTILINE) flag，则会在每个换行符前进行匹配。
 
 ```python
@@ -164,6 +118,8 @@ re.findall(r'ab*','a ab abbb')
 #> ['a', 'ab', 'abbb']
 ```
 
+------
+
 📌`+` 表示重复匹配 1 到多次，且采用贪婪匹配(*greedy*)
 
 > Causes the resulting RE to match 1 or more repetitions of the preceding RE. `ab+` will match ‘a’ followed by any non-zero number of ‘b’s; it will not match just ‘a’.
@@ -172,6 +128,8 @@ re.findall(r'ab*','a ab abbb')
 re.findall(r'ab+','a ab abbb')
 #> ['ab', 'abbb']
 ```
+
+------
 
 📌`?` 表示重复匹配 0 或 1 次，且采用贪婪匹配(*greedy*)
 
@@ -206,6 +164,8 @@ re.findall(r'a{6}','a'*5)
 #> []
 ```
 
+------
+
 📌`{m,n}` 重复匹配为 m~n 次(包含 n)，且采用贪婪匹配(*greedy*)。可以省略 m 或 n —— `{,n}` 表示 `{0,n}`，`{m,}` 表示 m 到无穷大。
 
 > Causes the resulting RE to match from *m* to *n* repetitions of the preceding RE, attempting to match as many repetitions as possible. For example, `a{3,5}` will match from 3 to 5 `'a'` characters. Omitting *m* specifies a lower bound of zero, and omitting *n*specifies an infinite upper bound. As an example, `a{4,}b` will match `'aaaab'` or a thousand `'a'` characters followed by a `'b'`, but not `'aaab'`. The comma may not be omitted or the modifier would be confused with the previously described form.
@@ -216,6 +176,8 @@ re.findall(r'a{3,5}','a'*4)
 re.findall(r'<.{1,6}>','<a> b <c>')
 #> ['<a>', '<c>']
 ```
+
+------
 
 📌`{m,n}?` 重复匹配为 m~n 次(包含 n)，且采用惰性匹配。
 
@@ -504,18 +466,16 @@ re.match(r"(?#comment)\w", "V")
 
 #### 零宽度断言(前后预查)
 
-| Symbol | Description         |
-| ------ | ------------------- |
-| ?=     | Positive Lookahead  |
-| ?!     | Negative Lookahead  |
-| ?<=    | Positive Lookbehind |
-| ?<!    | Negative Lookbehind |
+| Symbol     | Description                   |
+| ---------- | ----------------------------- |
+| `(?=...)`  | Positive Lookahead Assertion  |
+| `(?!...)`  | Negative Lookahead Assertion  |
+| `(?<=...)` | Positive Lookbehind Assertion |
+| `(?<!...)` | Negative Lookbehind Assertion |
 
 
 
-##### `(?=...)`
-
-`(?=...)` 被称为 Positive Lookahead Assertion，仅当 `(?=...)` 部分匹配成功后，才会匹配 `(?=...)` 之前的部分，并且 `(?=...)` 本身不会消耗任何字符串，也不会出现在匹配结果中。例如:
+📌`(?=...)` 被称为 Positive Lookahead Assertion，仅当 `(?=...)` 部分匹配成功后，才会匹配 `(?=...)` 之前的部分，并且 `(?=...)` 本身不会消耗任何字符串，也不会出现在匹配结果中。例如:
 
 ```python
 # 只有在\sfat匹配成功时，才会匹配[T|t]he
@@ -528,11 +488,9 @@ re.findall('[0-9\.]*(?=%)','4.44% and 10.88%')
 #> ['4.44', '', '10.88', '']
 ```
 
+------
 
-
-##### `(?!...)`
-
-`(?!...)` 被称为 Negative Lookahead Assertion，仅当 `(?!...)` 部分匹配失败后，才会匹配 `(?!...)` 之前的部分，并且 `(?!...)` 本身不会消耗任何字符串，也不会出现在匹配结果中。例如:
+📌`(?!...)` 被称为 Negative Lookahead Assertion，仅当 `(?!...)` 部分匹配失败后，才会匹配 `(?!...)` 之前的部分，并且 `(?!...)` 本身不会消耗任何字符串，也不会出现在匹配结果中。例如:
 
 ```python
 # 只有在\sfat匹配失败时，才会匹配[T|t]he
@@ -542,11 +500,9 @@ re.findall(r".(?!ab)", "cab")
 #> ['a', 'b']
 ```
 
+------
 
-
-##### `(?<=...)`
-
-`(?<=...)` 被称为 Positive Lookbehind Assertion，仅当 `(?<=...)` 部分匹配成功后，才会匹配 `(?<=...)` 之后的部分，并且 `(?<=...)` 不会出现在匹配结果中。例如:
+📌`(?<=...)` 被称为 Positive Lookbehind Assertion，仅当 `(?<=...)` 部分匹配成功后，才会匹配 `(?<=...)` 之后的部分，并且 `(?<=...)` 不会出现在匹配结果中。例如:
 
 ```python
 re.findall(r"(?<=[T|t]he\s).at", "The fat cat sat on the mat.")
@@ -573,11 +529,9 @@ re.match('(?<=abc)def', 'abcdef')
 
 *Changed in version 3.5:* Added support for group references of fixed length.
 
+------
 
-
-##### `(?<!...)`
-
-`(?<!...)` 被称为 Negative Lookbehind Assertion，仅当 `(?<!...)` 部分匹配失败后，才会匹配 `(?<!...)` 之后的部分，并且 `(?<!...)` 不会出现在匹配结果中。例如:
+📌`(?<!...)` 被称为 Negative Lookbehind Assertion，仅当 `(?<!...)` 部分匹配失败后，才会匹配 `(?<!...)` 之后的部分，并且 `(?<!...)` 不会出现在匹配结果中。例如:
 
 ```python
 re.findall(r"(?<![T|t]he\s).at", "The fat cat sat on the mat.")
@@ -636,27 +590,17 @@ re.findall(r"(<)*(\w+@\w+(?:.\w+)+)(?(1)>|$)", "<user@host.com")
 
 
 
-## special sequences
+## 特殊序列
 
-特殊序列由 `\` 和字符组成，正则表达式解析器可接收以下两种特殊序列:
+除了本节中提及的特殊序列外，正则表达式解析器还可以接受 Python 字符串字面值支持的大多数标准转义序列:
 
-- Python 字符串字面值转义序列:
+```
+\a      \b      \f      \n
+\r      \t      \u      \U
+\v      \x      \\
+```
 
-  ```
-  \a      \b      \f      \n
-  \r      \t      \u      \U
-  \v      \x      \\
-  ```
-
-- 正则表达式特有的特殊序列:
-
-  ```
-  \A      \b      \B      \d
-  \D      \s      \S      \w
-  \W      \Z      \number
-  ```
-
-示例:
+`\b` 也用于表示单词边界，详见﹝ [`\b` & `\B`](#\b` & `\B`) ﹞小节。转义序列 `'\u'` 和 `'\U'` 仅在 Unicode pattern 中会被识别，不能用于 bytes pattern。ASCII 字母构建的未知转义序列被留作将来使用，并视为错误。
 
 ```python
 import re
@@ -673,27 +617,32 @@ re.findall(r'\$\鲸','$鲸')
 #> ['$鲸']
 ```
 
+*Changed in version 3.3:* The `'\u'` and `'\U'` escape sequences have been added.
+
+*Changed in version 3.6:* Unknown escapes consisting of `'\'` and an ASCII letter now are errors.
+
 ### `\number`
 
 可使用 `\number` 来引用 group 捕获到的内容:
 
 ```python
-# 会使用第一次匹配到的内容进行二次匹配，
-# 并不会重复使用(ab.)进行匹配
+# 会使用group1匹配到的内容来进行二次匹配，
+# 并不会重复使用group1的pattern进行匹配，
+# 也就是说不会使用(ab.)进行重复匹配
 re.match(r"(ab.) \1", "abc abc")
 #> <re.Match object; span=(0, 7), match='abc abc'>
 re.match(r"(ab.) \1", "abc abd")
 #> None
 ```
 
-group 编号从 1 开始，`\number` 可引用编号为 1~99 的 group。
+group 编号从 1 开始，`\number` 只能引用编号为 1~99 的 group。
 
 如果出现以下两种情况，则会将 `\number` 视为一个八进制数:
 
-- `\number` 左侧第一位数为 0
+- `\number` 左侧第一位数字为 0，如 `\070`
 - `\number` 是 3 位八进制数
 
-此时不会将 `\number` 解释为 group 编号，而是会将其解释为该八进制数对应的字符，例如:
+在这种情况下，不会将 `\number` 解释为 group 编号，而是会将其解释为该八进制数对应的字符，例如:
 
 ```python
 re.findall(r'\070\176','8~')
@@ -707,13 +656,12 @@ re.findall(r'[\70\176]','8~')
 #> ['8', '~']
 ```
 
-### `\A`
+### `\A` & `\Z`
 
-`\A` 表示从字符串的第一个字符开始匹配:
+📌`\A` 表示从字符串的第一个字符开始匹配，`\A` 和 `^` 的异同点如下:
 
-> `\A` 和 `^` 的区别:
->
-> When not in `MULTILINE` mode, `\A` and `^` are effectively the same. In `MULTILINE` mode, they’re different: `\A` still matches only at the beginning of the string, but `^` may match at any location inside the string that follows a newline character.
+- When not in `MULTILINE` mode, `\A` and `^` are effectively the same. 
+- In `MULTILINE` mode, they’re different: `\A` still matches only at the beginning of the string, but `^` may match at any location inside the string that follows a newline character.
 
 ```python
 re.findall(r'^[T|t]he',
@@ -721,6 +669,7 @@ re.findall(r'^[T|t]he',
            'the plane is parked at the airport',
           flags=re.MULTILINE)
 #> ['The', 'the']
+# \A不受re.MULTILINE的影响
 re.findall(r'\A[T|t]he',
            'The car is parked in the garage,\n'
            'the plane is parked at the airport',
@@ -728,61 +677,208 @@ re.findall(r'\A[T|t]he',
 #> ['The']
 ```
 
+------
 
+📌`\Z` 表示匹配字符串的最后一个字符，`\Z` 和 `$` 的区别如下:
 
-### `\b`
+- `$` 表示匹配字符串的最后一个字符，或是匹配字符串末尾处换行符的前一个字符。如果设置了 [`MULTILINE`](https://docs.python.org/3/library/re.html#re.MULTILINE) flag，则会在每个换行符前进行匹配。
+- `\Z` 表示匹配字符串的最后一个字符，[`MULTILINE`](https://docs.python.org/3/library/re.html#re.MULTILINE) flag 对 `\Z` 无影响。
 
-Matches the empty string, but only at the beginning or end of a word. A word is defined as a sequence of word characters. Note that formally, `\b` is defined as the boundary between a `\w` and a `\W` character (or vice versa), or between `\w` and the beginning/end of the string. This means that `r'\bfoo\b'` matches `'foo'`, `'foo.'`, `'(foo)'`, `'bar foo baz'`but not `'foobar'` or `'foo3'`.By default Unicode alphanumerics are the ones used in Unicode patterns, but this can be changed by using the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag. Word boundaries are determined by the current locale if the [`LOCALE`](https://docs.python.org/3/library/re.html#re.LOCALE) flag is used. Inside a character range, `\b` represents the backspace character, for compatibility with Python’s string literals.
-
-### `\B`
-
-Matches the empty string, but only when it is *not* at the beginning or end of a word. This means that `r'py\B'` matches `'python'`, `'py3'`, `'py2'`, but not `'py'`, `'py.'`, or `'py!'`. `\B` is just the opposite of `\b`, so word characters in Unicode patterns are Unicode alphanumerics or the underscore, although this can be changed by using the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag. Word boundaries are determined by the current locale if the [`LOCALE`](https://docs.python.org/3/library/re.html#re.LOCALE) flag is used.
-
-### `\d`
-
-For Unicode (str) patterns:Matches any Unicode decimal digit (that is, any character in Unicode character category [Nd]). This includes `[0-9]`, and also many other digit characters. If the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag is used only `[0-9]` is matched.For 8-bit (bytes) patterns:Matches any decimal digit; this is equivalent to `[0-9]`.
-
-### `\D`
-
-Matches any character which is not a decimal digit. This is the opposite of `\d`. If the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag is used this becomes the equivalent of `[^0-9]`.
-
-### `\s`
-
-For Unicode (str) patterns:Matches Unicode whitespace characters (which includes `[ \t\n\r\f\v]`, and also many other characters, for example the non-breaking spaces mandated by typography rules in many languages). If the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag is used, only `[ \t\n\r\f\v]` is matched.For 8-bit (bytes) patterns:Matches characters considered whitespace in the ASCII character set; this is equivalent to `[ \t\n\r\f\v]`.
-
-### `\S`
-
-Matches any character which is not a whitespace character. This is the opposite of `\s`. If the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag is used this becomes the equivalent of `[^ \t\n\r\f\v]`.
-
-### `\w`
-
-For Unicode (str) patterns:Matches Unicode word characters; this includes most characters that can be part of a word in any language, as well as numbers and the underscore. If the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag is used, only `[a-zA-Z0-9_]` is matched.For 8-bit (bytes) patterns:Matches characters considered alphanumeric in the ASCII character set; this is equivalent to `[a-zA-Z0-9_]`. If the [`LOCALE`](https://docs.python.org/3/library/re.html#re.LOCALE) flag is used, matches characters considered alphanumeric in the current locale and the underscore.
-
-### `\W`
-
-Matches any character which is not a word character. This is the opposite of `\w`. If the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag is used this becomes the equivalent of `[^a-zA-Z0-9_]`. If the [`LOCALE`](https://docs.python.org/3/library/re.html#re.LOCALE) flag is used, matches characters considered alphanumeric in the current locale and the underscore.
-
-### `\Z`
-
-Matches only at the end of the string.
-
-Most of the standard escapes supported by Python string literals are also accepted by the regular expression parser:
-
-```
-\a      \b      \f      \n
-\r      \t      \u      \U
-\v      \x      \\
+```python
+re.findall(r'\wat\n$','The fat cat sat\n on the mat\n')
+#> ['mat\n']
+re.findall(r'\wat\n\Z','The fat cat sat\n on the mat\n')
+#> ['mat\n']
+re.findall(r'\wat$','The fat cat sat\n on the mat\n',flags=re.MULTILINE)
+#> ['sat', 'mat']
+re.findall(r'\wat\n\Z','The fat cat sat\n on the mat\n',flags=re.MULTILINE)
+#> ['mat\n']
 ```
 
-(Note that `\b` is used to represent word boundaries, and means “backspace” only inside character classes.)
 
-`'\u'` and `'\U'` escape sequences are only recognized in Unicode patterns. In bytes patterns they are errors. Unknown escapes of ASCII letters are reserved for future use and treated as errors.
 
-Octal escapes are included in a limited form. If the first digit is a 0, or if there are three octal digits, it is considered an octal escape. Otherwise, it is a group reference. As for string literals, octal escapes are always at most three digits in length.
+### `\b` & `\B`
 
-*Changed in version 3.3:* The `'\u'` and `'\U'` escape sequences have been added.
+📌`\b` 用于匹配单词单词(*word*)的边界(*boundary*)，我们可利用 `\b` 来查找单词的开头或结尾。单词是由 alphanumeric 字符构成的序列，并使用空格或 non-alphanumeric 来表示单词的开头和结尾。
 
-*Changed in version 3.6:* Unknown escapes consisting of `'\'` and an ASCII letter now are errors.
+> Note that formally, `\b` is defined as the boundary between a `\w` and a `\W` character (or vice versa), or between `\w` and the beginning/end of the string. This means that `r'\bfoo\b'` matches `'foo'`, `'foo.'`, `'(foo)'`, `'bar foo baz'` but not `'foobar'` or `'foo3'`.
+
+```python
+re.search(r'\byear\b','seven year old')
+#> <re.Match object; span=(6, 10), match='year'>
+re.search(r'\byear\b','seven-year-old')
+#> <re.Match object; span=(6, 10), match='year'>
+re.search(r'\byear\b','year')
+#> <re.Match object; span=(0, 4), match='year'>
+```
+
+在使用 `\b` 时，需要注意以下几点:
+
+- `\b` 属于零宽度断言(*zero*-*width* *assertion*)
+
+  ```python
+  # \b的宽度为零，它将匹配一个空字符串，
+  # 因此，下面的代码将匹配失败
+  re.search(r'\bclass\bat','no class at all')
+  #> None
+  # 需要增加\s才能匹配成功
+  re.search(r'\bclass\b\sat','no class at all')
+  #> <re.Match object; span=(3, 11), match='class at'>
+  ```
+
+- 在 Python 字符串字面值中，`\b` 表示 backspace 字符(ASCII 值为 8)。
+
+  > If you’re not using raw strings, then Python will convert the `\b` to a backspace, and your RE won’t match as you expect it to. The following example looks the same as our previous RE, but omits the `'r'` in front of the RE string.
+
+  ```python
+  >>> p = re.compile('\bclass\b')
+  >>> print(p.search('no class at all'))
+  None
+  >>> print(p.search('\b' + 'class' + '\b'))
+  <re.Match object; span=(0, 7), match='\x08class\x08'>
+  ```
+
+- 在字符集 `[]` 中，`\b` 的断言功能将失效，此时 `\b` 仅表示 backspace 字符，以实现与 Python 字符串字面值兼容。
+
+🚩Flag-Tips: By default Unicode alphanumerics are the ones used in Unicode patterns, but this can be changed by using the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag. Word boundaries are determined by the current locale if the [`LOCALE`](https://docs.python.org/3/library/re.html#re.LOCALE) flag is used. Inside a character range, `\b` represents the backspace character, for compatibility with Python’s string literals.
+
+------
+
+📌`\B` 的功能与 `\b` 相反，只能用于匹配非单词边界。
+
+```python
+#  r'py\B' matches 'python', 'py3', 'py2', but not 'py', 'py.', or 'py!'
+re.findall(r'py\B\w*','python py3 py py. py!')
+#> ['python', 'py3']
+```
+
+Note: `\B` 属于零宽度断言(*zero*-*width* *assertion*)。
+
+```python
+# \B的宽度为零，它将匹配一个空字符串，因此.可以匹配到3
+re.findall(r'py\B.','py3')
+#> ['py3']
+```
+
+🚩Flag-Tips: `\B` is just the opposite of `\b`, so word characters in Unicode patterns are Unicode alphanumerics or the underscore, although this can be changed by using the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag. Word boundaries are determined by the current locale if the [`LOCALE`](https://docs.python.org/3/library/re.html#re.LOCALE) flag is used.
+
+
+
+### `\d` & `\D`
+
+📌`\d` 用于匹配十进制数字，可分为以下两种情况:
+
+- For Unicode (str) patterns:
+
+  Matches any Unicode decimal digit (that is, any character in Unicode character category [Nd]). This includes `[0-9]`, and also many other digit characters. 
+
+  🚩Flag-Tips: If the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag is used only `[0-9]` is matched.
+
+- For 8-bit (bytes) patterns:
+
+  Matches any decimal digit; this is equivalent to `[0-9]`.
+
+------
+
+📌`\D` 的功能与 `\d` 相反，用于匹配任何非十进制数字的字符。
+
+🚩Flag-Tips: If the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag is used this becomes the equivalent of `[^0-9]`.
+
+
+
+### `\s` & `\S`
+
+📌`\s` 用于匹配空白符(*whitespace*)，可分为以下两种情况:
+
+- For Unicode (str) patterns:
+
+  Matches Unicode whitespace characters (which includes `[ \t\n\r\f\v]`, and also many other characters, for example the non-breaking spaces mandated by typography rules in many languages). 
+
+  🚩Flag-Tips: If the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag is used, only `[ \t\n\r\f\v]` is matched.
+
+- For 8-bit (bytes) patterns:
+
+  Matches characters considered whitespace in the ASCII character set; this is equivalent to `[ \t\n\r\f\v]`.
+
+------
+
+📌`\S` 的功能与 `\s` 相反，用于匹配任何非空白符(*whitespace*)。
+
+🚩Flag-Tips: If the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag is used this becomes the equivalent of `[^ \t\n\r\f\v]`.
+
+
+
+### `\w` & `\W`
+
+📌`\w` 用于匹配任意字母和数字字符(*alphanumeric*)，可分为以下两种情况:
+
+- For Unicode (str) patterns:
+
+  Matches Unicode word characters; this includes most characters that can be part of a word in any language, as well as numbers and the underscore. 
+
+  🚩Flag-Tips: If the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag is used, only `[a-zA-Z0-9_]` is matched.
+
+- For 8-bit (bytes) patterns:
+
+  Matches characters considered alphanumeric in the ASCII character set; this is equivalent to `[a-zA-Z0-9_]`. 
+
+  🚩Flag-Tips: If the [`LOCALE`](https://docs.python.org/3/library/re.html#re.LOCALE) flag is used, matches characters considered alphanumeric in the current locale and the underscore.
+
+------
+
+📌`\W` 的功能与 `\w` 相反，用于匹配任意非字母和非数字字符(*non-alphanumeric*)
+
+🚩Flag-Tips: If the [`ASCII`](https://docs.python.org/3/library/re.html#re.ASCII) flag is used this becomes the equivalent of `[^a-zA-Z0-9_]`. If the [`LOCALE`](https://docs.python.org/3/library/re.html#re.LOCALE) flag is used, matches characters considered alphanumeric in the current locale and the underscore.
+
+
+
+## 建议使用 raw 字符串
+
+反斜线字符( `\` )在正则表达式中有以下两种用法:
+
+- 表示特殊格式 - 比如，使用 `\w` 来匹配字符和字母
+- 用来屏蔽元字符或特殊序列的含义 - 比如，使用 `\\` 来匹配 `'\'`，使用 `\.` 来匹配 `'.'`
+
+正则表达式中 `\` 字符的用法与 Python 在 string literals 中用法有冲突，例如：
+
+```python
+# 当我们在utf-8编码的文本文件中看到一个反斜线'\'字符时
+# 如果我们将该字符读取到Python解释器中，则会得到下面这个字符串
+s = '\\'
+# 如果我们要使用正则表达式来匹配s，那么pattern字符串应为
+pattern = '\\\\'
+```
+
+因此，建议在 pattern 中使用 raw 字符串，例如:
+
+```python
+# 当我们在utf-8编码的文本文件中看到'\n'时，如果我们将其读取到Python解释器中，则会得到如下字符串
+s1 = '\\n'
+# 如果我们要使用正则表达式来匹配s1，那么pattern字符串如下
+p1 = '\\\\n'
+re.match('\\\\n','\\n') # or re.match(r'\\n','\\n')
+#> <re.Match object; span=(0, 2), match='\\n'>
+
+# 当我们在utf-8编码的文本文件中看到'\s'时，如果我们将其读取到Python解释器中，则会得到如下字符串
+s2 = '\\s'
+# 如果我们要使用正则表达式来匹配s1，那么pattern字符串如下
+p2 = '\\\\s'
+re.match('\\\\s','\\s') # or re.match(r'\\s','\\s')
+#> <re.Match object; span=(0, 2), match='\\s'>
+
+# 还可以思考以下示例
+re.match('\\\\s','\s') # or re.match(r'\\s','\s')
+#> <re.Match object; span=(0, 2), match='\\s'>
+re.match('\\\s','\s')
+#> <re.Match object; span=(0, 2), match='\\s'>
+```
+
+通过上面的示例，可以看到如果在 pattern 中使用普通字符串的话，可能需要大量使用 `\`，这会大大降低 pattern 的可读性，因此我们需要在 pattern 中使用 raw 字符串，以减少 `\` 的用来。raw 字符串中不会对 `\` 进行特殊处理(例如， `r"\n"` 表示两个字符 `'\'` 和 `'n'` ，而 `"\n"` 则被视作一个换行符。
+
+```python
+r'\n','\n'
+#> ('\\n', '\n')
+```
 
 
 
