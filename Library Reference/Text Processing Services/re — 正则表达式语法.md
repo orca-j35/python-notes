@@ -73,7 +73,7 @@ re.findall(r".ar", "The car parked in the garage.")
 #> ['car', 'par', 'gar']
 ```
 
-### 锚点 `^`  `###  
+### 锚点 `^` \$
 
 📌`^` (Caret)表示匹配字符串的第一个字符:
 
@@ -107,7 +107,7 @@ re.findall(r'\wat$','The fat cat sat\n on the mat\n',flags=re.MULTILINE)
 
 > Note: searching for a single `$` in `'foo\n'` will find two (empty) matches: one just before the newline, and one at the end of the string.
 
-### 重复匹配 `*`  `+`  `?`
+### 重复匹配 `*`  `+`  `?` (贪婪)
 
 📌`*` 表示重复匹配 0 到多次，且采用贪婪匹配(*greedy*)
 
@@ -348,6 +348,8 @@ m.groups()
 #> ('abc',)
 ```
 
+在部分文档中有时会将 `(?:...)` 称为内联组(*inline* *group*)
+
 #### 命名组 `(?P<name>...)`
 
 命名组 `(?P<name>...)` 类似于编号组 `(...)`，但是命名组可通过组名 `name` 来访问捕获到的子字符串。组名 `name` 必须是有效的 Python 标识符，并且在同一个 pattern 中不可重复定义相同的组名。命名组是对编号组的扩展，我们仍然通过组号来操作命名组。比如，可使用 `\number` 来引用命名组捕获到的内容:
@@ -432,16 +434,38 @@ r.match('a')
 
 #### `(?aiLmsux-imsx:...)`
 
-`(?aiLmsux-imsx:...)` 由两部分构成，其用法与 `(?aiLmsux)` 类似
+`(?aiLmsux-imsx:...)` 的含义如下:
 
-- `-` 前的部分可由 `'a'`, `'i'`, `'L'`, `'m'`, `'s'`, `'u'`, `'x'` 中 0 个或多个组成，表示添加相应的 flag
-- `-` 后的部分可由  `'i'`, `'m'`, `'s'`, `'x'` 中的 1 或多个组成，表示移除相应 flag。注: `-` 及其之后的部分为可选部分
+- `-` 前的部分可由 `'a'`, `'i'`, `'L'`, `'m'`, `'s'`, `'u'`, `'x'` 中 0 个或多个组成，表示添加相应的内联 flag
+- `-` 后 `:` 前的部分可由  `'i'`, `'m'`, `'s'`, `'x'` 中的 1 或多个组成，表示移除相应内联 flag。
+- `...` 表示该内联 group 的 pattern
+
+注: `-` 及其之后的部分为可选部分，如果全部省略则与 `(?aiLmsux)` 相同。
 
 > The letters `'a'`, `'L'` and `'u'` are mutually exclusive when used as inline flags, so they can’t be combined or follow `'-'`. Instead, when one of them appears in an inline group, it overrides the matching mode in the enclosing group. In Unicode patterns `(?a:...)`switches to ASCII-only matching, and `(?u:...)` switches to Unicode matching (default). In byte pattern `(?L:...)` switches to locale depending matching, and `(?a:...)` switches to ASCII-only matching (default). This override is only in effect for the narrow inline group, and the original matching mode is restored outside of the group.
+
+```python
+re.match('\w(?a:\w)', '鲸y')
+#> <re.Match object; span=(0, 2), match='鲸y'>
+re.match('\w(?a:\w)', '鲸鱼')
+#> None
+```
+
+`'a'`, `'i'`, `'L'`, `'m'`, `'s'`, `'u'`, `'x'` 表示相应的 flage:
+
+- [`re.A`](https://docs.python.org/3/library/re.html#re.A) (ASCII-only matching)
+- [`re.I`](https://docs.python.org/3/library/re.html#re.I) (ignore case)
+- [`re.L`](https://docs.python.org/3/library/re.html#re.L) (locale dependent)
+- [`re.M`](https://docs.python.org/3/library/re.html#re.M) (multi-line)
+- [`re.S`](https://docs.python.org/3/library/re.html#re.S) (dot matches all)
+- `re.U` (Unicode matching)
+- [`re.X`](https://docs.python.org/3/library/re.html#re.X) (verbose)
 
 *New in version 3.6.*
 
 *Changed in version 3.7:* The letters `'a'`, `'L'` and `'u'` also can be used in a group.
+
+
 
 #### `(?P<name>...)`
 
