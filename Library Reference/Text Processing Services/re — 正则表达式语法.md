@@ -9,6 +9,7 @@
 > - [正则表达式 - 廖雪峰](https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/00143193331387014ccd1040c814dee8b2164bb4f064cff000)
 > - http://www.runoob.com/regexp/regexp-syntax.html
 > - http://www.runoob.com/regexp/regexp-metachar.html
+> - https://www.sololearn.com/Play/Python
 >
 > 工具:
 >
@@ -142,13 +143,18 @@ re.findall(r'ab?','a ab abbb')
 
 ### 惰性匹配 `*?`, `+?`, `??`
 
-`*` , `+` , `?` 均采用贪婪匹配，它们会匹配尽可能多的文本。可以使用 `?` 后缀将贪婪匹配转换为惰性(*lazy*)匹配。
+`*` , `+` , `?` 均采用贪婪匹配，它们会匹配尽可能多的文本。可以使用 `?` 后缀将贪婪匹配转换为惰性(*lazy*)匹配，惰性匹配会匹配尽可能少的文本。
 
 ```python
 re.findall(r"<.*>",'<a> b <c>')
 #> ['<a> b <c>']
 re.findall(r"<.*?>",'<a> b <c>')
 #> ['<a>', '<c>']
+
+# 注意，如果*?位于pattern的末尾，
+# 则可能匹配不到任何内容，因为它会匹配尽可能少的字符
+re.findall(r"<.*?>\sb\s.*?",'<a> b <c>')
+#> ['<a> b ']
 ```
 
 ### 量词 `{m}` `{m,n}` `{m,n}?`
