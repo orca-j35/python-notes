@@ -303,11 +303,11 @@ Note: If the environment variable `REQUEST_METHOD` is set, which usually indicat
 
 [`urllib.request`](https://docs.python.org/3/library/urllib.request.html#module-urllib.request) 模块提供了如下类
 
-### Request
+### Request🛠
 
 🔨class urllib.request.Request(*url*, *data*=None, *headers*={}, *origin_req_host*=None, *unverifiable*=False, *method*=None)
 
-`Request()` 是 URL 请求的抽象，用于帮助我们构建一个完整的请求。如需了解 `Request` 实例提供的属性，可查看﹝[Request Objects](#Request Objects)﹞小节
+`Request()` 是 URL 请求的抽象，用于帮助我们构建一个完整的请求。如需了解 `Request` 实例提供的属性，可查看 [Request Objects](https://docs.python.org/3/library/urllib.request.html#request-objects)
 
 参数说明:
 
@@ -389,19 +389,19 @@ Note: The request will not work as expected if the data object is unable to deli
 
 *Changed in version 3.6:* Do not raise an error if the `Content-Length` has not been provided and *data* is neither `None` nor a bytes object. Fall back to use chunked transfer encoding instead.
 
-### OpenerDirector
+### OpenerDirector🛠
 
 class urllib.request.OpenerDirector
 
-### HTTPPasswordMgr
+### HTTPPasswordMgr🛠
 
 class urllib.request.HTTPPasswordMgr
 
-### HTTPPasswordMgrWithDefaultRealm
+### HTTPPasswordMgrWithDefaultRealm🛠
 
 class urllib.request.HTTPPasswordMgrWithDefaultRealm
 
-### HTTPPasswordMgrWithPriorAuth
+### HTTPPasswordMgrWithPriorAuth🛠
 
 class urllib.request.HTTPPasswordMgrWithPriorAuth
 
