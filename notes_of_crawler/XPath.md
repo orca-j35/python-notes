@@ -1,7 +1,7 @@
 # XPath
 > GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
 
-
+## 概述
 
 > XML Path Language (XPath)
 >
@@ -11,7 +11,9 @@
 
 - [XPath 教程 - W3school](http://www.w3school.com.cn/xpath/index.asp)
 - [XPath 教程 - 菜鸟教程](http://www.runoob.com/xpath/xpath-tutorial.html)
-- [XPath 相关的 W3C 标准](https://www.w3.org/TR/xpath/all/)
+- [XML Path Language (XPath) - W3C 标准](https://www.w3.org/TR/xpath/all/)
+- [XPath and XQuery Functions and Operators 3.1](https://www.w3.org/TR/xpath-functions-31)
+- [4. XPath reference](https://infohost.nmt.edu/tcc/help/pubs/xslt/xpath-sect.html) 🍰
 
 XPath 是一门在 XML 文档中查找信息的语言(也适用于 HTML)。XPath 的功能十分强大，主要体现在以下两方面:
 
@@ -114,4 +116,306 @@ XPath 通配符可用来选取未知的 XML 元素。
 | //book/title \| //book/price     | 选取 book 元素的所有 title 和 price 元素。                   |
 | //title \| //price               | 选取文档中的所有 title 和 price 元素。                       |
 | /bookstore/book/title \| //price | 选取属于 bookstore 元素的 book 元素的所有 title 元素，以及文档中所有的 price 元素。 |
+
+## 节点类型
+
+These types of nodes are used to represent a document as a tree:
+
+- A *document* node roots the tree. It will always have as its child an element node for the outermost element of the document. It may also have comment or processing instruction nodes as children, if those nodes appear outside the document.
+- Each *element node* represents one XML tag and its children, if any.
+- *Attribute nodes* represent attributes of an element. Such nodes have element nodes as a parent, but are not considered ordinary children of the parent element.
+- Chunks of text inside an element become *text nodes*.
+- Comments in the document are represented as *comment nodes*.
+- *Processing instructions* come from XML's **<?...?>** construct.
+
+### 节点关系
+
+#### Parent 父
+
+每个元素以及属性都有一个父。
+
+在下面的例子中，book 元素是 title、author、year 以及 price 元素的父：
+
+```
+<book>
+  <title>Harry Potter</title>
+  <author>J K. Rowling</author>
+  <year>2005</year>
+  <price>29.99</price>
+</book>
+```
+
+#### Children 子
+
+元素节点可有零个、一个或多个子。
+
+在下面的例子中，title、author、year 以及 price 元素都是 book 元素的子：
+
+```
+<book>
+  <title>Harry Potter</title>
+  <author>J K. Rowling</author>
+  <year>2005</year>
+  <price>29.99</price>
+</book>
+```
+
+#### Sibling 同胞
+
+拥有相同的父的节点
+
+在下面的例子中，title、author、year 以及 price 元素都是同胞：
+
+```
+<book>
+  <title>Harry Potter</title>
+  <author>J K. Rowling</author>
+  <year>2005</year>
+  <price>29.99</price>
+</book>
+```
+
+#### Ancestor 先辈
+
+某节点的父、父的父，等等。
+
+在下面的例子中，title 元素的先辈是 book 元素和 bookstore 元素：
+
+```
+<bookstore>
+
+<book>
+  <title>Harry Potter</title>
+  <author>J K. Rowling</author>
+  <year>2005</year>
+  <price>29.99</price>
+</book>
+
+</bookstore>
+```
+
+#### Descendant 后代
+
+某个节点的子，子的子，等等。
+
+在下面的例子中，bookstore 的后代是 book、title、author、year 以及 price 元素：
+
+```
+<bookstore>
+
+<book>
+  <title>Harry Potter</title>
+  <author>J K. Rowling</author>
+  <year>2005</year>
+  <price>29.99</price>
+</book>
+
+</bookstore>
+```
+
+
+
+## 轴
+
+> 参考: <https://infohost.nmt.edu/tcc/help/pubs/xslt/axis-sect.html>
+
+轴用于定义相对于当前节点的节点集。
+
+| 轴名称             | 结果                                                     |
+| :----------------- | :------------------------------------------------------- |
+| ancestor           | 选取当前节点的所有先辈（父、祖父等）。                   |
+| ancestor-or-self   | 选取当前节点的所有先辈（父、祖父等）以及当前节点本身。   |
+| attribute          | 选取当前节点的所有属性，等效于 `@`                       |
+| child              | 选取当前节点的所有子元素。                               |
+| descendant         | 选取当前节点的所有后代元素（子、孙等）。                 |
+| descendant-or-self | 选取当前节点的所有后代元素（子、孙等）以及当前节点本身。 |
+| following          | 选取文档中当前节点的结束标签之后的所有节点。             |
+| namespace          | 选取当前节点的所有命名空间节点。                         |
+| parent             | 选取当前节点的父节点，等效于 `../`                       |
+| preceding          | 选取文档中当前节点的开始标签之前的所有节点。             |
+| preceding-sibling  | 选取当前节点之前的所有同级节点。                         |
+| self               | 选取当前节点，等效于 `./`                                |
+
+![img](XPath.assets/axes.jpg)
+
+## 位置路径表达式
+
+位置路径可以是绝对的，也可以是相对的:
+
+- 绝对路径起始于正斜杠( / )
+
+  ```
+  /step/step/...
+  ```
+
+- 相对路径
+
+  ```
+  step/step/...
+  ```
+
+路径由一个或多个步(*steps*)构成，每个步均根据当前节点集之中的节点来进行计算。
+
+### 步
+
+在步中可以包含以下内容:
+
+- 轴（axis）
+
+  定义所选节点与当前节点之间的树关系
+
+- 节点测试（node-test）
+
+  识别某个轴内部的节点
+
+- 零个或者更多谓语（predicate）
+
+  更深入地提炼所选的节点集
+
+步的语法：
+
+```
+轴名称::节点测试[谓语]
+```
+
+XML 文档:
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<bookstore>
+
+<book>
+  <title lang="eng">Harry Potter</title>
+  <price>29.99</price>
+</book>
+
+<book>
+  <title lang="eng">Learning XML</title>
+  <price>39.95</price>
+</book>
+
+</bookstore>
+```
+
+用例展示:
+
+| 例子                   | 结果                                                         |
+| :--------------------- | :----------------------------------------------------------- |
+| child::book            | 选取所有属于当前节点的子元素的 book 节点。                   |
+| attribute::lang        | 选取当前节点的 lang 属性。                                   |
+| child::*               | 选取当前节点的所有子元素。                                   |
+| attribute::*           | 选取当前节点的所有属性。                                     |
+| child::text()          | 选取当前节点的所有文本子节点。                               |
+| child::node()          | 选取当前节点的所有子节点。                                   |
+| descendant::book       | 选取当前节点的所有 book 后代。                               |
+| ancestor::book         | 选择当前节点的所有 book 先辈。                               |
+| ancestor-or-self::book | 选取当前节点的所有 book 先辈以及当前节点（如果此节点是 book 节点） |
+| child::*/child::price  | 选取当前节点的所有 price 孙节点。                            |
+
+## 节点测试
+
+Most XPath expressions are used to select zero or more nodes from the document. For example, the XPath expression **cue** selects all `<cue>` child elements of the context node.
+
+These functions are used to select certain special node sets:
+
+- text()
+
+  This function selects all the text children of the context node.
+
+- comment()
+
+  Selects all comments that are children of the context node.
+
+- processing-instruction()
+
+  Selects all children of the context node that are processing instructions.
+
+## text() | string() | data()
+
+> issue: 在文档中看到 `text()` 和 `string()`，但 `text()` 并不是函数，那么这两者有什么区别喃?
+>
+> 参考: 
+>
+> - [MarkLogic学习——XPath中的text()和string()区别](https://blog.csdn.net/jiangchao858/article/details/63314426)
+> - <https://blog.csdn.net/jiangchao858/article/details/63314426>
+> - [XPath and XQuery Functions and Operators 3.1](https://www.w3.org/TR/xpath-functions-31/#func-adjust-dateTime-to-timezone)
+> - [XML Path Language (XPath) 3.1](https://www.w3.org/TR/2017/REC-xpath-31-20170321/)
+> - [XPath、XQuery 以及 XSLT 函数](http://www.w3school.com.cn/xpath/xpath_functions.asp)
+
+`text()` 是 [node test](https://www.w3.org/TR/2017/REC-xpath-31-20170321/#node-tests)，而 `string()` 是[函数](https://www.w3.org/TR/xpath-functions-31)，`data()` 是函数且可以保留数据类型。此外，还有点号 `.` 表示当前节点。
+
+在 W3C 文档中给出的解释如下:
+
+- `text()` - matches any text node.
+- `string()` - Returns the value of `$arg` represented as an `xs:string`.
+
+- `data()` - Returns the result of atomizing a sequence. This process flattens arrays, and replaces nodes by their typed values.
+
+XML 示例: `<book><author>Tom John</author></book>`
+
+| 用例     | 举例                 |
+| -------- | -------------------- |
+| text()   | book/author/text()   |
+| string() | book/author/string() |
+| data()   | book/author/data()   |
+| .        | book/author/.        |
+
+`text()` 不是函数，XML结构的细微变化，可能会使得结果与预期不符，应该尽量少用，`data()` 作为特殊用途的函数，可能会出现性能问题，如无特殊需要尽量不用，`string()` 函数可以满足大部分的需求。
+
+### 用例展示
+
+XML 示例:
+
+```xml
+<book>
+    <author>Tom <em>John</em> cat</author>
+    <pricing>
+        <price>20</price>
+        <discount>0.8</discount>
+    </pricing>
+</book>
+```
+
+- `text()` - 经常在 XPath 表达式的最后看到 `text()`，它仅仅返回所指元素的文本内容。
+
+  ```
+  let $x := book/author/text()
+  return $x
+  ```
+
+  返回的结果是 "Tom cat"，其中的 John 不属于 `author` 直接的节点内容。
+
+- `string()` - string()函数会得到所指元素的所有节点文本内容，这些文本讲会被拼接成一个字符串。
+
+  ```
+  let $x := book/author/string()
+  return $x
+  ```
+
+  返回的内容是 "Tom John cat"
+
+- `data()` - 大多数时候，data()函数和string()函数通用，而且不建议经常使用 data() 函数，有数据表明，该函数会影响 XPath 的性能。
+
+  ```
+  let $x := book/pricing/string()
+  return $x
+  ```
+
+  返回的是 "200.8"
+
+  ```
+  let $x := book/pricing/data()
+  return $x
+  ```
+
+  这样将返回分开的 "20" 和 "0.8"，他们的类型并不是字符串而是 xs:anyAtomicType，于是就可以使用数学函数做一定操作。
+
+  ```
+  let $x := book/pricing/price/data()
+  let $y := book/pricing/discount/data()
+  return $x*$y
+  ```
+
+  比如上面这个例子，就只能使用data()，不能使用text()或 string()，因为XPath不支持字符串做数学运算。
 
