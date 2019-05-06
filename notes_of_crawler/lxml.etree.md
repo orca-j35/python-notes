@@ -501,6 +501,505 @@ You can prevent the tail text of the element from being serialised by passing th
 >
 > If exclusive=True and no list is provided, a namespace will only be rendered if it is used by the immediate parent or one of its attributes and its prefix and values have not already been rendered by an ancestor of the namespace node's parent element.
 
+## XPath with lxml
+
+> 参考:
+>
+> - <https://lxml.de/xpathxslt.html>
+
+lxml.etree 支持两种路径语言: 
+
+- [ElementPath](https://lxml.de/tutorial.html#elementpath) - 一种 XPath-like 路径语言，属于 XPath 的简化版。Element 和 ElementTree 中的 `iterfind()`, `findall()`, `find()`, `findtext()` 方法支持 `ElementPath` 语法。
+
+  > <https://lxml.de/tutorial.html#elementpath>
+  >
+  > The ElementTree library comes with a simple XPath-like path language called [ElementPath](http://effbot.org/zone/element-xpath.htm). The main difference is that you can use the `{namespace}tag`notation in ElementPath expressions. However, advanced features like value comparison and functions are not available.
+  >
+  > In addition to a [full XPath implementation](https://lxml.de/xpathxslt.html#xpath), `lxml.etree` supports the ElementPath language in the same way ElementTree does, even using (almost) the same implementation. The API provides four methods here that you can find on Elements and ElementTrees:
+  >
+  > - `iterfind()` iterates over all Elements that match the path expression
+  > - `findall()` returns a list of matching Elements
+  > - `find()` efficiently returns only the first match
+  > - `findtext()` returns the `.text` content of the first match
+
+  如需了解更多信息可参考:
+
+  - [ElementPath](https://lxml.de/tutorial.html#elementpath)
+  - [XPath Support in ElementTree](https://effbot.org/zone/element-xpath.htm)
+  - [XPath support](https://docs.python.org/3/library/xml.etree.elementtree.html#finding-interesting-elements)
+
+- 完整的 XPath - Element 和 ElementTree 的 `xpath()` 方法支持完整的 XPath 语法表达式和自定义扩展函数( [custom extension functions](https://lxml.de/extensions.html#xpath-extension-functions))。
+
+  如需了解更多信息可参考:
+
+  - [XPath and XSLT with lxml](https://lxml.de/xpathxslt.html)
+  - [Using XPath to find text](https://lxml.de/tutorial.html#using-xpath-to-find-text)
+  - [10. XPath processing](https://infohost.nmt.edu/tcc/help/pubs/pylxml/web/xpath.html)
+  - 笔记﹝[XPath.md](./XPath.md)﹞
+  
+  注意，lxml 仅支持 [XML Path Language (XPath) Version 1.0](http://www.w3.org/TR/1999/REC-xpath-19991116/)
+
+lxml.etree 还提供了的 XPath evaluator 类: lxml.etree.[XPath](https://lxml.de/api/lxml.etree.XPath-class.html) 和 lxml.etree.[XPathEvaluator](https://lxml.de/api/lxml.etree-module.html#XPathEvaluator)
+
+> There are also specialized XPath evaluator classes that are more efficient for frequent evaluation: `XPath` and `XPathEvaluator`. See the [performance comparison](https://lxml.de/performance.html#xpath)to learn when to use which. Their semantics when used on Elements and ElementTrees are the same as for the `xpath()` method described here.
+>
+> 详见:
+>
+> - [The `XPath` class](https://lxml.de/xpathxslt.html#the-xpath-class)
+> - [The `XPathEvaluator` classes](https://lxml.de/xpathxslt.html#the-xpathevaluator-classes)
+
+### xpath()🔨
+
+> 更多细节详见: 
+>
+> - <https://lxml.de/xpathxslt.html>
+> - [9.21. Element.xpath(): Evaluate an XPath expression](https://infohost.nmt.edu/tcc/help/pubs/pylxml/web/Element-xpath.html)
+
+🔨xpath(self, \_path, namespaces=None, extensions=None, smart_strings=True, \*\*\_variables)
+
+在 ElementTree 对象上调用 `xpath()` 方法时，将针对该文档(如果是绝对路径)或根节点(如果是相对路径)执行全局 XPath 查询:
+
+```python
+from lxml import etree, html
+from io import StringIO
+
+broken_html = '''\
+<foo>
+    <bar>zero</bar>
+    <bar>one\
+</foo> '''
+
+# 解析html
+f = StringIO(broken_html)
+tree = html.parse(f)
+print(etree.tounicode(tree))
+'''Out:
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><body><foo>
+    <bar>zero</bar>
+    <bar>one</bar></foo> </body></html>'''
+# 由于html.parse()会对HTML文档进行修正，因此绝对路径应以/html/body开头
+r1 = tree.xpath('/html/body/foo/bar')
+print([e.text for e in r1])
+#> ['zero', 'one']
+# 由于html.parse()会对HTML文档进行修正，因此根节点是html
+r2 = tree.xpath('body/foo/bar')
+print([e.text for e in r1])
+#> ['zero', 'one']
+
+# 解析xml
+f = StringIO('<foo><bar>zero</bar><bar>one</bar></foo>')
+tree_ = etree.parse(f)
+print(etree.tounicode(tree_))
+#> <foo><bar>zero</bar><bar>one</bar></foo>
+
+r1_ = tree_.xpath('/foo/bar')
+print([e.text for e in r1_])
+#> ['zero', 'one']
+
+r2_ = tree_.xpath('bar')
+print([e.text for e in r2_])
+#> ['zero', 'one']
+```
+
+在 Element 对象上调用 `xpath()` 方法时，将针对该元素(如果是相对路径)或根节点(如果是绝对路径)执行全局 XPath 查询:
+
+```python
+from lxml import etree, html
+from io import StringIO
+
+broken_html = '''\
+<foo>
+    <bar>zero</bar>
+    <bar>one\
+</foo> '''
+
+# 解析html
+f = StringIO(broken_html)
+tree = html.parse(f)
+root = tree.getroot()
+print(etree.tounicode(root))
+'''Out:
+<html><body><foo>
+    <bar>zero</bar>
+    <bar>one</bar></foo> </body></html>'''
+# 由于html.parse()会对HTML文档进行修正，因此绝对路径应以/html/body开头
+r1 = root.xpath('/html/body/foo/bar')
+print([e.text for e in r1])
+#> ['zero', 'one']
+# 由于html.parse()会对HTML文档进行修正，因此根节点是html
+r2 = root.xpath('body/foo/bar')
+print([e.text for e in r1])
+#> ['zero', 'one']
+
+# 解析xml
+f = StringIO('<foo><bar>zero</bar><bar>one</bar></foo>')
+tree_ = etree.parse(f)
+root_ = tree_.getroot()
+print(etree.tounicode(root_))
+#> <foo><bar>zero</bar><bar>one</bar></foo>
+r1_ = root_.xpath('/foo/bar')
+print([e.text for e in r1_])
+#> ['zero', 'one']
+r2_ = root_.xpath('bar')
+print([e.text for e in r2_])
+#> ['zero', 'one']
+```
+
+`xpath()` 方法支持 XPath 变量:
+
+```python
+f = StringIO('<foo><bar>zero</bar><bar>one</bar></foo>')
+tree_ = etree.parse(f)
+root_ = tree_.getroot()
+print(etree.tounicode(root_))
+expr = "//*[local-name() = $name]" # fn:local-name()
+print(root.xpath(expr, name="foo")[0].tag)
+print(root.xpath(expr, name="bar")[0].tag)
+print(root.xpath("$text", text="Hello World!"))
+'''Out:
+<foo><bar>zero</bar><bar>one</bar></foo>
+foo
+bar
+Hello World!'''
+```
+
+#### 返回值
+
+The returned value may be any of:
+
+- A list of zero or more selected `Element` instances.
+- A Python `bool` value for true/false tests.
+- A Python `float` value for numeric results.
+- A string for string results. 比如，文本节点和属性节点
+
+详见: [XPath return values](https://lxml.de/xpathxslt.html#xpath-return-values)
+
+### 获取后代节点
+
+对于元素节点，`Element.xpath()` 将返回一个由元素构成的列表。
+
+```python
+from lxml import html, etree
+text = '''
+<div>
+    <ul>
+         <li class="item-0"><a href="link1.html">1 item</a></li>
+         <li class="item-1"><a href="link2.html">2 item</a></li>
+         <li class="item-3"><a href="link3.html">3 item</a></li>
+         <li class="item-1"><a href="link4.html">4 item</a></li>
+         <li class="item-0"><a href="link5.html">5 item</a>
+     </ul>
+ </div>
+'''
+# html解析器会对HTML文本进行自动修正
+e = html.document_fromstring(text)
+
+print(e.xpath('//*'))  # 选取所有后代节点
+'''Out:
+[<Element html at 0x253594d9728>, 
+    <Element body at 0x2535b15bf48>, 
+        <Element div at 0x2535b2bce08>, 
+            <Element ul at 0x2535b4a8138>, 
+                <Element li at 0x2535b4a8188>, 
+                    <Element a at 0x2535b4a81d8>, 
+                <Element li at 0x2535b4a8228>, 
+                    <Element a at 0x2535b4a8278>, 
+                <Element li at 0x2535b4a82c8>, 
+                    <Element a at 0x2535b4a8318>, 
+                <Element li at 0x2535b4a8368>, 
+                    <Element a at 0x2535b4a83b8>, 
+                <Element li at 0x2535b4a8408>, 
+                    <Element a at 0x2535b4a8458>]
+'''
+print(e.xpath('//a'))  # 选取指定的后代节点
+'''Out:
+[<Element a at 0x2535b15bf48>, 
+<Element a at 0x2535b2bce08>, 
+<Element a at 0x2535b4a8138>, 
+<Element a at 0x2535b4a8188>, 
+<Element a at 0x2535b4a81d8>]
+'''
+```
+
+
+
+### 获取子节点
+
+对于元素节点，`Element.xpath()` 将返回一个由元素构成的列表。
+
+```python
+from lxml import html, etree
+text = '''
+<div>
+    <ul>
+         <li class="item-0"><a href="link1.html">1 item</a></li>
+         <li class="item-1"><a href="link2.html">2 item</a></li>
+         <li class="item-3"><a href="link3.html">3 item</a></li>
+         <li class="item-1"><a href="link4.html">4 item</a></li>
+         <li class="item-0"><a href="link5.html">5 item</a>
+     </ul>
+ </div>
+'''
+# html解析器会对HTML文本进行自动修正
+e = html.document_fromstring(text)
+
+print(e.xpath('//li/a'))  # 获取所有li元素节点的a元素子节点
+'''Out:
+[<Element a at 0x20b40bdbf48>, 
+<Element a at 0x20b40d3ce08>, 
+<Element a at 0x20b40f16188>, 
+<Element a at 0x20b40f161d8>, 
+<Element a at 0x20b40f16228>]'''
+print(e.xpath('//ul/a')) # '/'只能获取子节点，不能用于获取全部后代
+#> []
+```
+
+### 获取父节点
+
+对于元素节点，`Element.xpath()` 将返回一个由元素构成的列表。
+对于属性节点，`Element.xpath()` 将返回一个由字符串组成的列表。
+
+```python
+from lxml import html, etree
+text = '''
+<div>
+    <ul>
+         <li class="item-0"><a href="link1.html">1 item</a></li>
+         <li class="item-1"><a href="link2.html">2 item</a></li>
+         <li class="item-3"><a href="link3.html">3 item</a></li>
+         <li class="item-1"><a href="link4.html">4 item</a></li>
+         <li class="item-0"><a href="link5.html">5 item</a>
+     </ul>
+ </div>
+'''
+# html解析器会对HTML文本进行自动修正
+e = html.document_fromstring(text)
+
+print(e.xpath('//a[@href="link4.html"]/..'))
+#> [<Element li at 0x24ad2cf6278>]
+print(e.xpath('//a[@href="link4.html"]/parent::*'))
+#> [<Element li at 0x24ad2cf6278>]
+print(e.xpath('//a[@href="link4.html"]/../@class'))
+#> ['item-1']
+```
+
+
+
+### 获取文本
+
+对于文本节点，`Element.xpath()` 将返回一个由字符串组成的列表。
+
+```python
+text = '''
+<book>
+    <author>Tom <em>John</em> cat</author>
+    <author>Tom_ <em>John_</em> cat_</author>
+    <pricing>
+        <price>20</price>
+        <discount>0.8</discount>
+    </pricing>
+</book>
+'''
+elem = html.fromstring(text)
+# 获取author的子文本节点
+print(elem.xpath('/html/body/book/author/text()'))
+#> ['Tom ', ' cat', 'Tom_ ', ' cat_']
+
+# 获取author的所有后代的文本节点
+print(elem.xpath('/html/body/book/author//text()'))
+#> ['Tom ', 'John', ' cat', 'Tom_ ', 'John_', ' cat_']
+```
+
+
+
+### 筛选单值属性
+
+在选取节点时，我们可使用 `[@xxx]` 进行属性筛选。
+对于元素节点，`Element.xpath()` 将返回一个由元素构成的列表。
+对于文本节点，`Element.xpath()` 将返回一个由字符串组成的列表。
+
+```python
+from lxml import html, etree
+text = '''
+<div>
+    <ul>
+         <li class="item-0"><a href="link1.html">1 item</a></li>
+         <li class="item-1"><a href="link2.html">2 item</a></li>
+         <li class="item-3"><a href="link3.html">3 item</a></li>
+         <li class="item-1"><a href="link4.html">4 item</a></li>
+         <li class="item-0"><a href="link5.html">5 item</a>
+     </ul>
+ </div>
+'''
+# html解析器会对HTML文本进行自动修正
+e = html.document_fromstring(text)
+
+print(e.xpath('//li[@class="item-1"]'))
+#> [<Element li at 0x2a376e1bef8>, <Element li at 0x2a376f7ce08>]
+print(e.xpath('//li[@class="item-1"]//text()'))
+#> ['2 item', '4 item']
+```
+
+### 筛选多值属性
+
+```python
+from lxml import html, etree
+text = '''
+<li class="li li-first"><a href="link.html">1 item</a></li>
+'''
+# html解析器会对HTML文本进行自动修正
+e = html.document_fromstring(text)
+
+# 如果属性包含多个值,如果要匹配其中的某个值,则需要使用contains()函数
+print(e.xpath('//li[contains(@class, "li")]'))
+#> [<Element li at 0x257acbabef8>]
+
+# 如果不使用contains()函数,则无法筛选出多属性元素
+print(e.xpath('//li[@class="li"]'))
+#> []
+```
+
+此种选择方式在某个节点的某个属性有多个值的时候经常会用到，如某个节点的 class 属性通常有多个。
+
+### 匹配多个属性
+
+我们可以根据多个属性来确定一个节点:
+
+```python
+from lxml import html, etree
+text = '''
+<li class="li li-first" name="item"><a href="link.html">first item</a></li>
+'''
+# html解析器会对HTML文本进行自动修正
+e = html.document_fromstring(text)
+
+# 使用and来同时匹配多个属性
+print(e.xpath('//li[contains(@class, "li") and @name="item"]/a/text()'))
+#> ['first item']
+```
+
+这里的 and 其实是 XPath 中的运算符，另外还有很多运算符，如 or、mod 等等，在此总结如下：
+
+| 运算符 | 描述           | 实例                      | 返回值                                                       |
+| :----- | :------------- | :------------------------ | :----------------------------------------------------------- |
+| \|     | 计算两个节点集 | //book \| //cd            | 返回所有拥有 book 和 cd 元素的节点集                         |
+| +      | 加法           | 6 + 4                     | 10                                                           |
+| -      | 减法           | 6 - 4                     | 2                                                            |
+| *      | 乘法           | 6 * 4                     | 24                                                           |
+| div    | 除法           | 8 div 4                   | 2                                                            |
+| =      | 等于           | price=9.80                | 如果 price 是 9.80，则返回 true。如果 price 是 9.90，则返回 false。 |
+| !=     | 不等于         | price!=9.80               | 如果 price 是 9.90，则返回 true。如果 price 是 9.80，则返回 false。 |
+| <      | 小于           | price<9.80                | 如果 price 是 9.00，则返回 true。如果 price 是 9.90，则返回 false。 |
+| <=     | 小于或等于     | price<=9.80               | 如果 price 是 9.00，则返回 true。如果 price 是 9.90，则返回 false。 |
+| >      | 大于           | price>9.80                | 如果 price 是 9.90，则返回 true。如果 price 是 9.80，则返回 false。 |
+| >=     | 大于或等于     | price>=9.80               | 如果 price 是 9.90，则返回 true。如果 price 是 9.70，则返回 false。 |
+| or     | 或             | price=9.80 or price=9.70  | 如果 price 是 9.80，则返回 true。如果 price 是 9.50，则返回 false。 |
+| and    | 与             | price>9.00 and price<9.90 | 如果 price 是 9.80，则返回 true。如果 price 是 8.50，则返回 false。 |
+| mod    | 计算除法的余数 | 5 mod 2                   | 1                                                            |
+
+### 获取属性
+
+可使用 `@xxx` 来获取属性节点。
+对于属性节点，`Element.xpath()` 将返回一个由字符串组成的列表。
+
+```python
+from lxml import html, etree
+text = '''
+<div>
+    <ul>
+         <li class="item-0"><a href="link1.html">1 item</a></li>
+         <li class="item-1"><a href="link2.html">2 item</a></li>
+         <li class="item-3"><a href="link3.html">3 item</a></li>
+         <li class="item-1"><a href="link4.html">4 item</a></li>
+         <li class="item-0"><a href="link5.html">5 item</a>
+     </ul>
+ </div>
+'''
+# html解析器会对HTML文本进行自动修正
+e = html.document_fromstring(text)
+
+print(e.xpath('//li/a/@href'))
+#> ['link1.html', 'link2.html', 'link3.html', 'link4.html', 'link5.html']
+```
+
+### 按位置筛选
+
+
+
+```python
+from lxml import html, etree
+text = '''
+<div>
+    <ul>
+         <li class="item-0"><a href="link1.html">1 item</a></li>
+         <li class="item-1"><a href="link2.html">2 item</a></li>
+         <li class="item-3"><a href="link3.html">3 item</a></li>
+         <li class="item-1"><a href="link4.html">4 item</a></li>
+         <li class="item-0"><a href="link5.html">5 item</a>
+     </ul>
+ </div>
+'''
+# html解析器会对HTML文本进行自动修正
+e = html.document_fromstring(text)
+
+# 注意，以1为起点
+print(e.xpath('//li[1]/a/text()'))
+#> ['1 item']
+print(e.xpath('//li[last()]/a/text()'))
+#> ['5 item']
+print(e.xpath('//li[last()-2]/a/text()'))
+#> ['3 item']
+print(e.xpath('//li[position()<3]/a/text()'))
+#> ['1 item', '2 item']
+```
+
+如果了解函数的含义，可参考 <http://www.w3school.com.cn/xpath/xpath_functions.asp>
+
+### 使用轴
+
+```python
+from lxml import html, etree
+text = '''
+<div>
+    <ul>
+         <li class="item-0"><a href="link1.html"><span>1 item</span></a></li>
+         <li class="item-1"><a href="link2.html">2 item</a></li>
+         <li class="item-3"><a href="link3.html">3 item</a></li>
+         <li class="item-1"><a href="link4.html">4 item</a></li>
+         <li class="item-0"><a href="link5.html">5 item</a>
+     </ul>
+ </div>
+'''
+# html解析器会对HTML文本进行自动修正
+e = html.document_fromstring(text)
+
+# 注意，以1为起点
+print(e.xpath('//li[1]/ancestor::*'))
+'''Out:
+[<Element html at 0x185d69872c8>, 
+<Element body at 0x185d87260e8>, 
+<Element div at 0x185d877cea8>, 
+<Element ul at 0x185d8936228>]'''
+print(e.xpath('//li[1]/ancestor::div'))
+#> [<Element div at 0x185d87260e8>]
+print(e.xpath('//li[1]/attribute::*'))
+#> ['item-0']
+print(e.xpath('//li[1]/child::a[@href="link1.html"]'))
+#> [<Element a at 0x185d87260e8>]
+print(e.xpath('//li[1]/descendant::span'))
+#> [<Element span at 0x185d87260e8>]
+print(e.xpath('//li[1]/following::*[2]'))
+#> [<Element a at 0x185d87260e8>]
+print(e.xpath('//li[1]/following-sibling::*'))
+'''Out:
+[<Element li at 0x185d87260e8>, 
+<Element li at 0x185d877cea8>, 
+Element li at 0x185d8936228>, 
+<Element li at 0x185d8936278>]
+'''
+```
+
 
 
 ## Others
