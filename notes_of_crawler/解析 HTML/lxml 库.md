@@ -167,7 +167,7 @@ DOM 树由[节点(*Node*)](http://www.w3school.com.cn/xmldom/dom_nodes.asp)组�
 </p>
 ```
 
-![img](lxml.assets/dom-view.png)
+![img](lxml 库.assets/dom-view.png)
 
 `lxml.etree` 仅使用元素([`etree._Element`](https://lxml.de/api/lxml.etree._Element-class.html))节点来构建树，[`etree._Element`](https://lxml.de/api/lxml.etree._Element-class.html) 对象包含如下属性:
 
@@ -214,7 +214,7 @@ One advantage of the `lxml` view is that a tree is now made of only one type of 
 </p>
 ```
 
-![img](lxml.assets/et-view.png)
+![img](lxml 库.assets/et-view.png)
 
 Notice that in the `lxml` view, the text `", see the\n"` (which includes the newline) is contained in the `.tail` attribute of the `em`element, not associated with the `p` element as it would be in the DOM view. Also, the `"."` at the end of the paragraph is in the `.tail` attribute of the `a` (link) element.
 
