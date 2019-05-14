@@ -40,9 +40,11 @@
 
 - pdfplumber - Plumb a PDF for detailed information about each text character, rectangle, and line. Plus: Table extraction and visual debugging. Works best on machine-generated, rather than scanned, PDFs. Built on [`pdfminer`](https://github.com/euske/pdfminer) and [`pdfminer.six`](https://github.com/goulu/pdfminer). 🍺
 
+  详见笔记﹝pdfplumber.md﹞
+
   - GitHub: <https://github.com/jsvine/pdfplumber>
 
   
-
+  
   
 
