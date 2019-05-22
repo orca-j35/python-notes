@@ -45,6 +45,7 @@
   - GitHub: <https://github.com/jsvine/pdfplumber>
 
   
-  
-  
 
+参考:
+
+- [Python：解析PDF文本及表格——pdfminer、tabula、pdfplumber 的用法及对比](https://www.cnblogs.com/gl1573/p/10064438.html)

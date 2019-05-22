@@ -15,6 +15,10 @@
 conda install requests
 ```
 
+另外，再给出一些参考:
+
+-  [Python：requests：详解超时和重试](https://www.cnblogs.com/gl1573/p/10129382.html)
+
 ## httpbin
 
 可使用 [httpbin](http://httpbin.org/) 来观察 HTTP 请求和响应的内容。由于众所周知的原因，直接访问 [httpbin](http://httpbin.org/) 可能会比较缓慢，因此建议在本地运行 httppin，详见 [httpbin - GitHub](https://github.com/postmanlabs/httpbin) 。

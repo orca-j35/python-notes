@@ -364,7 +364,7 @@ m.groups()
 # 会使用命名组匹配到的内容进行二次匹配，
 # 并不是重复使用正则表达式 ab. 进行匹配
 re.match(r"(?P<quote>ab.) \1 (?P=quote)", "abc abc abc")
-#> <re.Match object; span=(0, 7), match='abc abc'>
+#> <re.Match object; span=(0, 11), match='abc abc abc'>
 re.match(r"(?P<quote>ab.) (?P=quote)", "abc abd")
 #> None
 ```

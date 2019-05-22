@@ -122,6 +122,7 @@ Python 学习笔记
 - [Python Reference (The Right Way) - DRAFT](https://python-reference.readthedocs.io/en/latest/index.html)：适用于Python 2.7.X，提供了有关内置函数、列表推导式、容器数据、运算符、语句等的快速参考
 - [〖十月狐狸〗](https://www.cnblogs.com/sesshoumaru/)：提供了 Python 3.6 中所有内置函数的笔记
 - [Yixiaohan](https://github.com/Yixiaohan)/[codeparkshare](https://github.com/Yixiaohan/codeparkshare) 整理并推荐了一些学习资料
+- [大龄码农的Python之路](https://www.cnblogs.com/gl1573/)
 
 ## 杂项
 
