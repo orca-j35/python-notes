@@ -1,18 +1,12 @@
 # HTTP
 > GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
 >
-> 参考:
->
-> - [HTTP 协议入门](http://www.ruanyifeng.com/blog/2016/08/http.html)
->
-> 扩展阅读:
->
-> - [互联网协议入门（一）](http://www.ruanyifeng.com/blog/2012/05/internet_protocol_suite_part_i.html)
-> - [互联网协议入门（二） ](http://www.ruanyifeng.com/blog/2012/06/internet_protocol_suite_part_ii.html)
 
 ## 工具
 
-[httpbin](http://httpbin.org/) - A simple HTTP Request & Response Service. 可利用 [httpbin](http://httpbin.org/) 来测试 HTTP 请求，并观察响应结果。
+[httpbin](http://httpbin.org/) - A simple HTTP Request & Response Service. 
+
+可利用 [httpbin](http://httpbin.org/) 来测试 HTTP 请求，并观察响应结果。
 
 ## URI/URL/URN
 
@@ -55,13 +49,18 @@ URN(Universal Resource Name) - 统一资源名称，URN 只命名资源而不指
 
 ## HTTP/HTTPS
 
-> 扩展阅读: [图解SSL/TLS协议](http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html)
+> 扩展阅读: 
+>
+> - [图解SSL/TLS协议](http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html)
+> - [SSL/TLS协议运行机制的概述](SSL/TLS协议运行机制的概述)
 
 HTTP(*Hyper* *Text* *Transfer* *Protocol*)是在网络中传输超文本(*Hypertext*)数据的传输协议。
 
 HTTP 本身没有加密机制，但可以通过将 HTTP 和 SSL(*Secure* *Socket* *Layer* - 安全套接层)或 TLS(*Transport* *Layer* *Security* - 安全层传输协议) 组合使用，从而加密 HTTP 的通信内容。与 SSL 组合使用的 HTTP 被称为 HTTPS(HTTP Secure，超文本传输安全协议)或 HTTP over SSL。用 SSL建立安全通信线路之后， 就可以在这条线路上进行 HTTP 通信了。 
 
 HTTP + 加密 + 认证 + 完整性保护 = HTTPS
+
+
 
 ## HTTP 请求过程
 
@@ -72,6 +71,15 @@ sequenceDiagram
 ```
 
 ## HTTP 协议
+
+> 参考:
+>
+> - [HTTP 协议入门](http://www.ruanyifeng.com/blog/2016/08/http.html)
+>
+> 扩展阅读:
+>
+> - [互联网协议入门（一）](http://www.ruanyifeng.com/blog/2012/05/internet_protocol_suite_part_i.html)
+> - [互联网协议入门（二） ](http://www.ruanyifeng.com/blog/2012/06/internet_protocol_suite_part_ii.html)
 
 HTTP(*Hyper* *Text* *Transfer* *Protocol*)是基于 TCP/IP 协议的[**应用层协议**](http://www.ruanyifeng.com/blog/2012/05/internet_protocol_suite_part_i.html)。它不涉及数据包(*packet*)传输，主要规定了客户端和服务器之间的通信格式，默认使用 80 端口。
 
