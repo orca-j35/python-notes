@@ -80,12 +80,15 @@ sequenceDiagram
 >
 > - [互联网协议入门（一）](http://www.ruanyifeng.com/blog/2012/05/internet_protocol_suite_part_i.html)
 > - [互联网协议入门（二） ](http://www.ruanyifeng.com/blog/2012/06/internet_protocol_suite_part_ii.html)
+> - [超文本传输协议 - Wikipedia](https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE)
 
 HTTP(*Hyper* *Text* *Transfer* *Protocol*)是基于 TCP/IP 协议的[**应用层协议**](http://www.ruanyifeng.com/blog/2012/05/internet_protocol_suite_part_i.html)。它不涉及数据包(*packet*)传输，主要规定了客户端和服务器之间的通信格式，默认使用 80 端口。
 
+设计 HTTP 最初的目的是为了提供一种发布和接收 [HTML](https://zh.wikipedia.org/wiki/HTML) 页面的方法。通过HTTP或者 [HTTPS](https://zh.wikipedia.org/wiki/HTTPS) 协议请求的资源由[统一资源标识符](https://zh.wikipedia.org/wiki/统一资源标志符)(Uniform Resource Identifiers - URI)来标识。
+
 ### HTTP 请求格式
 
-下面是一个 HTTP/1.0 的请求消息:
+下面是一个 HTTP/1.0 的请求消息(请求行+请求头+空行+[消息体]):
 
 ```http
 GET / HTTP/1.0
@@ -95,21 +98,53 @@ Accept: */*
 
 第一行是请求命令，必须在尾部添加协议版本(`HTTP/1.0`)。后面就是多行头信息，描述客户端的情况。
 
-### 命令
+#### 请求方法
 
-GET
+HTTP/1.1协议中共定义了八种方法（也叫“动作”）来以不同方式操作指定的资源：
 
-POST
+- GET
 
-HEAD
+  向指定的资源发出“显示”请求。使用GET方法应该只用在读取数据，而不应当被用于产生“[副作用](https://zh.wikipedia.org/wiki/超文本传输协议#副作用)”的操作中，例如在[网络应用程序](https://zh.wikipedia.org/wiki/网络应用程序)中。其中一个原因是GET可能会被[网络蜘蛛](https://zh.wikipedia.org/wiki/网络蜘蛛)等随意访问。参见[安全方法](https://zh.wikipedia.org/wiki/超文本传输协议#安全方法)
 
-OPTIONS
+- HEAD
 
-DELETE
+  与GET方法一样，都是向服务器发出指定资源的请求。只不过服务器将不传回资源的本文部分。它的好处在于，使用这个方法可以在不必传输全部内容的情况下，就可以获取其中“关于该资源的信息”（元信息或称元数据）。
+
+- POST
+
+  向指定资源提交数据，请求服务器进行处理（例如提交表单或者上传文件）。数据被包含在请求本文中。这个请求可能会创建新的资源或修改现有资源，或二者皆有。
+
+- PUT
+
+  向指定资源位置上传其最新内容。
+
+- DELETE
+
+  请求服务器删除Request-URI所标识的资源。
+
+- TRACE
+
+  回显服务器收到的请求，主要用于测试或诊断。
+
+- OPTIONS
+
+  这个方法可使服务器传回该资源所支持的所有HTTP请求方法。用'*'来代替资源名称，向Web服务器发送OPTIONS请求，可以测试服务器功能是否正常运作。
+
+- CONNECT
+
+  HTTP/1.1协议中预留给能够将连接改为管道方式的代理服务器。通常用于SSL加密服务器的链接（经由非加密的HTTP代理服务器）。
+
+方法名称是区分大小写的。当某个请求所针对的资源不支持对应的请求方法的时候，服务器应当返回[状态码405](https://zh.wikipedia.org/wiki/HTTP状态码#405)（Method Not Allowed），当服务器不认识或者不支持对应的请求方法的时候，应当返回[状态码501](https://zh.wikipedia.org/wiki/HTTP状态码#501)（Not Implemented）。
+
+**HTTP服务器至少应该实现GET和HEAD方法**，其他方法都是可选的。当然，所有的方法支持的实现都应当匹配下述的方法各自的语义定义。此外，除了上述方法，特定的HTTP服务器还能够扩展自定义的方法。例如：
+
+- PATCH（由 [RFC 5789](https://tools.ietf.org/html/rfc5789) 指定的方法）
+
+  用于将局部修改应用到资源。
 
 ### HTTP 响应格式
 
-下面是一个 HTTP/1.0 的响应消息
+下面是一个 HTTP/1.0 的响应消息(响应行+响应头+空行+消息体):
 
 ```http
 HTTP/1.0 200 OK 

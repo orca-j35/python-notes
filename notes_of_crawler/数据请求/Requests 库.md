@@ -15,9 +15,56 @@
 conda install requests
 ```
 
-另外，再给出一些参考:
+延伸阅读:
 
 -  [Python：requests：详解超时和重试](https://www.cnblogs.com/gl1573/p/10129382.html)
+
+## 非 form 数据
+
+如果需要发送非 form-encoded 数据，直接向 `data` 参数传递 `str` 对象即可，此时数据将被存放在 POST 请求的 data 字段中。例如:
+
+```python
+import json
+import requests
+payload = {'key1': 'value1', 'key2': 'value2'}
+reps = requests.post('https://httpbin.org/post', data=json.dumps(payload))
+print(reps.text)
+```
+
+输出:
+
+```
+{
+  "args": {},
+  "data": "{\"key1\": \"value1\", \"key2\": \"value2\"}",
+  "files": {},
+  "form": {},
+  "headers": {
+    "Accept": "*/*",
+    "Accept-Encoding": "gzip, deflate",
+    "Content-Length": "36",
+    "Host": "httpbin.org",
+    "User-Agent": "python-requests/2.21.0"
+  },
+  "json": {
+    "key1": "value1",
+    "key2": "value2"
+  },
+  "origin": "171.210.195.197, 171.210.195.197",
+  "url": "https://httpbin.org/post"
+}
+```
+
+相同功能还可通过 `json` 参数(在 2.4.2 中添加)完成，此时无需手动编码 `dict` 对象:
+
+```python
+import requests
+payload = {'key1': 'value1', 'key2': 'value2'}
+reps = requests.post('https://httpbin.org/post', json=payload)
+print(reps.text)
+```
+
+输出结果与前面完全一致。
 
 ## httpbin
 
@@ -28,7 +75,11 @@ docker pull kennethreitz/httpbin
 docker run -p 80:80 kennethreitz/httpbin
 ```
 
+然后访问 <http://localhost:80/> 即可。
+
 httpbin 用于提供 HTTP 请求测试，当 httpbin 服务器获得请求消息后，它会将请求消息转换为 JSON 格式并将其置于响应体中。
+
+
 
 ## Example
 

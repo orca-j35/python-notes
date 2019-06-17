@@ -24,7 +24,7 @@ def get_page(url):
                 return r.text
             return None
     except requests.RequestException:
-        None
+        return None
 
 
 def parse_page(text=None):

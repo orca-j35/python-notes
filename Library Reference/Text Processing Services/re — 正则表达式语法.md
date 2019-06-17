@@ -3,13 +3,19 @@
 >
 > 参考:
 >
-> - [Regular Expression HOWTO](https://docs.python.org/3/howto/regex.html#regex-howto) 🍰
-> - [learn-regex — GitHub](https://github.com/ziishaned/learn-regex) 🍰
-> - [`re`](https://docs.python.org/3/library/re.html#module-re) — Regular expression operations 🍰
+> - [Regular Expression HOWTO](https://docs.python.org/3/howto/regex.html#regex-howto) 🧀
+> - [learn-regex — GitHub](https://github.com/ziishaned/learn-regex) 🧀
+> - [`re`](https://docs.python.org/3/library/re.html#module-re) — Regular expression operations 🧀
 > - [正则表达式 - 廖雪峰](https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/00143193331387014ccd1040c814dee8b2164bb4f064cff000)
 > - http://www.runoob.com/regexp/regexp-syntax.html
 > - http://www.runoob.com/regexp/regexp-metachar.html
 > - https://www.sololearn.com/Play/Python
+>
+> 扩展阅读:
+>
+> - [正则表达式30分钟入门教程](http://deerchao.net/tutorials/regex/regex.htm) 🧀
+>
+>   这篇文章部分翻译自 [The 30 Minute Regex Tutorial](https://www.codeproject.com/Articles/9099/The-30-Minute-Regex-Tutorial)
 >
 > 工具:
 >

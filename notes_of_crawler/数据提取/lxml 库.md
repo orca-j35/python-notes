@@ -29,7 +29,7 @@ lxml 提供各种操作 XML 的方式，比如读取、生成、修改、解析�
 - Docs-EN: https://lxml.de/index.html#documentation
 - Tutorials:
   - the [lxml.etree tutorial for XML processing](https://lxml.de/tutorial.html)
-  - John Shipman's tutorial on [Python XML processing with lxml](http://www.nmt.edu/tcc/help/pubs/pylxml/) 🍰
+  - John Shipman's tutorial on [Python XML processing with lxml](http://www.nmt.edu/tcc/help/pubs/pylxml/) 🧀
   - Fredrik Lundh's [tutorial for ElementTree](http://effbot.org/zone/element.htm)
     - [`xml.etree.ElementTree`](http://docs.python.org/library/xml.etree.elementtree.html) is now an official part of the Python library. 
       `lxml.etree` 兼容并优于标准库中的 `xml.etree.ElementTree`， `lxml.etree` 还扩展了一些功能

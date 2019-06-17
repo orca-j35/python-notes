@@ -191,7 +191,7 @@ getcode-->
 
 对于 FTP、file 和 data URL，以及利用 Python2 中遗留的 [`URLopener`](https://docs.python.org/3/library/urllib.request.html#urllib.request.URLopener) 和 [`FancyURLopener`](https://docs.python.org/3/library/urllib.request.html#urllib.request.FancyURLopener) 显示处理的请求，`urlopen()` 将返回 `urllib.response.addinfourl` 对象。
 
-#### 坑
+#### 坑(ssl模块)
 
 脚本文件:
 
@@ -224,7 +224,7 @@ Traceback (most recent call last):
 urllib.error.URLError: <urlopen error unknown url type: https>
 ```
 
-目前怀疑是在这种情况下无法导入 `ssl` 模块造成的，但并不知道是什么原因导致无法导入 `ssl` 模块，我看到 `_ssl` 文件确实躺在它应在的路径上 `~\Anaconda3\DLLs\_ssl.pyd` 。
+怀疑是在这种情况下无法导入 `ssl` 模块造成的，但并不知道是什么原因导致无法导入 `ssl` 模块，我看到 `_ssl` 文件确实躺在它应在的路径上 `~\Anaconda3\DLLs\_ssl.pyd` 。
 
 ```shell
 C:\Users\iwhal>C:\Python35\python.exe
@@ -243,6 +243,28 @@ ImportError: DLL load failed: 找不到指定的模块。
 ```
 
 这个问题会导致在 PyChram 中无法使用 conda 环境中的 Python 解释器，因为 PyChram 在运行脚本时不会激活 conda 环境，它会直接使用解释器运行脚本，如果脚本中调用了 `request.urlopen()` 便会抛出异常。VScode 在运行脚本时会先激活选定的 conda 环境，因此能正常调用  `request.urlopen()`。
+
+#### 坑(SSL证书)
+
+在使用 `urlopen` 打开一个 HTTPS 链接时会验证一次 SSL 证书，如果不做出处理会产生错误提示"SSL: CERTIFICATE_VERIFY_FAILED"，可以通过以下两种方式加以解决：
+
+- 使用未经验证的上下文
+
+  ```Python
+  import ssl
+  
+  request = urllib.request.Request(url='...', headers={...}) 
+  context = ssl._create_unverified_context()
+  web_page = urllib.request.urlopen(request, context=context)
+  ```
+
+- 设置全局的取消证书验证
+
+  ```Python
+  import ssl
+  
+  ssl._create_default_https_context = ssl._create_unverified_context
+  ```
 
 ### install_opener()🔨
 

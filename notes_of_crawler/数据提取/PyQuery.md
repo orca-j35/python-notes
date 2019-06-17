@@ -11,7 +11,8 @@
 
 - PyPI: https://pypi.org/project/pyquery/
 - GitHub: https://github.com/gawel/pyquery
-- Docs-EN: https://pyquery.readthedocs.io/en/latest/
+- Docs-EN: https://pyquery.readthedocs.io/en/stable/
+- PyQuery complete API: https://pyquery.readthedocs.io/en/stable/api.html
 
 安装:
 
@@ -19,20 +20,43 @@
 conda install pyquery
 ```
 
-PyQuery complete API:
-
-- <https://pyquery.readthedocs.io/en/stable/api.html>
 
 
+## 示例文档
 
-## 加载内容
+下面是本文档中作为示例使用的 HTML 文档:
+
+```HTML
+html_doc = """
+<html>
+<head>
+    <title>The Dormouse's story</title>
+</head>
+<body>
+    <p class="title"><b>The Dormouse's story</b></p>
+    <p class="story">Once upon a time there were three little sisters; and their names were
+        <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
+        <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
+        <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
+        and they lived at the bottom of a well.</p>
+
+    <p class="story">...</p>
+"""
+```
+
+
+
+## 构造函数
 
 > 参考:
 >
 > - <https://pyquery.readthedocs.io/en/latest/index.html>
 > - <https://pyquery.readthedocs.io/en/latest/scrap.html#scraping>
+> - 源代码
 
-PyQuery 类可以从字符串、lxml 文档、文件和 url 中加载 xml 文档
+🛠class pyquery.pyquery.PyQuery(\*args, \*\*kwargs)
+
+PyQuery 类的构造函数 `PyQuery(*args, **kwargs)` 可以从字符串、lxml 文档、文件和 url 中加载 xml 文档:
 
 ```python
 >>> from pyquery import PyQuery as pq
@@ -46,15 +70,149 @@ PyQuery 类可以从字符串、lxml 文档、文件和 url 中加载 xml 文档
 >>> d = pq(filename=path_to_html_file) # 需使用关键字参数
 ```
 
-PyQuery 能够直接从 url 中加载 html 文档:
+
+
+### `*args`
+
+构造函数 `PyQuery(*args, **kwargs)` 的 `*args` 参数支持以下几种使用方法:
+
+- 可将 url 和 data 用作 `*args` 参数，详见 `PyQuery.__init__` 的源代码。使用示例:
+
+  ```python
+  from pyquery import PyQuery as pq
+  # 默认采用get请求
+  doc1 = pq('https://httpbin.org/get')
+  print(doc1)
+  '''Out:
+  <p>{
+    "args": {},
+    --snip--
+  </p>
+  '''
+  # 可以为请求方法添加参数
+  payload = {'key1': 'value1', 'key2': 'value2'}
+  doc2 = pq('https://httpbin.org/get', payload)
+  print(doc2)
+  '''Out:
+  <p>{
+    "args": {
+      "key1": "value1",
+      "key2": "value2"
+    },
+    --snip--
+  }
+  </p>
+  '''
+  # 可手动设置请求类型
+  doc3 = pq('https://httpbin.org/post', payload, method='post')
+  print(doc3)
+  '''Out:
+  <p>{
+    "args": {},
+    "data": "",
+    "files": {},
+    "form": {
+      "key1": "value1",
+      "key2": "value2"
+    },
+    --snip--
+  </p>
+  '''
+  ```
+
+- 可将 selector 和 context (可以是文本, PyQuery 对象, list 对象, etree._Element 对象) 用作 `*args` 参数，详见 `PyQuery.__init__` 的源代码。使用示例:
+
+  ```python
+  from pyquery import PyQuery as pq
+  # 仅使用context(html_doc是示例文档)
+  doc1 = pq(html_doc)
+  print(doc1)
+  '''Out:
+  <html>
+  <head>
+      <title>The Dormouse's story</title>
+  </head>
+  <body>
+      <p class="title"><b>The Dormouse's story</b></p>
+      <p class="story">Once upon a time there were three little sisters; and their names were
+          <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
+          <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
+          <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
+          and they lived at the bottom of a well.</p>
+  
+      <p class="story">...</p>
+  </body></html>
+  '''
+  # 同时使用selector和context
+  doc2 = pq('#link1', html_doc)
+  print(doc2)
+  '''Out:
+  <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
+  '''
+  ```
+
+### `**kwargs`
+
+构造函数 `PyQuery(*args, **kwargs)` 支持通过 `**kwargs` 参数自定义如下内容:
+
+- `parser` 用于设置 XML/HTML 文档的解析器
+- `url` 用于设置 url 连接
+- `data` 设置 GET 请求和 POST 请求的数据
+- `parent` 似乎是用于设置父节点，目前不清楚具体效果
+- `css_translator` 似乎是用于设置 css 翻译器，目前不清楚具体效果
+- `namespaces` 用于为 XML 设置命名空间，目前不清楚具体效果
+- `filename` 用于指定 XML/HTML 文件
+- `opener` 设置用于请求 url 的工具，比如 `requests`
+
+剩余的 `**kwargs` 会被传递给 `opener` 使用，例如:
 
 ```python
->>> pq(your_url)
+# headers会被传递给requests使用
+>>> pq(your_url, headers={'user-agent': 'pyquery'})
+[<html>]
+# method和verify会被传递给requests使用
+>>> pq(your_url, {'q': 'foo'}, method='post', verify=True)
 [<html>]
 ```
 
-默认情况下，PyQuery 会使用 urllib 库。
-如果安装了 [requests](http://docs.python-requests.org/en/latest/) 库，则会使用 requests 库，此时可使用与 requests 库相关的请求参数:
+
+
+### 解析器的选择
+
+> 参考: <https://pyquery.readthedocs.io/en/stable/tips.html#using-different-parsers>
+
+默认情况下，PyQuery 使用 lxml 的 xml 解析器进行解析。如果 xml 解析器解析失败，则会尝试使用 lxml.html 中的 html 解析器进行解析。在解析 xhtml 页面时，xml 解析器有时出现问题，虽然解析器不会抛出异常，但由解析器提供的树将不可用(on w3c.org for example)。
+
+构造函数 `PyQuery()` 在解析文档时，解析库的选择遵循以下规则(详见源代码):
+
+- 如果没有在 `**kwargs` 中提供 `parser` 参数，则会先使用 `lxml.etree` 进行解析，如果失败则会使用 `lxml.html` 进行解析
+- 还可通过 `**kwargs` 的 `parser` 参数手动设置解析器，`parser` 的可选实参值如下:
+  - `'xml'` - 对应 `lxml.etree`
+  - `'html'` - 对应 `lxml.html`
+  - `'html5'` - 对应 `lxml.html.html5parser`
+  - `'soup'` - 对应 `lxml.html.soupparser`
+  - `'html_fragments'` - 对应 `lxml.html.fragments_fromstring`
+
+建议为 `PyQuery()` 手动设置解析器。
+
+```python
+>>> pq('<html><body><p>toto</p></body></html>', parser='xml')
+[<html>]
+>>> pq('<html><body><p>toto</p></body></html>', parser='html')
+[<html>]
+>>> pq('<html><body><p>toto</p></body></html>', parser='html_fragments')
+[<p>]
+```
+
+
+
+### 请求库的选择
+
+构造函数 `PyQuery()` 从 url 中加载 html 文档时，请求库的选择遵循以下规则(详见源代码):
+
+- 默认情况下，PyQuery 会使用 urllib 库，此时可使用与 urllib 相关的请求参数。
+- 如果安装了 [requests](http://docs.python-requests.org/en/latest/) 库，则会使用 requests 库，此时可使用与 requests 库相关的请求参数。
+- 还可通过 `**kwargs` 的 `opener` 参数手动设置请求工具，比如 `requests`
 
 ```python
 >>> pq(your_url, headers={'user-agent': 'pyquery'})
@@ -64,17 +222,51 @@ PyQuery 能够直接从 url 中加载 html 文档:
 [<html>]
 ```
 
+
+
 ### 超时
 
 > 参考: <https://pyquery.readthedocs.io/en/latest/scrap.html#timeout>
 
-The default timeout is 60 seconds, you can change it by setting the timeout parameter which is forwarded to the underlying urllib or requests library.
+超时的默认时长是 60 秒，如果需要修改超时时长可通过 `**kwargs` 向 urllib 或 requests 传递相应的关键字参数。
+
+
 
 ### 会话
 
 > 参考: <https://pyquery.readthedocs.io/en/latest/scrap.html#session>
 
-When using the requests library you can instantiate a Session object which keeps state between http calls (for example - to keep cookies). You can set the session parameter to use this session object.
+> When using the requests library you can instantiate a Session object which keeps state between http calls (for example - to keep cookies). You can set the session parameter to use this session object.
+
+在使用 requests 时，你可以实例化一个 Session 对象，以便在 htpp 调用之间保持状态(例如，保留 cookies)。
+
+我看了看源代码，似乎不能直接向构造函数 `PyQuery()` 传递 Session 对象。我们需要先创建一个 Session 对象，然后通过此 Session 对象来请求数据，再使用 `PyQuery()` 来加载这些数据，类似于:
+
+```python
+import requests
+from pyquery import PyQuery as pq
+s = requests.Session()
+
+s.get('http://httpbin.org/cookies/set/sessioncookie/123456789') # 设置cookies
+r = s.get("http://httpbin.org/cookies")
+
+print(r.text)
+#> '{"cookies": {"sessioncookie": "123456789"}}'
+doc = pq(r.text)
+print(doc)
+'''Out:
+<p>{
+  "cookies": {
+    "sessioncookie": "123456789"
+  }
+}
+</p>
+'''
+```
+
+
+
+
 
 ## PyQuery 对象
 
@@ -111,7 +303,7 @@ for i in a:
 
 You can also add content to the end of tags:
 
-```
+```python
 >>> d = pq('<p class="hello" id="hello">you know Python rocks</p>')
 >>> d('p').append(' check out <a href="http://reddit.com/r/python"><span>reddit</span></a>')
 [<p#hello.hello>]
@@ -121,7 +313,7 @@ You can also add content to the end of tags:
 
 Or to the beginning:
 
-```
+```python
 >>> p = d('p')
 >>> p.prepend('check out <a href="http://reddit.com/r/python">reddit</a>')
 [<p#hello.hello>]
@@ -131,7 +323,7 @@ check out <a href="http://reddit.com/r/python">reddit</a>you know ...
 
 Prepend or append an element into an other:
 
-```
+```python
 >>> d = pq('<html><body><div id="test"><a href="http://python.org">python</a> !</div></body></html>')
 >>> p.prependTo(d('#test'))
 [<p#hello.hello>]
@@ -141,7 +333,7 @@ Prepend or append an element into an other:
 
 Insert an element after another:
 
-```
+```python
 >>> p.insertAfter(d('#test'))
 [<p#hello.hello>]
 >>> print(d('#test').html())
@@ -150,7 +342,7 @@ Insert an element after another:
 
 Or before:
 
-```
+```python
 >>> p.insertBefore(d('#test'))
 [<p#hello.hello>]
 >>> print(d('body').html())
@@ -159,14 +351,14 @@ Or before:
 
 Doing something for each elements:
 
-```
+```python
 >>> p.each(lambda i, e: pq(e).addClass('hello2'))
 [<p#hello.hello.hello2>]
 ```
 
 Remove an element:
 
-```
+```python
 >>> d = pq('<html><body><p id="id">Yeah!</p><p>python rocks !</p></div></html>')
 >>> d.remove('p#id')
 [<html>]
@@ -176,21 +368,21 @@ Remove an element:
 
 Remove what’s inside the selection:
 
-```
+```python
 >>> d('p').empty()
 [<p>]
 ```
 
 And you can get back the modified html:
 
-```
+```python
 >>> print(d)
 <html><body><p/></body></html>
 ```
 
 You can generate html stuff:
 
-```
+```python
 >>> from pyquery import PyQuery as pq
 >>> print(pq('<div>Yeah !</div>').addClass('myclass') + pq('<b>cool</b>'))
 <div class="myclass">Yeah !</div><b>cool</b>
@@ -198,7 +390,7 @@ You can generate html stuff:
 
 Remove all namespaces:
 
-```
+```python
 >>> d = pq('<foo xmlns="http://example.com/foo"></foo>')
 >>> d
 [<{http://example.com/foo}foo>]
@@ -206,24 +398,7 @@ Remove all namespaces:
 [<foo>]
 ```
 
-## 解析器
 
-> 参考: <https://pyquery.readthedocs.io/en/stable/tips.html#using-different-parsers>
-
-默认情况下，PyQuery 使用 lxml 的 xml 解析器进行解析。如果 xml 解析器解析失败，则会尝试使用 lxml.html 中的 html 解析器进行解析。在解析 xhtml 页面时，xml 解析器有时出现问题，虽然解析器不会抛出异常，但由解析器提供的树不可用(on w3c.org for example)。
-
-另外，我们还可以主动选择解析器:
-
-```python
->>> pq('<html><body><p>toto</p></body></html>', parser='xml')
-[<html>]
->>> pq('<html><body><p>toto</p></body></html>', parser='html')
-[<html>]
->>> pq('<html><body><p>toto</p></body></html>', parser='html_fragments')
-[<p>]
-```
-
-html 和 html_fragments 解析器由 lxml.html 提供
 
 ## 改用绝对连接
 
@@ -359,6 +534,18 @@ PyQuery 支持一些 jQuery 中的遍历方法，下面是一些示例。
 [<em>]
 ```
 
+查找嵌套元素
+
+```python
+>>> d = pq('<p id="hello" class="hello"><a/></p><p id="test"><a/></p>')
+>>> d('p').find('a')
+[<a>, <a>]
+>>> d('p').eq(1).find('a')
+[<a>]
+```
+
+
+
 ### .end()
 
 > Description in api.jquery.com:
@@ -380,8 +567,6 @@ PyQuery 支持一些 jQuery 中的遍历方法，下面是一些示例。
 >>> d('p').eq(1).find('em').end().end()
 [<p>, <p>]
 ```
-
-
 
 
 
@@ -646,7 +831,8 @@ You can use some of the pseudo classes that are available in jQuery but that are
 选择器还支持嵌套选择:
 
 - 使用空格分隔的一组选择器表示层层递进的嵌套选择
-- 
+
+
 
 各个选择器之间加上空格分隔开便可以代表嵌套关系，
 
