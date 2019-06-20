@@ -53,6 +53,8 @@ html_doc = """
 > - [`pyquery`](https://pyquery.readthedocs.io/en/stable/api.html#module-pyquery.pyquery) – PyQuery complete API
 > - https://api.jquery.com/
 
+### 概览
+
 PyQuery 类继承自 list，PyQuery 实例是由 xml 解析器的元素(`etree._Element`)对象构成的列表(元素集):
 
 ```python
@@ -61,12 +63,14 @@ from pyquery import PyQuery
 d_html = PyQuery(html_doc,parser='html')
 type(d_html)
 #> pyquery.pyquery.PyQuery
+
+# 注意对比repr和str的输出效果
 repr(d_html)
 #> '[<span>]'
 str(d_html)
 #> '<html>\n<head>\n    <title>The Dormouse\'s story</title>\n</head>\n<body>\n    <p class="title"><b>The Dormouse\'s story</b></p>\n    <p class="story">Once upon a time there were three little sisters; and their names were\n        <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,\n        <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and\n        <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;\n        and they lived at the bottom of a well.</p>\n\n    <p class="story">...</p>\n</body></html>'
 
-a = d_html('a')
+a = d_html('a') # 选择器查询结果也是PyQuery对象
 type(a)
 #> pyquery.pyquery.PyQuery
 repr(a)
@@ -261,7 +265,9 @@ PyQuery 类的构造函数 `PyQuery(*args, **kwargs)` 可以从字符串、lxml 
 
 > 参考: <https://pyquery.readthedocs.io/en/stable/tips.html#using-different-parsers>
 
-默认情况下，PyQuery 使用 lxml 的 xml 解析器进行解析。如果 xml 解析器解析失败，则会尝试使用 lxml.html 中的 html 解析器进行解析。在解析 xhtml 页面时，xml 解析器有时出现问题，虽然解析器不会抛出异常，但由解析器提供的树将不可用(on w3c.org for example)。
+建议在构造函数 `PyQuery()` 中手动设置解析器。🧀
+
+默认情况下，PyQuery 会优先使用 lxml 的 xml 解析器进行解析。如果 xml 解析器解析失败，才会尝试使用 lxml.html 的 html 解析器进行解析。在解析 xhtml 页面时，xml 解析器有时出现问题，虽然解析器不会抛出异常，但由解析器提供的树将不可用(on w3c.org for example)。
 
 构造函数 `PyQuery()` 在解析文档时，解析库的选择遵循以下规则(详见源代码):
 
@@ -272,8 +278,6 @@ PyQuery 类的构造函数 `PyQuery(*args, **kwargs)` 可以从字符串、lxml 
   - `'html5'` - 对应 `lxml.html.html5parser`
   - `'soup'` - 对应 `lxml.html.soupparser`
   - `'html_fragments'` - 对应 `lxml.html.fragments_fromstring`
-
-建议为 `PyQuery()` 手动设置解析器。
 
 ```python
 >>> pq('<html><body><p>toto</p></body></html>', parser='xml')
@@ -367,17 +371,13 @@ print(doc)
 > - https://www.runoob.com/jquery/jquery-syntax.html
 > - http://www.w3school.com.cn/jquery/jquery_syntax.asp
 
-jQuery 可用于查询(*query*) HTML 元素，并对 HTML 元素进行操作(*action*)。
-
-jQuery 的基础语法是 `$(selector).action()`:
+jQuery 可用于查询(*query*) HTML 元素，并对 HTML 元素进行操作(*action*)，基础语法是 `$(selector).action()`:
 
 - `$` 是 jQuery 的别名 - The jQuery library exposes its methods and properties via two properties of the `window` object called `jQuery` and `$`. `$` is simply an alias for `jQuery` and it's often employed because it's shorter and faster to write.
 - `(selector)` 用于查询 HTML 元素
 - `action()` 用于对元素执行操作。
 
-Note: jQuery 使用的语法是 XPath 与 CSS 选择器语法的组合。
-
-实例展示:
+Note: jQuery 的选择器是 CSS 1-3，XPath 的结合物。jQuery 提取这二种查询语言最好的部分，融合后创造出了最终的 jQuery 表达式查询语言。实例展示:
 
 ```javascript
 $(this).hide() # 隐藏当前元素
@@ -386,7 +386,7 @@ $("p.test").hide() # 隐藏所有 class="test" 的 <p> 元素
 $("#test").hide() # 隐藏所有 id="test" 的元素
 ```
 
-🐍PyQuery 实例相当于 jQuery 中的 `$`，例如:
+🐍PyQuery 实例相当于 jQuery 中的 `$`，选择器 `PyQuery(selector)` 的返回值也是 `PyQuery` 对象。例如:
 
 ```python
 from pyquery import PyQuery as pq
@@ -408,7 +408,7 @@ print(d_html)
 """
 ```
 
-上面这段代码中的 `d_html` 相当于 jQuery 中的 `$`。我们可以通过 `$(selector).action()` 来查询和操作 HTML 元素。与此类似，我们也可以通过 `d(selector).action()` 来查询和操作 HTML 元素:
+上面这段代码中的 `d_html` 相当于 jQuery 中的 `$`。我们可以通过 `$(selector).action()` 来查询和操作 HTML 元素。与此类似，我们也可以通过 `d_html(selector).action()` 来查询和操作 HTML 元素，查询结果仍然是 `PyQuery` 对象:
 
 ```python
 from pyquery import PyQuery as pq
@@ -418,6 +418,9 @@ print(repr(d_html('#link1')))  # 选择id为"link1"的元素
 #> [<a#link1.sister>]
 print(d_html('#link1'))
 #> <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
+link = d_html('#link1')
+print(type(link)) # 查询结果是PyQuery对象
+#> <class 'pyquery.pyquery.PyQuery'>
 
 print(d_html('#link1').html())  # 获取子节点的HTML表示
 #> Elsie
@@ -432,21 +435,28 @@ print(d_html('#link1').text())
 #> hello
 ```
 
+
+
 ### 选择器
 
-jQuery 选择器(`$(selector)`)用于查询 HTML 元素，选择器基于已经存在的 CSS 选择器，因此可依据 id、class、属性和属性值等条件来查询 HTML 元素。除了已有的 CSS 选择器，jQuery 还提供了一些自定义选择器。注意，jQuery 使用的语法是 XPath 与 CSS 选择器语法的组合。
+jQuery 选择器(`$(selector)`)用于查询 HTML 元素，选择器基于已经存在的 CSS 选择器，因此可依据 id、class、属性和属性值等条件来查询 HTML 元素。除了已有的 CSS 选择器，jQuery 还提供了一些自定义选择器。
 
 如果需要进一步了解选择器的使用方法，可从以下三个部分入手:
 
-- jQuery 选择器的 API，可参考:
+- jQuery 选择器，可参考:
   - <https://api.jquery.com/category/selectors/> 🧀
+  - http://www.w3school.com.cn/jquery/jquery_selectors.asp
+  - https://www.runoob.com/jquery/jquery-selectors.html
+  - http://www.w3school.com.cn/jquery/jquery_ref_selectors.asp
+  - https://www.runoob.com/jquery/jquery-ref-selectors.html 🧀
+  - https://www.runoob.com/try/trysel.php 🧀
 - CSS 选择器，可参考:
   - <http://www.w3school.com.cn/cssref/css_selectors.asp>
   - <http://www.w3school.com.cn/css/css_selector_type.asp>
   - <https://www.runoob.com/cssref/css-selectors.html>
 - XPath，可参考笔记 ﹝XPath.md﹞
 
-下面是一些选择器实例:
+选择器实例展示:
 
 | 语法                     | 描述                                                        |
 | :----------------------- | :---------------------------------------------------------- |
@@ -456,7 +466,7 @@ jQuery 选择器(`$(selector)`)用于查询 HTML 元素，选择器基于已经�
 | $("p.intro")             | 选取 class 为 intro 的 `<p>` 元素                           |
 | $(".intro")              | 选取所有 class 为 intro 的元素                              |
 | $("p:first")             | 选取第一个 `<p>` 元素                                       |
-| $("ul li:first")         | 选取第一个 `<ul>` 元素的第一个 <li> 元素                    |
+| $("ul li:first")         | 选取第一个 `<ul>` 元素的第一个 `<li>` 元素                  |
 | $("ul li:first-child")   | 选取每个 `<ul>` 元素的第一个 `<li>` 元素                    |
 | $("[href]")              | 选取带有 href 属性的元素                                    |
 | $("a[target='_blank']")  | 选取所有 target 属性值等于 "_blank" 的 `<a>` 元素           |
@@ -465,9 +475,7 @@ jQuery 选择器(`$(selector)`)用于查询 HTML 元素，选择器基于已经�
 | $("tr:even")             | 选取偶数位置的 `<tr>` 元素                                  |
 | $("tr:odd")              | 选取奇数位置的 `<tr>` 元素                                  |
 
-🐍 PyQuery:
 
-PyQuery 实例同样表示一组符合查询条件的 HTML 元素。
 
 #### 元素选择器
 
@@ -567,6 +575,8 @@ d('.title'),type(d('.title'))
 #> ([<p.title>], pyquery.pyquery.PyQuery)
 ```
 
+
+
 #### 属性选择器 `[]`
 
 "jQuery 属性选择器"基于元素的属性来选取元素(有点像 XPath 中的谓语):
@@ -588,9 +598,9 @@ d('option[value="1"]')
 
 
 
-#### 伪类选择器
+#### 伪类选择器 `:`
 
-You can use some of the pseudo classes that are available in jQuery but that are not standard in css such as :first :last :even :odd :eq :lt :gt :checked :selected :file:
+除了可使用 CSS 标准中的伪类之外，还可以使用一些在 jQuery 中可以用，但不属于 CSS 标准的伪类，例如: `:first`, `:last`, `:even`, `:odd`, `:eq`, `:lt`, `:gt`, `:checked`, `:selected`, `:file`:
 
 ```
 >>> d('p:first')
@@ -599,10 +609,16 @@ You can use some of the pseudo classes that are available in jQuery but that are
 
 有关伪类(*pseudo* *classes*)的详细信息请交叉参考:
 
-- [Using pseudo classes](https://pyquery.readthedocs.io/en/stable/pseudo_classes.html) - PyQuery 官方文档，但存在错误
-- <https://api.jquery.com/category/selectors/> 🧀
+- [Using pseudo classes](https://pyquery.readthedocs.io/en/stable/pseudo_classes.html) - PyQuery 官方文档，似乎存在一些错误
+- https://api.jquery.com/category/selectors/
 
-### 组合选择器
+CSS 标准中的伪类:
+
+- https://www.runoob.com/css/css-pseudo-classes.html
+- http://www.w3school.com.cn/css/css_pseudo_classes.asp
+- http://www.w3school.com.cn/css/css_pseudo_elements.asp
+
+#### 组合选择器
 
 每个选择器并不是独立存在的，它们可以被组合使用，从而表示复杂查询条件:
 
@@ -634,7 +650,7 @@ print(repr(a.siblings('#5')))
 
 
 
-### 嵌套选择器
+#### 嵌套选择器
 
 可使用由空格分隔的一组选择器来表示层层递进的嵌套选择:
 
@@ -671,6 +687,94 @@ print(type(a))
 ```
 
 在选择器组中用于分隔每个选择器的空格是必须的。
+
+### jQuery 选择器概览
+
+> 参考:
+>
+> - https://www.runoob.com/jquery/jquery-ref-selectors.html
+> - http://www.w3school.com.cn/jquery/jquery_ref_selectors.asp
+>
+> 推荐使用"jQuery 选择器检测器"来了解不同的选择器:
+>
+> - https://www.runoob.com/try/trysel.php
+
+
+
+| 选择器                                                       | 实例                          | 选取                                                         |
+| :----------------------------------------------------------- | :---------------------------- | :----------------------------------------------------------- |
+| [*](https://www.runoob.com/jquery/jq-sel-all.html)           | $("*")                        | 所有元素                                                     |
+| [#*id*](https://www.runoob.com/jquery/jq-sel-id.html)        | $("#lastname")                | id="lastname" 的元素                                         |
+| [.*class*](https://www.runoob.com/jquery/jq-sel-class.html)  | $(".intro")                   | class="intro" 的所有元素                                     |
+| [.*class,*.*class*](https://www.runoob.com/jquery/sel-multiple-classes.html) | $(".intro,.demo")             | class 为 "intro" 或 "demo" 的所有元素                        |
+| [*element*](https://www.runoob.com/jquery/jq-sel-element.html) | $("p")                        | 所有 `<p>` 元素                                              |
+| [*el1*,*el2*,*el3*](https://www.runoob.com/jquery/sel-multiple-elements.html) | $("h1,div,p")                 | 所有 `<h1>`、`<div>` 和 `<p>` 元素                           |
+|                                                              |                               |                                                              |
+| [:first](https://www.runoob.com/jquery/sel-first.html)       | $("p:first")                  | 第一个 `<p>` 元素                                            |
+| [:last](https://www.runoob.com/jquery/sel-last.html)         | $("p:last")                   | 最后一个 `<p>` 元素                                          |
+| [:even](https://www.runoob.com/jquery/sel-even.html)         | $("tr:even")                  | 所有偶数 `<tr>` 元素，索引值从 0 开始，第一个元素是偶数 (0)，第二个元素是奇数 (1)，以此类推。 |
+| [:odd](https://www.runoob.com/jquery/sel-odd.html)           | $("tr:odd")                   | 所有奇数 <tr> 元素，索引值从 0 开始，第一个元素是偶数 (0)，第二个元素是奇数 (1)，以此类推。 |
+|                                                              |                               |                                                              |
+| [:first-child](https://www.runoob.com/jquery/jq-sel-firstchild.html) | $("p:first-child")            | 属于其父元素的第一个子元素的所有 `<p>` 元素                  |
+| [:first-of-type](https://www.runoob.com/jquery/sel-firstoftype.html) | $("p:first-of-type")          | 属于其父元素的第一个 `<p>` 元素的所有 `<p>` 元素             |
+| [:last-child](https://www.runoob.com/jquery/sel-lastchild.html) | $("p:last-child")             | 属于其父元素的最后一个子元素的所有 `<p>` 元素                |
+| [:last-of-type](https://www.runoob.com/jquery/sel-lastoftype.html) | $("p:last-of-type")           | 属于其父元素的最后一个 `<p>` 元素的所有 `<p>` 元素           |
+| [:nth-child(*n*)](https://www.runoob.com/jquery/sel-nthchild.html) | $("p:nth-child(2)")           | 属于其父元素的第二个子元素的所有 `<p>` 元素                  |
+| [:nth-last-child(*n*)](https://www.runoob.com/jquery/sel-nthlastchild.html) | $("p:nth-last-child(2)")      | 属于其父元素的第二个子元素的所有 `<p>` 元素，从最后一个子元素开始计数 |
+| [:nth-of-type(*n*)](https://www.runoob.com/jquery/sel-nthoftype.html) | $("p:nth-of-type(2)")         | 属于其父元素的第二个 `<p>` 元素的所有 `<p>` 元素             |
+| [:nth-last-of-type(*n*)](https://www.runoob.com/jquery/sel-nthlastoftype.html) | $("p:nth-last-of-type(2)")    | 属于其父元素的第二个 `<p>` 元素的所有 `<p>` 元素，从最后一个子元素开始计数 |
+| [:only-child](https://www.runoob.com/jquery/sel-onlychild.html) | $("p:only-child")             | 属于其父元素的唯一子元素的所有 `<p>` 元素                    |
+| [:only-of-type](https://www.runoob.com/jquery/sel-onlyoftype.html) | $("p:only-of-type")           | 属于其父元素的特定类型的唯一子元素的所有 `<p>` 元素          |
+|                                                              |                               |                                                              |
+| [parent > child](https://www.runoob.com/jquery/sel-parent-child.html) | $("div > p")                  | `<div>` 元素的直接子元素的所有 `<p>` 元素                    |
+| [parent descendant](https://www.runoob.com/jquery/sel-parent-descendant.html) | $("div p")                    | `<div>` 元素的后代的所有 `<p>` 元素                          |
+| [element + next](https://www.runoob.com/jquery/sel-previous-next.html) | $("div + p")                  | 每个 `<div>` 元素相邻的下一个 `<p>` 元素                     |
+| [element ~ siblings](https://www.runoob.com/jquery/sel-previous-siblings.html) | $("div ~ p")                  | `<div>` 元素同级的所有 `<p>` 元素                            |
+|                                                              |                               |                                                              |
+| [:eq(*index*)](https://www.runoob.com/jquery/sel-eq.html)    | $("ul li:eq(3)")              | 列表中的第四个元素（index 值从 0 开始）                      |
+| [:gt(*no*)](https://www.runoob.com/jquery/sel-gt.html)       | $("ul li:gt(3)")              | 列举 index 大于 3 的元素                                     |
+| [:lt(*no*)](https://www.runoob.com/jquery/sel-lt.html)       | $("ul li:lt(3)")              | 列举 index 小于 3 的元素                                     |
+| [:not(*selector*)](https://www.runoob.com/jquery/jq-sel-not.html) | $("input:not(:empty)")        | 所有不为空的输入元素                                         |
+|                                                              |                               |                                                              |
+| [:header](https://www.runoob.com/jquery/sel-header.html)     | $(":header")                  | 所有标题元素 `<h1>`, `<h2>` ...                              |
+| [:animated](https://www.runoob.com/jquery/sel-animated.html) | $(":animated")                | 所有动画元素                                                 |
+| [:focus](https://www.runoob.com/jquery/jq-sel-focus.html)    | $(":focus")                   | 当前具有焦点的元素                                           |
+| [:contains(*text*)](https://www.runoob.com/jquery/sel-contains.html) | $(":contains('Hello')")       | 所有包含文本 "Hello" 的元素                                  |
+| [:has(*selector*)](https://www.runoob.com/jquery/sel-has.html) | $("div:has(p)")               | 所有包含有 `<p>` 元素在其内的 `<div>` 元素                   |
+| [:empty](https://www.runoob.com/jquery/jq-sel-empty.html)    | $(":empty")                   | 所有空元素                                                   |
+| [:parent](https://www.runoob.com/jquery/sel-parent.html)     | $(":parent")                  | 匹配所有含有子元素或者文本的父元素。                         |
+| [:hidden](https://www.runoob.com/jquery/sel-hidden.html)     | $("p:hidden")                 | 所有隐藏的 `<p>` 元素                                        |
+| [:visible](https://www.runoob.com/jquery/sel-visible.html)   | $("table:visible")            | 所有可见的表格                                               |
+| [:root](https://www.runoob.com/jquery/jq-sel-root.html)      | $(":root")                    | 文档的根元素                                                 |
+| [:lang(*language*)](https://www.runoob.com/jquery/jq-sel-lang.html) | $("p:lang(de)")               | 所有 lang 属性值为 "de" 的 `<p>` 元素                        |
+|                                                              |                               |                                                              |
+| [[*attribute*\]](https://www.runoob.com/jquery/jq-sel-attribute.html) | $("[href]")                   | 所有带有 href 属性的元素                                     |
+| [[*attribute*=*value*\]](https://www.runoob.com/jquery/sel-attribute-equal-value.html) | $("[href='default.htm']")     | 所有带有 href 属性且值等于 "default.htm" 的元素              |
+| [[*attribute*!=*value*\]](https://www.runoob.com/jquery/sel-attribute-notequal-value.html) | $("[href!='default.htm']")    | 所有带有 href 属性且值不等于 "default.htm" 的元素            |
+| [[*attribute*$=*value*\]](https://www.runoob.com/jquery/sel-attribute-end-value.html) | $("[href$='.jpg']")           | 所有带有 href 属性且值以 ".jpg" 结尾的元素                   |
+| [[*attribute*\|=*value*\]](https://www.runoob.com/jquery/sel-attribute-prefix-value.html) | $("[title\|='Tomorrow']")     | 所有带有 title 属性且值等于 'Tomorrow' 或者以 'Tomorrow' 后跟连接符作为开头的字符串 |
+| [[*attribute*^=*value*\]](https://www.runoob.com/jquery/sel-attribute-beginning-value.html) | $("[title^='Tom']")           | 所有带有 title 属性且值以 "Tom" 开头的元素                   |
+| [[*attribute*~=*value*\]](https://www.runoob.com/jquery/sel-attribute-contains-value.html) | $("[title~='hello']")         | 所有带有 title 属性且值包含单词 "hello" 的元素               |
+| [[*attribute**=*value*\]](https://www.runoob.com/jquery/sel-attribute-contains-string-value.html) | $("[title*='hello']")         | 所有带有 title 属性且值包含字符串 "hello" 的元素             |
+| [[*name*=*value*\][*name2*=*value2*]](https://www.runoob.com/jquery/sel-multipleattribute-equal-value.html) | $( "input[id][name$='man']" ) | 带有 id 属性，并且 name 属性以 man 结尾的输入框              |
+|                                                              |                               |                                                              |
+| [:input](https://www.runoob.com/jquery/sel-input.html)       | $(":input")                   | 所有 input 元素                                              |
+| [:text](https://www.runoob.com/jquery/sel-input-text.html)   | $(":text")                    | 所有带有 type="text" 的 input 元素                           |
+| [:password](https://www.runoob.com/jquery/sel-input-password.html) | $(":password")                | 所有带有 type="password" 的 input 元素                       |
+| [:radio](https://www.runoob.com/jquery/sel-input-radio.html) | $(":radio")                   | 所有带有 type="radio" 的 input 元素                          |
+| [:checkbox](https://www.runoob.com/jquery/sel-input-checkbox.html) | $(":checkbox")                | 所有带有 type="checkbox" 的 input 元素                       |
+| [:submit](https://www.runoob.com/jquery/sel-input-submit.html) | $(":submit")                  | 所有带有 type="submit" 的 input 元素                         |
+| [:reset](https://www.runoob.com/jquery/sel-input-reset.html) | $(":reset")                   | 所有带有 type="reset" 的 input 元素                          |
+| [:button](https://www.runoob.com/jquery/sel-input-button.html) | $(":button")                  | 所有带有 type="button" 的 input 元素                         |
+| [:image](https://www.runoob.com/jquery/sel-input-image.html) | $(":image")                   | 所有带有 type="image" 的 input 元素                          |
+| [:file](https://www.runoob.com/jquery/sel-input-file.html)   | $(":file")                    | 所有带有 type="file" 的 input 元素                           |
+|                                                              |                               |                                                              |
+| [:enabled](https://www.runoob.com/jquery/sel-input-enabled.html) | $(":enabled")                 | 所有启用的元素                                               |
+| [:disabled](https://www.runoob.com/jquery/sel-input-disabled.html) | $(":disabled")                | 所有禁用的元素                                               |
+| [:selected](https://www.runoob.com/jquery/sel-input-selected.html) | $(":selected")                | 所有选定的下拉列表元素                                       |
+| [:checked](https://www.runoob.com/jquery/sel-input-checked.html) | $(":checked")                 | 所有选中的复选框选项                                         |
+| .selector                                                    | $(selector).selector          | 在jQuery 1.7中已经不被赞成使用。返回传给jQuery()的原始选择器 |
+| [:target](https://www.runoob.com/jquery/jq-sel-target.html)  | $( "p:target" )               | 选择器将选中ID和URI中一个格式化的标识符相匹配的<p>元素       |
 
 ## 操作 PyQuery 对象
 
@@ -863,11 +967,125 @@ Set the text value:
 <div><span>Youhou !</span></div>
 ```
 
+### .empty()🔨
+
+🔨empty()
+
+从 DOM 中移除元素集中每个元素的所有子节点
+
+> Description in api.jquery.com:
+>
+> - Remove all child nodes of the set of matched elements from the DOM.
+> - https://api.jquery.com/empty/
+>
+> In PyQuery API:
+>
+> - remove nodes content
+> - https://pyquery.readthedocs.io/en/stable/api.html#pyquery.pyquery.PyQuery.empty
+
+```python
+html_doc = '''
+<div class="container">
+  <div class="hello">Hello</div>
+  <div class="hello">world</div>
+  <div class="goodbye">Goodbye</div>
+</div>
+'''
+doc = PyQuery(html_doc)
+x = doc('.hello').empty()
+print(doc)
+```
+
+输出:
+
+```python
+<div class="container">
+  <div class="hello"/>
+  <div class="hello"/>
+  <div class="goodbye">Goodbye</div>
+</div>
+```
+
+
+
+### .remove()🔨
+
+🔨`remove(expr=<NoDefault>)`
+如果未提供 expr 参数，则会从 DOM 中移除当前元素集；如果提供了 `expr` 参数，则会从元素集中的每个元素中移除 `expr` 选定的内容。
+
+> Description in api.jquery.com:
+>
+> - Remove the set of matched elements from the DOM.
+> - https://api.jquery.com/remove/
+>
+> In PyQuery API:
+>
+> - remove nodes
+> - https://pyquery.readthedocs.io/en/stable/api.html#pyquery.pyquery.PyQuery.remove
+
+```python
+html_doc = '''
+<div>
+  <ul class="level-1">
+    <li id='1'>list item 1</li>
+  </ul>
+  <ul class="level-2">
+    <li id='2'>list item 2</li>
+  </ul>
+</di>'''
+doc = PyQuery(html_doc)
+print(repr(doc('ul')), end='\n-------\n')
+doc('ul').remove('li')
+print(doc, end='\n-------\n')
+doc('ul').remove()
+print(doc)
+```
+
+输出:
+
+```
+[<ul.level-1>, <ul.level-2>]
+-------
+<div>
+  <ul class="level-1">
+
+  </ul>
+  <ul class="level-2">
+
+  </ul>
+</div>
+-------
+<div>
+
+
+</div>
+```
+
+示例 - 假设需要提取字符串 `"Hello, World"`，如果直接使用 `text()` 方法，则会提取到 `<p>` 节点中的内容。需要先移除 `<p>` 节点，然后在调用 `text()`  方法。
+
+```python
+html = '''
+<div class="wrap">
+    Hello, World
+    <p>This is a paragraph.</p>
+ </div>
+'''
+from pyquery import PyQuery as pq
+doc = pq(html)
+wrap = doc('.wrap').remove('p')
+print(wrap.text())
+#> Hello, World
+```
+
+
+
 ### 改用绝对连接
 
 > 参考: <https://pyquery.readthedocs.io/en/stable/tips.html#making-links-absolute>
 
-通过 PyQuery 对象可将相对连接改为绝对连接，这在爬虫中非常有用:
+🔨make_links_absolute(base_url=None)
+
+将元素集中的所有相对连接改为绝对连接。
 
 ```python
 from pyquery import PyQuery
@@ -1122,11 +1340,11 @@ male
 
 jQuery 拥有若干进行 CSS 操作的方法，比如下面这些:
 
-- addClass() - 向被选元素添加一个或多个类
-- removeClass() - 从被选元素删除一个或多个类
-- has_class() - 测试是否包含某个 class
-- toggleClass() - 对被选元素进行添加/删除类的切换操作
-- css() - 设置或返回样式(*style*)属性
+- `addClass()` - 向被选元素添加一个或多个类
+- `removeClass()` - 从被选元素删除一个或多个类
+- `has_class()` - 测试是否包含某个 class
+- `toggleClass()` - 对被选元素进行添加/删除类的切换操作
+- `css()` - 设置或返回样式(*style*)属性
 
 ```javascript
 # 把所有p元素的背景颜色更改为红色
