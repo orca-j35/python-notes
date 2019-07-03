@@ -199,6 +199,19 @@ print(tag['id']
 #> KeyError: 'id'
 ```
 
+`.has_attr()` 方法用于判断 `Tag` 对象是否包含某个属性:
+
+```python
+from bs4 import BeautifulSoup
+soup = BeautifulSoup('<b id="boldest">Extremely bold</b>', 'lxml')
+print(soup.b.has_attr('id'))
+#> True
+print(soup.b.has_attr('class'))
+#> False
+```
+
+
+
 #### Multi-valued attributes
 
 HTML 4 中某些属性可以具备多个值，HTML 5 在 HTML 4 的基础上删除了一些多值属性，但又引入了一些多值属性。最常见的多值属性是 `class` (HTML 标签可持有多个 CSS 类)，其它一些多值属性的例子: `rel`, `rev`, `accept-charset`, `headers`, `accesskey`。
@@ -892,7 +905,7 @@ text = property(get_text)
 
 > 参考: [Navigating the tree](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#navigating-the-tree)
 
-在学习与解析树相关的"导航方法"之前，我们需要先了解 BeautifulSoup 解析树的结构，下面这段 HTML 和其解析树如下:
+在学习与解析树相关的"导航字段"之前，我们需要先了解 BeautifulSoup 解析树的结构，下面这段 HTML 和其解析树如下:
 
 ```python
 markup = '''
@@ -917,15 +930,19 @@ BeautifulSoup:soup --> Tag:html[Tag:html]
       Tag:p --> NavigableString:'.\n'[NavigableString:'.\n']
 ```
 
+⚠"导航字段"的返回值总是节点对象(如，Tag 对象、NavigableString 对象)，或由节点对象组成的列表(或迭代器)。
+
+
+
 ### Going down
 
-Tag 中包含的字符串或 Tag 等节点都属于该 Tag 的 children(或 descendants )节点。为了便于在 children (或 descendants )节点中进行导航，BeautifulSoup 提供了许多与此相关的方法。
+Tag 中包含的字符串或 Tag 等节点被视作该 Tag 的 children (或 descendants )节点。为了便于在 children (或 descendants )节点中进行导航，BeautifulSoup 提供了许多与此相关的方法。
 
 ⚠BeautifulSoup 中的字符串节点(如，NavigableString和注释)不支持与导航相关的属性，因为字符串节点永远不会包含任何 children 节点。
 
 #### 节点名
 
-在 children(或 descendants )节点中进行导航时，最直接的导航方法是使用节点名。当我们使用"节点名"时，会获取 children (或 descendants )中的第一个同名节点。
+可使用节点名来选取目标节点，此时会返回子孙节点中的第一个同名节点。
 
 ```python
 html_doc = """
@@ -1039,7 +1056,7 @@ def children(self):
 
 #### .descendants🔧
 
-`.descendants` 字段会返回一个包含所有子孙节点的生成器，从而允许你以递归方式遍历当前元素的所有子孙节点。
+`.descendants` 字段会返回一个包含"所有子孙节点"的生成器，从而允许你以递归方式遍历当前节点的所有子孙节点。
 
 ```python
 html_doc = """
@@ -1296,7 +1313,7 @@ print([i.name for i in link.parents])
 
 ### Going sideways
 
-考虑下面这个示例:
+先考虑下面这个示例:
 
 ```python
 sibling_soup = BeautifulSoup("<a><b>text1</b><c>text2</c></b></a>",
@@ -1317,11 +1334,462 @@ print(sibling_soup.prettify())
 </a>
 ```
 
-`<b>` 和 `<c>` 是兄弟节点，因为它们拥有相同的父节点。
+`<b>` 和 `<c>` 是兄弟节点，因为它们拥有相同的父节点；字符串 `'text1'` 和 `'text2'` 不是兄弟节点，因为它们的父节点不同。
 
-.next_sibling🔧
+#### .next_sibling🔧.previous_sibling🔧
 
-.previous_sibling🔧
+`.next_sibling` 字段用于选取下一个兄弟节点，`.previous_sibling` 字段用于选取上一个兄弟节点:
+
+```python
+sibling_soup = BeautifulSoup("<a><b>text1</b><c>text2</c></b></a>",
+                             'html.parser')
+print(sibling_soup.b.previous_sibling)
+print(sibling_soup.b.next_sibling)
+
+print(sibling_soup.c.previous_sibling)
+print(sibling_soup.c.next_sibling)
+```
+
+输出:
+
+```
+None
+<c>text2</c>
+<b>text1</b>
+None
+```
+
+`<c>` 没有 `.next_sibling`，因为在 `<c>` 之后并没有兄弟节点；`<b>` 没有 `.previous_sibling`，因为在 `<b>` 之前并没有兄弟节点。
+
+⚠在实际的文档中，节点的 `.next_sibling` ( 或 `.previous_sibling`) 字段可能是包含空白符的字符串:
+
+```python
+html_doc = """
+<html>
+<head>
+    <title>The Dormouse's story</title>
+</head>
+<body>
+    <p class="title"><b>The Dormouse's story</b></p>
+    <b>The</b>
+    <p class="story">Once upon a time there were three little sisters; and their names were
+        <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
+        <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
+        <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
+        and they lived at the bottom of a well.
+    </p>
+
+    <p class="story">...</p>
+"""
+from pprint import pprint
+from bs4 import BeautifulSoup
+
+soup = BeautifulSoup(html_doc, 'html.parser')
+print(repr(soup.a.next_sibling))
+```
+
+输出:
+
+```
+',\n        '
+```
+
+
+
+#### .next_siblings🔧.previous_siblings🔧
+
+`.next_siblings` 和 `.previous_siblings` 会返回由兄弟节点组成的生成器:
+
+```python
+html_doc = """
+<html>
+<head>
+    <title>The Dormouse's story</title>
+</head>
+<body>
+    <p class="title"><b>The Dormouse's story</b></p>
+    <b>The</b>
+    <p class="story">Once upon a time there were three little sisters; and their names were
+        <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
+        <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
+        <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
+        and they lived at the bottom of a well.
+    </p>
+
+    <p class="story">...</p>
+"""
+from pprint import pprint
+from bs4 import BeautifulSoup
+
+soup = BeautifulSoup(html_doc, 'html.parser')
+print(soup.a.next_siblings)
+pprint([repr(i) for i in soup.a.next_siblings])
+
+pprint([repr(i) for i in soup.find(id='link3').previous_siblings])
+```
+
+输出:
+
+```
+<generator object PageElement.next_siblings at 0x000001DDDD0C2750>
+["',\\n        '",
+ '<a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>',
+ "' and\\n        '",
+ '<a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>',
+ "';\\n        and they lived at the bottom of a well.\\n    '"]
+["' and\\n        '",
+ '<a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>',
+ "',\\n        '",
+ '<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>',
+ "'Once upon a time there were three little sisters; and their names "
+ "were\\n        '"]
+```
+
+
+
+### Going back and forth
+
+先看一段 "three sisters" 中的 HTML 文档:
+
+```html
+<html><head><title>The Dormouse's story</title></head>
+<p class="title"><b>The Dormouse's story</b></p>
+```
+
+HTML 解析器在获得上面的 HTML 文档后，会将其转换成一连串事件: "打开 `<html>` 标签"，"打开一个 `<head>` 标签"，"打开一个 `<title>` 标签"，"添加一段字符串"，"关闭 `<title>` 标签"，"打开 `<p>` 标签"，等等。BeautifulSoup 提供了重现文档初始解析过程的工具。
+
+#### .next_element🔧.previous_element🔧
+
+`.next_element` 字段指向下一个被解析的节点，其结果通常与 `.next_sibling` 不同:
+
+```python
+html_doc = """
+<html>
+<head>
+    <title>The Dormouse's story</title>
+</head>
+<body>
+    <p class="title"><b>The Dormouse's story</b></p>
+    <b>The</b>
+    <p class="story">Once upon a time there were three little sisters; and their names were
+        <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
+        <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
+        <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
+        and they lived at the bottom of a well.
+    </p>
+
+    <p class="story">...</p>
+"""
+from pprint import pprint
+from bs4 import BeautifulSoup
+
+soup = BeautifulSoup(html_doc, 'html.parser')
+print(repr(soup.find('a', id='link3').next_sibling)) # 下一个兄弟节点
+print(repr(soup.find('a', id='link3').next_element)) # 下一个被解析的节点
+```
+
+输出:
+
+```python
+';\n        and they lived at the bottom of a well.\n    '
+'Tillie'
+```
+
+`.previous_element` 字段指向前一个被解析的节点，其结果通常与 `.previous_sibling` 不同:
+
+```python
+sibling_soup = BeautifulSoup("<a><b>text1</b><c>text2</c></b></a>",
+                             'html.parser')
+
+print(repr(sibling_soup.c.next_element))
+print(repr(sibling_soup.c.next_sibling))
+```
+
+输出:
+
+```
+'text2'
+None
+```
+
+#### .next_elements🔧.previous_elements🔧
+
+`.next_elements` 会返回一个生成器，该生成器会按照解析顺序逆向获取先前解析的节点； `.previous_elements` 会返回一个生成器，该生成器会按照解析顺序依次获取之后解析的节点。
+
+```python
+sibling_soup = BeautifulSoup("<a><b>text1</b><c>text2</c></b></a>",
+                             'html.parser')
+
+pprint([repr(i) for i in sibling_soup.a.next_elements])
+print(repr(sibling_soup.c.next_sibling))
+```
+
+## 搜索解析树
+
+BeautifulSoup 中定义了许多搜索解析树的方法，但这些方法都非常类似。这里着重介绍 `find()` 和 `find_all()`，其它"搜索方法"也这两个类似。
+
+本节会以 "three sister" 作为示例:
+
+```python
+html_doc = """
+<html>
+<head>
+    <title>The Dormouse's story</title>
+</head>
+<body>
+    <p class="title"><b>The Dormouse's story</b></p>
+    <p class="story">Once upon a time there were three little sisters; and their names were
+        <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
+        <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
+        <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
+        and they lived at the bottom of a well.
+    </p>
+
+    <p class="story">...</p>
+"""
+from pprint import pprint
+from bs4 import BeautifulSoup
+import re
+
+soup = BeautifulSoup(html_doc, 'html.parser')
+```
+
+
+
+### 过滤器
+
+过滤器(*filter*)用于在解析树中筛选目标节点，被用作"搜索方法"的实参。
+
+
+
+#### 字符串
+
+字符串是最简单的过滤器，将字符串传递给"搜索方法"后，如果 tag 节点的名称与字符一致，BeautifulSoup 便会保留该 tag 节点。
+
+如果将 `bytes` 对象用作过滤器，BeautifulSoup 会假定编码模式为 UTF-8。
+
+示例 - 查找文档中所有的 `<b>` 标签:
+
+```python
+soup = BeautifulSoup(html_doc, 'html.parser')
+b_tag = soup.find_all('b')
+print([f"{type(i)}::{i}" for i in b_tag])
+a_tag = soup.find_all(b'a')
+pprint([f"{type(i)}::{i}" for i in a_tag])
+```
+
+输出:
+
+```
+["<class 'bs4.element.Tag'>::<b>The Dormouse's story</b>"]
+['<class \'bs4.element.Tag\'>::<a class="sister" '
+ 'href="http://example.com/elsie" id="link1">Elsie</a>',
+ '<class \'bs4.element.Tag\'>::<a class="sister" '
+ 'href="http://example.com/lacie" id="link2">Lacie</a>',
+ '<class \'bs4.element.Tag\'>::<a class="sister" '
+ 'href="http://example.com/tillie" id="link3">Tillie</a>']
+```
+
+⚠总会过滤掉 HTML 文本节点
+
+#### 正则表达式
+
+过滤器可以是正则表达式对象，BeautifulSoup 会利用正则表达式对象的 `search()` 方法来过滤节点名，并保留符合条件的 tag 节点。
+
+示例 - 查找名字中包含字母 `'b'` 的 tag:
+
+```python
+import re
+soup = BeautifulSoup(html_doc, 'html.parser')
+b_tag = soup.find_all(re.compile('b'))
+print([f"{type(i)}::{i.name}" for i in b_tag])
+```
+
+输出:
+
+```
+["<class 'bs4.element.Tag'>::body", "<class 'bs4.element.Tag'>::b"]
+```
+
+⚠总会过滤掉 HTML 文本节点
+
+#### 列表
+
+过滤器可是一个列表，如果 tag 名与列表中的某一项匹配，BeautifulSoup 便会过保留该 tag 节点。列表中的项可以是:
+
+- 字符串
+- 正则表达式对象
+- 可调用对象，详见 [函数](#函数)
+
+示例 - 筛选出所有 `<a>` tags 和名称中包含字母 `'b'` 的 tag:
+
+```python
+import re
+def func(tag):
+    return tag.get('id') == "link1"
+
+soup = BeautifulSoup(html_doc, 'html.parser')
+tag = soup.find_all(['title', re.compile('b$'), func])
+pprint([f"{type(i)}::{i.name}" for i in tag])
+```
+
+输出:
+
+```
+["<class 'bs4.element.Tag'>::title",
+ "<class 'bs4.element.Tag'>::b",
+ "<class 'bs4.element.Tag'>::a"]
+```
+
+⚠总会过滤掉 HTML 文本节点
+
+#### True
+
+如果将布尔值 `True` 用作过滤器，则会过滤掉所有文本节点，保留所有 tag 节点:
+
+```python
+soup = BeautifulSoup(html_doc, 'html.parser')
+tag = soup.find_all(True)
+pprint([f"{type(i)}::{i.name}" for i in tag])
+```
+
+输出:
+
+```
+["<class 'bs4.element.Tag'>::html",
+ "<class 'bs4.element.Tag'>::head",
+ "<class 'bs4.element.Tag'>::title",
+ "<class 'bs4.element.Tag'>::body",
+ "<class 'bs4.element.Tag'>::p",
+ "<class 'bs4.element.Tag'>::b",
+ "<class 'bs4.element.Tag'>::p",
+ "<class 'bs4.element.Tag'>::a",
+ "<class 'bs4.element.Tag'>::a",
+ "<class 'bs4.element.Tag'>::a",
+ "<class 'bs4.element.Tag'>::p"]
+```
+
+⚠总会过滤掉 HTML 文本节点
+
+#### 函数
+
+过滤器可以是某个函数:
+
+- 以 tag 节点为筛选对象时，过滤器函数需以 tag 节点作为参数，如果函数返回 `True`，则保留该 tag 节点，否则抛弃该节点。
+
+  示例 - 筛选出含 `class` 属性，但不含 `id` 属性的 tag 节点:
+
+  ```python
+  def has_class_but_no_id(tag):
+      # Here’s a function that returns True if a tag defines the “class” attribute but doesn’t define the “id” attribute
+      return tag.has_attr('class') and not tag.has_attr('id')
+  
+  
+  soup = BeautifulSoup(html_doc, 'html.parser')
+  tag = soup.find_all(has_class_but_no_id)
+  pprint([f"{type(i)}::{i.name}" for i in tag])
+  ```
+
+  输出:
+
+  ```
+  ["<class 'bs4.element.Tag'>::p",
+   "<class 'bs4.element.Tag'>::p",
+   "<class 'bs4.element.Tag'>::p"]
+  ```
+
+- 针对 HTML 属性进行筛选时，过滤函数需以属性值作为参数，而非整个 tag 节点。如果 tag 节点包含目标属性，则会向过滤函数传递 `None`，否则传递实际值。如果函数返回 `True`，则保留该 tag 节点，否则抛弃该节点。
+
+  ```python
+  def not_lacie(href):
+      # Here’s a function that finds all a tags whose href attribute does not match a regular expression
+      return href and not re.compile("lacie").search(href)
+  
+  
+  soup = BeautifulSoup(html_doc, 'html.parser')
+  tag = soup.find_all(href=not_lacie)
+  for i in tag:
+      print(f"{type(i)}::{i.name}::{i}")
+  ```
+
+  输出:
+
+  ```
+  <class 'bs4.element.Tag'>::a::<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>
+  <class 'bs4.element.Tag'>::a::<a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>
+  ```
+
+过滤函数可以被设计的非常复杂，比如:
+
+```python
+html_doc = """
+<html><head><title>The Dormouse's story</title></head>
+<body>
+<p class="title"><b>The Dormouse's story</b></p>
+
+<p class="story">Once upon a time there were three little sisters; and their names were
+<a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
+<a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
+<a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
+and they lived at the bottom of a well.</p>
+
+<p class="story">...</p>
+"""
+
+def surrounded_by_strings(tag):
+    # returns True if a tag is surrounded by string objects
+    return (isinstance(tag.next_element, NavigableString)
+            and isinstance(tag.previous_element, NavigableString))
+
+soup = BeautifulSoup(html_doc, 'html.parser')
+tag = soup.find_all(surrounded_by_strings)
+pprint([f"{type(i)}::{i.name}" for i in tag])
+# 注意空白符对输出结果的影响
+```
+
+输出:
+
+```
+["<class 'bs4.element.Tag'>::body",
+ "<class 'bs4.element.Tag'>::p",
+ "<class 'bs4.element.Tag'>::a",
+ "<class 'bs4.element.Tag'>::a",
+ "<class 'bs4.element.Tag'>::a",
+ "<class 'bs4.element.Tag'>::p"]
+```
+
+⚠总会过滤掉 HTML 文本节点
+
+
+
+### find_all()🔨
+
+🔨find_all(*name*, *attrs*, recursive, *string*, *limit*, *\*\*kwargs*)
+
+该方法会提取与给定条件匹配的 `Tag` 对象列表。
+
+参数说明:
+
+- *name* - 可以是 tag 名，或希望 tag 包含的属性名。
+- *attrs* - 在 *attrs* 映射中，键值对的值可以是字符串，或是字符串列表，或是正则表达式对象，或是以字符串为输入的可调用对象(参考:[过滤器 - 函数](#函数))。
+
+```python
+def find_all(self, name=None, attrs={}, recursive=True, text=None,
+                 limit=None, **kwargs):
+        """Extracts a list of Tag objects that match the given
+        criteria.  You can specify the name of the Tag and any
+        attributes you want the Tag to have.
+
+        The value of a key-value pair in the 'attrs' map can be a
+        string, a list of strings, a regular expression object, or a
+        callable that takes a string and returns whether or not the
+        string matches for some custom definition of 'matches'. The
+        same is true of the tag name."""
+```
+
+
+
+
 
 ## CSS 选择器
 
