@@ -1,4 +1,5 @@
 # BeautifulSoup
+
 > GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
 
 ## 概述
@@ -363,7 +364,7 @@ print(soup.b.prettify())
 
 
 
-## Output
+## 输出
 
 BeautifulSoup 兼容 Py2 和 Py3 ，但 Py2 和 Py3 中的 `str` 对象并不相同，这会导出输出结果存在差异，在获取输出时需注意区分。
 
@@ -1524,292 +1525,24 @@ pprint([repr(i) for i in sibling_soup.a.next_elements])
 print(repr(sibling_soup.c.next_sibling))
 ```
 
-## 搜索解析树
 
-BeautifulSoup 中定义了许多搜索解析树的方法，但这些方法都非常类似。这里着重介绍 `find()` 和 `find_all()`，其它"搜索方法"也这两个类似。
 
-本节会以 "three sister" 作为示例:
-
-```python
-html_doc = """
-<html>
-<head>
-    <title>The Dormouse's story</title>
-</head>
-<body>
-    <p class="title"><b>The Dormouse's story</b></p>
-    <p class="story">Once upon a time there were three little sisters; and their names were
-        <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
-        <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
-        <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
-        and they lived at the bottom of a well.
-    </p>
-
-    <p class="story">...</p>
-"""
-from pprint import pprint
-from bs4 import BeautifulSoup
-import re
-
-soup = BeautifulSoup(html_doc, 'html.parser')
-```
-
-
-
-### 过滤器
-
-过滤器(*filter*)用于在解析树中筛选目标节点，被用作"搜索方法"的实参。
-
-
-
-#### 字符串
-
-字符串是最简单的过滤器，将字符串传递给"搜索方法"后，如果 tag 节点的名称与字符一致，BeautifulSoup 便会保留该 tag 节点。
-
-如果将 `bytes` 对象用作过滤器，BeautifulSoup 会假定编码模式为 UTF-8。
-
-示例 - 查找文档中所有的 `<b>` 标签:
-
-```python
-soup = BeautifulSoup(html_doc, 'html.parser')
-b_tag = soup.find_all('b')
-print([f"{type(i)}::{i}" for i in b_tag])
-a_tag = soup.find_all(b'a')
-pprint([f"{type(i)}::{i}" for i in a_tag])
-```
-
-输出:
-
-```
-["<class 'bs4.element.Tag'>::<b>The Dormouse's story</b>"]
-['<class \'bs4.element.Tag\'>::<a class="sister" '
- 'href="http://example.com/elsie" id="link1">Elsie</a>',
- '<class \'bs4.element.Tag\'>::<a class="sister" '
- 'href="http://example.com/lacie" id="link2">Lacie</a>',
- '<class \'bs4.element.Tag\'>::<a class="sister" '
- 'href="http://example.com/tillie" id="link3">Tillie</a>']
-```
-
-⚠总会过滤掉 HTML 文本节点
-
-#### 正则表达式
-
-过滤器可以是正则表达式对象，BeautifulSoup 会利用正则表达式对象的 `search()` 方法来过滤节点名，并保留符合条件的 tag 节点。
-
-示例 - 查找名字中包含字母 `'b'` 的 tag:
-
-```python
-import re
-soup = BeautifulSoup(html_doc, 'html.parser')
-b_tag = soup.find_all(re.compile('b'))
-print([f"{type(i)}::{i.name}" for i in b_tag])
-```
-
-输出:
-
-```
-["<class 'bs4.element.Tag'>::body", "<class 'bs4.element.Tag'>::b"]
-```
-
-⚠总会过滤掉 HTML 文本节点
-
-#### 列表
-
-过滤器可是一个列表，如果 tag 名与列表中的某一项匹配，BeautifulSoup 便会过保留该 tag 节点。列表中的项可以是:
-
-- 字符串
-- 正则表达式对象
-- 可调用对象，详见 [函数](#函数)
-
-示例 - 筛选出所有 `<a>` tags 和名称中包含字母 `'b'` 的 tag:
-
-```python
-import re
-def func(tag):
-    return tag.get('id') == "link1"
-
-soup = BeautifulSoup(html_doc, 'html.parser')
-tag = soup.find_all(['title', re.compile('b$'), func])
-pprint([f"{type(i)}::{i.name}" for i in tag])
-```
-
-输出:
-
-```
-["<class 'bs4.element.Tag'>::title",
- "<class 'bs4.element.Tag'>::b",
- "<class 'bs4.element.Tag'>::a"]
-```
-
-⚠总会过滤掉 HTML 文本节点
-
-#### True
-
-如果将布尔值 `True` 用作过滤器，则会过滤掉所有文本节点，保留所有 tag 节点:
-
-```python
-soup = BeautifulSoup(html_doc, 'html.parser')
-tag = soup.find_all(True)
-pprint([f"{type(i)}::{i.name}" for i in tag])
-```
-
-输出:
-
-```
-["<class 'bs4.element.Tag'>::html",
- "<class 'bs4.element.Tag'>::head",
- "<class 'bs4.element.Tag'>::title",
- "<class 'bs4.element.Tag'>::body",
- "<class 'bs4.element.Tag'>::p",
- "<class 'bs4.element.Tag'>::b",
- "<class 'bs4.element.Tag'>::p",
- "<class 'bs4.element.Tag'>::a",
- "<class 'bs4.element.Tag'>::a",
- "<class 'bs4.element.Tag'>::a",
- "<class 'bs4.element.Tag'>::p"]
-```
-
-⚠总会过滤掉 HTML 文本节点
-
-#### 函数
-
-过滤器可以是某个函数:
-
-- 以 tag 节点为筛选对象时，过滤器函数需以 tag 节点作为参数，如果函数返回 `True`，则保留该 tag 节点，否则抛弃该节点。
-
-  示例 - 筛选出含 `class` 属性，但不含 `id` 属性的 tag 节点:
-
-  ```python
-  def has_class_but_no_id(tag):
-      # Here’s a function that returns True if a tag defines the “class” attribute but doesn’t define the “id” attribute
-      return tag.has_attr('class') and not tag.has_attr('id')
-  
-  
-  soup = BeautifulSoup(html_doc, 'html.parser')
-  tag = soup.find_all(has_class_but_no_id)
-  pprint([f"{type(i)}::{i.name}" for i in tag])
-  ```
-
-  输出:
-
-  ```
-  ["<class 'bs4.element.Tag'>::p",
-   "<class 'bs4.element.Tag'>::p",
-   "<class 'bs4.element.Tag'>::p"]
-  ```
-
-- 针对 HTML 属性进行筛选时，过滤函数需以属性值作为参数，而非整个 tag 节点。如果 tag 节点包含目标属性，则会向过滤函数传递 `None`，否则传递实际值。如果函数返回 `True`，则保留该 tag 节点，否则抛弃该节点。
-
-  ```python
-  def not_lacie(href):
-      # Here’s a function that finds all a tags whose href attribute does not match a regular expression
-      return href and not re.compile("lacie").search(href)
-  
-  
-  soup = BeautifulSoup(html_doc, 'html.parser')
-  tag = soup.find_all(href=not_lacie)
-  for i in tag:
-      print(f"{type(i)}::{i.name}::{i}")
-  ```
-
-  输出:
-
-  ```
-  <class 'bs4.element.Tag'>::a::<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>
-  <class 'bs4.element.Tag'>::a::<a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>
-  ```
-
-过滤函数可以被设计的非常复杂，比如:
-
-```python
-html_doc = """
-<html><head><title>The Dormouse's story</title></head>
-<body>
-<p class="title"><b>The Dormouse's story</b></p>
-
-<p class="story">Once upon a time there were three little sisters; and their names were
-<a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
-<a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
-<a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
-and they lived at the bottom of a well.</p>
-
-<p class="story">...</p>
-"""
-
-def surrounded_by_strings(tag):
-    # returns True if a tag is surrounded by string objects
-    return (isinstance(tag.next_element, NavigableString)
-            and isinstance(tag.previous_element, NavigableString))
-
-soup = BeautifulSoup(html_doc, 'html.parser')
-tag = soup.find_all(surrounded_by_strings)
-pprint([f"{type(i)}::{i.name}" for i in tag])
-# 注意空白符对输出结果的影响
-```
-
-输出:
-
-```
-["<class 'bs4.element.Tag'>::body",
- "<class 'bs4.element.Tag'>::p",
- "<class 'bs4.element.Tag'>::a",
- "<class 'bs4.element.Tag'>::a",
- "<class 'bs4.element.Tag'>::a",
- "<class 'bs4.element.Tag'>::p"]
-```
-
-⚠总会过滤掉 HTML 文本节点
-
-
-
-### find_all()🔨
-
-🔨find_all(*name*, *attrs*, recursive, *string*, *limit*, *\*\*kwargs*)
-
-该方法会提取与给定条件匹配的 `Tag` 对象列表。
-
-参数说明:
-
-- *name* - 可以是 tag 名，或希望 tag 包含的属性名。
-- *attrs* - 在 *attrs* 映射中，键值对的值可以是字符串，或是字符串列表，或是正则表达式对象，或是以字符串为输入的可调用对象(参考:[过滤器 - 函数](#函数))。
-
-```python
-def find_all(self, name=None, attrs={}, recursive=True, text=None,
-                 limit=None, **kwargs):
-        """Extracts a list of Tag objects that match the given
-        criteria.  You can specify the name of the Tag and any
-        attributes you want the Tag to have.
-
-        The value of a key-value pair in the 'attrs' map can be a
-        string, a list of strings, a regular expression object, or a
-        callable that takes a string and returns whether or not the
-        string matches for some custom definition of 'matches'. The
-        same is true of the tag name."""
-```
-
-
-
-
-
-## CSS 选择器
-
-如需了解 CSS 选择器，可参考:
-
-- <http://www.w3school.com.cn/css/css_selector_type.asp>
-- http://www.w3school.com.cn/cssref/css_selectors.asp
-- https://www.runoob.com/cssref/css-selectors.html
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## 修改文档树
+
+> GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
+
+BeautifulSoup 的强项是搜索文档树，但是你也可以利用 BeautifulSoup 来修改文档树，并将修改后的文档树保存到一个新的 HTML 或 XML 文档中，具体功能如下:
+
+- [修改 tag 名和属性](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#changing-tag-names-and-attributes)
+- [修改 `.string`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#modifying-string)
+- [`append()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#append) - 向 tag 中追加内容
+- [`extend()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#extend) - 4.7.0 新增方法，扩展 tag 中的内容
+- [`NavigableString()` & `.new_tag()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#navigablestring-and-new-tag) - 向 tag 中添加新文本或新标签
+- [`insert()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#insert) - 向 tag 中插入内容，可设定插入位置
+- [`insert_before()` & `insert_after()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#insert-before-and-insert-after) - 在当前 tag 前(或后)插入内容
+- [`clear()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#clear) - 清理当前 tag 中的内容
+- [`extract()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#extract) - 从文档树中移除当前 tag，并返回被移除的 tag
+- [`decompose()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#decompose) - 从文档树中移除当前 tag，并完全销毁
+- [`replace_with()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#replace-with) - 替换文档树中的内容
+- [`wrap()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#wrap) - 打包指定元素
+- [`unwrap()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#unwrap) - 解包指定元素
