@@ -1,7 +1,9 @@
 # 处理 PDF 文档
 > GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
 
-## 相关库
+
+
+目前收集到如下用于处理 PDF 的库:
 
 - [PDFMiner](https://github.com/euske/pdfminer) - A tool for extracting information from PDF documents. Python 2 only!
   
@@ -38,7 +40,7 @@
   
 - [ReportLab](https://www.reportlab.com/opensource/) - Allowing Rapid creation of rich PDF documents.
 
-- pdfplumber - Plumb a PDF for detailed information about each text character, rectangle, and line. Plus: Table extraction and visual debugging. Works best on machine-generated, rather than scanned, PDFs. Built on [`pdfminer`](https://github.com/euske/pdfminer) and [`pdfminer.six`](https://github.com/goulu/pdfminer). 🍺
+- pdfplumber - Plumb a PDF for detailed information about each text character, rectangle, and line. Plus: Table extraction and visual debugging. Works best on machine-generated, rather than scanned, PDFs. Built on [`pdfminer`](https://github.com/euske/pdfminer) and [`pdfminer.six`](https://github.com/goulu/pdfminer). 🧀
 
   详见笔记﹝pdfplumber.md﹞
 
@@ -46,6 +48,10 @@
 
   
 
-参考:
+相关参考:
 
 - [Python：解析PDF文本及表格——pdfminer、tabula、pdfplumber 的用法及对比](https://www.cnblogs.com/gl1573/p/10064438.html)
+- [手把手教你如何用Python从PDF文件中导出数据](http://www.sohu.com/a/278505885_197042) - PDFMiner
+- [python3-用 pdfminer.six 的 pdf2txt.py 工具提取pdf全部内容](https://blog.csdn.net/m0_37952030/article/details/85041434)
+- [使用python pdfminer3k读取pdf](https://www.jianshu.com/p/742a28decc58)
+- [深入学习python解析并读取PDF文件内容的方法](https://www.cnblogs.com/wj-1314/p/9429816.html) - PDFMiner

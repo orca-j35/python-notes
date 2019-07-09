@@ -1,4 +1,4 @@
-# BeautifulSoup
+# BeautifulSoup - 概览
 
 > GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
 
@@ -34,7 +34,9 @@ soup = BeautifulSoup('<p>Hello</p>', 'lxml')
 print(soup.p.string) #> Hello
 ```
 
-⚠在安装 BeautifulSoup4 时，使用的名称是 `beautifulsoup4`；在导入时，使用的名称是 `bs4` (路径为 `~\Python\Lib\site-packages\bs4`)。由此可见，在安装库和导入库时使用的名称并不一定相同。
+⚠在安装库和导入库时使用的名称不一定相同，例如: 在安装 BeautifulSoup4 时，使用的名称是 `beautifulsoup4`；在导入时，使用的名称是 `bs4` (路径为 `~\Python\Lib\site-packages\bs4`)。
+
+如果在使用过程中遇到本文未涵盖的问题，请参考: https://www.crummy.com/software/BeautifulSoup/bs4/doc/#troubleshooting
 
 ### Three sisters
 
@@ -58,6 +60,72 @@ and they lived at the bottom of a well.</p>
 
 这段 HTML 文档存在 "tag soup"，HTML 解析器会自动修复 "tag soup"
 
+### 提高性能
+
+BeautifulSoup 的速度永远会低于其使用的解析器的速度。如果对速度有严格要求，应直接使用 lxml 库来解析。
+
+对 BeautifulSoup 而言，lxml 解析器的速度比 html.parser 或 html5lib 更快。
+
+可以通过安装 [cchardet](http://pypi.python.org/pypi/cchardet/) 库来显著提升检测编码方案的速度。
+
+[仅解析部分文档](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#parsing-only-part-of-a-document)并不会节省大量的解析时间，但是可以节省大量内存，并有效提升检索文档的速度。
+
+### 对象的是否相等
+
+> 参考: https://www.crummy.com/software/BeautifulSoup/bs4/doc/#copying-beautiful-soup-objects
+
+Beautiful Soup says that two `NavigableString` or `Tag` objects are equal when they represent the same HTML or XML markup. In this example, the two <b> tags are treated as equal, even though they live in different parts of the object tree, because they both look like “<b>pizza</b>”:
+
+```
+markup = "<p>I want <b>pizza</b> and more <b>pizza</b>!</p>"
+soup = BeautifulSoup(markup, 'html.parser')
+first_b, second_b = soup.find_all('b')
+print first_b == second_b
+# True
+
+print first_b.previous_element == second_b.previous_element
+# False
+```
+
+If you want to see whether two variables refer to exactly the same object, use is:
+
+```
+print first_b is second_b
+# False
+```
+
+### 拷贝 BeautifulSoup 对象
+
+> 参考: https://www.crummy.com/software/BeautifulSoup/bs4/doc/#copying-beautiful-soup-objects
+
+You can use `copy.copy()` to create a copy of any `Tag` or `NavigableString`:
+
+```python
+import copy
+p_copy = copy.copy(soup.p)
+print p_copy
+# <p>I want <b>pizza</b> and more <b>pizza</b>!</p>
+```
+
+The copy is considered equal to the original, since it represents the same markup as the original, but it’s not the same object:
+
+```python
+print soup.p == p_copy
+# True
+
+print soup.p is p_copy
+# False
+```
+
+The only real difference is that the copy is completely detached from the original Beautiful Soup object tree, just as if `extract()` had been called on it:
+
+```python
+print p_copy.parent
+# None
+```
+
+This is because two different `Tag` objects can’t occupy the same space at the same time.
+
 ## BeautifulSoup()🛠
 
 > 🛠BeautifulSoup(self, markup="", features=None, builder=None, parse_only=None, from_encoding=None, exclude_encodings=None, \*\*kwargs)
@@ -76,18 +144,13 @@ and they lived at the bottom of a well.</p>
   soup = BeautifulSoup("<html>data</html>")
   ```
 
-- `features` - 设置用来进行解析的解析器，可以是解析器的名称("lxml", "lxml-xml", "html.parser", "html5lib")，也可以是标签的类型("html", "html5", "xml")。建议明确给出需要使用的解析器，以便 BeautifulSoup 在不同的平台和虚拟环境中提供相同的结果。
+- `features` - 用来设置解析器，可使用解析器的名称("lxml", "lxml-xml", "html.parser", "html5lib")，或使用标签的类型("html", "html5", "xml")。建议明确给出需要使用的解析器，以便 BeautifulSoup 在不同的平台和虚拟环境中提供相同的结果。
 
-  默认情况下，BeautifulSoup 会以 HTML 格式解析文档，如果要以 XML 格式解析文档，则需设置 `features='xml'`
+  默认情况下，BeautifulSoup 会以 HTML 格式解析文档，如果要以 XML 格式解析文档，则需设置 `features='xml'`。目前支持解析 XML 的解析器仅有 lxml。
 
-  > If you don’t specify anything, you’ll get the best **HTML** parser that’s installed. Beautiful Soup ranks lxml’s parser as being the best, then html5lib’s, then Python’s built-in parser. You can override this by specifying one of the following:
-  >
-  > - What type of markup you want to parse. Currently supported are “html”, “xml”, and “html5”.
-  > - The name of the parser library you want to use. Currently supported options are “lxml”, “html5lib”, and “html.parser” (Python’s built-in HTML parser)
-  >
-  > If you don’t have an appropriate parser installed, Beautiful Soup will ignore your request and pick a different parser. Right now, the only supported XML parser is lxml. If you don’t have lxml installed, asking for an XML parser won’t give you one, and asking for “lxml” won’t work either.
-  >
-  > -- https://www.crummy.com/software/BeautifulSoup/bs4/doc/#specifying-the-parser-to-use
+  如果没有手动设置解析器，BeautifulSoup 将会在已安装的解析器中选一个最好用的 HTML 解析器，解析器的优先级依次是 lxml’s HTML parser > html5lib's parser > Python’s html.parser。
+
+  如果已手动设置某解析器，但是并为安装该解析器，BeautifulSoup 将忽略该设置并按照优先级选择一个解析器。
 
 - `builder` - 不需要使用的参数(A specific TreeBuilder to use instead of looking one up based on `features`)。
 
@@ -110,6 +173,12 @@ Beautiful Soup 支持 Python 标准库中的 HTML [解析器](https://www.crummy
 - lxml’s XML parser - `BeautifulSoup(markup, "lxml-xml")` 或 `BeautifulSoup(markup, "xml")`
 - html5lib - `BeautifulSoup(markup, "html5lib")`
 
+默认情况下，BeautifulSoup 会以 HTML 格式解析文档，如果要以 XML 格式解析文档，则需设置 `features='xml'`。目前支持解析 XML 的解析器仅有 lxml。
+
+如果没有手动设置解析器，BeautifulSoup 将会在已安装的解析器中选一个最好用的 HTML 解析器，解析器的优先级依次是 lxml’s HTML parser > html5lib's parser > Python’s html.parser。
+
+如果已手动设置某解析器，但是并为安装该解析器，BeautifulSoup 将忽略该设置并按照优先级选择一个解析器。
+
 第三方解析器的安装方法和优缺点对比: [Installing a parser](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-a-parser)
 
 建议使用 lxml 解析器来提高解析速度。早于 2.7.3 和 3.2.2 的 Python 版本，必须使用 lxml 和 html5lib 解析器，因为这些版本的内置 HTML 解析器不够稳定。
@@ -117,6 +186,148 @@ Beautiful Soup 支持 Python 标准库中的 HTML [解析器](https://www.crummy
 Note: 如果试图解析无效的 HTML/XML 文档，不同解析器可能会给出不同的结果。
 
 有关解析器间的具体差异，详见: [Specifying the parser to use](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#specifying-the-parser-to-use)
+
+### 解析 XML 文档
+
+> 参考: https://www.crummy.com/software/BeautifulSoup/bs4/doc/#parsing-xml
+
+默认情况下，BeautifulSoup 会以 HTML 格式解析文档，如果要以 XML 格式解析文档，则需设置 `features='xml'`。目前支持解析 XML 的解析器仅有 lxml。
+
+### 编码
+
+> 参考: https://www.crummy.com/software/BeautifulSoup/bs4/doc/#encodings
+
+HTML 或 XML 文档可能会采用不同的编码方案(如 ASCII 或 UTF-8)，当你将文档加载到 BeautifulSoup 后，便会自动转换为 Unicode。
+
+```python
+markup = "<h1>Sacr\xc3\xa9 bleu!</h1>"
+soup = BeautifulSoup(markup, 'lxml')
+print(soup.h1)
+#> <h1>Sacré bleu!</h1>
+print(soup.h1.string)
+#> u'Sacr\xe9 bleu!'
+```
+
+BeautifulSoup 会使用一个叫做 [Unicode, Dammit](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#unicode-dammit) 的子库来检测文档编码并将其转换为 Unicode。 `BeautifulSoup` 对象的 `.original_encoding` 属性记录了自动识别编码的结果:
+
+```python
+print(soup.original_encoding)
+#> 'utf-8'
+```
+
+在大多数时候，Unicode, Dammit 能够猜测出正确的编码方案，但是偶尔也会犯错。有时候即便猜测正确，但也需要先逐字节遍历文档后才能给出答案，这样非常耗时。如果你知道文档的编码方案，则可以通过 `from_encoding` 参数来设置编码方案，从而避免错误和延迟。
+
+> Here’s a document written in ISO-8859-8. The document is so short that Unicode, Dammit can’t get a lock on it, and misidentifies it as ISO-8859-7:
+>
+> ```python
+> markup = b"<h1>\xed\xe5\xec\xf9</h1>"
+> soup = BeautifulSoup(markup)
+> soup.h1
+> <h1>νεμω</h1>
+> soup.original_encoding
+> 'ISO-8859-7'
+> ```
+>
+> We can fix this by passing in the correct `from_encoding`:
+>
+> ```python
+> soup = BeautifulSoup(markup, from_encoding="iso-8859-8")
+> soup.h1
+> <h1>םולש</h1>
+> soup.original_encoding
+> 'iso8859-8'
+> ```
+
+如果你并不知道编码方案，但是你知道 Unicode, Dammit 给出了错误答案，则可以使用 `exclude_encodings` 参数来排除某些编码方案:
+
+> ```
+> soup = BeautifulSoup(markup, exclude_encodings=["ISO-8859-7"])
+> soup.h1
+> <h1>םולש</h1>
+> soup.original_encoding
+> 'WINDOWS-1255'
+> ```
+>
+> Windows-1255 isn’t 100% correct, but that encoding is a compatible superset of ISO-8859-8, so it’s close enough. (`exclude_encodings` is a new feature in Beautiful Soup 4.4.0.)
+
+如果需要了解更多信息，请阅读: https://www.crummy.com/software/BeautifulSoup/bs4/doc/#encodings
+
+
+
+### 仅解析部分文档
+
+> 参考: https://www.crummy.com/software/BeautifulSoup/bs4/doc/#parsing-only-part-of-a-document
+
+对于仅需要解析 `<a>` 标签情况而言，先解析整个文档然后再查找 `<a>` 标签标准过程会浪费大量的时间和内存。如果一开始就忽略掉与 `<a>` 标签无关的部分，则会有效提升查询速度。
+
+对于仅需要解析部分文档的情况而言，可使用 `SoupStrainer` 类筛选出要保留的标签。
+
+⚠[仅解析部分文档](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#parsing-only-part-of-a-document)并不会节省大量的解析时间，但是可以节省大量内存，并有效提升检索文档的速度。
+
+⚠html5lib 解析器不支持该功能，原因如下:
+
+> If you use html5lib, the whole document will be parsed, no matter what. This is because html5lib constantly rearranges the parse tree as it works, and if some part of the document didn’t actually make it into the parse tree, it’ll crash. To avoid confusion, in the examples below I’ll be forcing Beautiful Soup to use Python’s built-in parser.
+
+#### SoupStrainer🐘
+
+`SoupStrainer()` 构造器的参数与[搜索解析树的方法](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#searching-the-tree)相同: [name](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#id11), [attrs](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#attrs), [text](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#id12), [**kwargs](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#kwargs)，不可将 text 写作 string，对 `SoupStrainer()` 而言 text 和 string 不能等效使用。
+
+示例 - `SoupStrainer` 对象的使用方法:
+
+```python
+from bs4 import SoupStrainer
+
+html_doc = """
+<html><head><title>The Dormouse's story</title></head>
+<body>
+<p class="title"><b>The Dormouse's story</b></p>
+
+<p class="story">Once upon a time there were three little sisters; and their names were
+<a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
+<a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
+<a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
+and they lived at the bottom of a well.</p>
+
+<p class="story">...</p>
+"""
+only_a_tags = SoupStrainer("a")
+soup = BeautifulSoup(html_doc, "html.parser", parse_only=only_a_tags)
+print([f'{type(i)}::{i.name}' for i in soup])
+#> ["<class 'bs4.element.Tag'>::a", "<class 'bs4.element.Tag'>::a", "<class 'bs4.element.Tag'>::a"]
+
+
+only_tags_with_id_link2 = SoupStrainer(id="link2")
+soup = BeautifulSoup(
+    html_doc, "html.parser", parse_only=only_tags_with_id_link2)
+print([f'{type(i)}::{i}' for i in soup])
+#> ['<class \'bs4.element.Tag\'>::<a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>']
+
+
+def is_short_string(text: str):
+    return len(text) < 10
+only_short_strings = SoupStrainer(text=is_short_string)
+soup = BeautifulSoup(html_doc, "html.parser", parse_only=only_short_strings)
+print([repr(i) for i in soup])
+#> ["'\\n'", "'\\n'", "'\\n'", "'\\n'", "'Elsie'", "',\\n'", "'Lacie'", "' and\\n'", "'Tillie'", "'\\n'", "'...'", "'\\n'"]
+```
+
+`SoupStrainer` 可用作[搜索解析树的方法](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#searching-the-tree)的参数，这可能并不常见，但还是提一下:
+
+```python
+def is_short_string(text: str):
+    return len(text) < 10
+
+
+only_short_strings = SoupStrainer(text=is_short_string)
+soup = BeautifulSoup(
+    html_doc,
+    "html.parser",
+)
+print([repr(i) for i in soup.find_all(only_short_strings)])
+#> "'\\n'", "'\\n'", "'\\n'", "'\\n'", "'Elsie'", "',\\n'", "'Lacie'", "' and\\n'", "'Tillie'", "'\\n'", "'...'", "'\\n'"]
+```
+
+
 
 ## 对象的种类
 
@@ -365,6 +576,8 @@ print(soup.b.prettify())
 
 
 ## 输出
+
+> 扩展阅读: [Output encoding](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#output-encoding)
 
 BeautifulSoup 兼容 Py2 和 Py3 ，但 Py2 和 Py3 中的 `str` 对象并不相同，这会导出输出结果存在差异，在获取输出时需注意区分。
 
@@ -902,647 +1115,3 @@ text = property(get_text)
 
 
 
-## 在解析树中导航
-
-> 参考: [Navigating the tree](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#navigating-the-tree)
-
-在学习与解析树相关的"导航字段"之前，我们需要先了解 BeautifulSoup 解析树的结构，下面这段 HTML 和其解析树如下:
-
-```python
-markup = '''
-<p>To find out
-    <em>more</em> see the
-    <a href="http://www.w3.org/XML">standard</a>.
-</p>'''
-soup = BeautifulSoup(markup, 'lxml')
-```
-
-```mermaid
-graph TB
-BeautifulSoup:soup --> Tag:html[Tag:html]
-  Tag:html --> Tag:body[Tag:body]
-    Tag:body --> Tag:p[Tag:p]
-      Tag:p --> NavigableString:'To_find_out\n____'[NavigableString:'To find out\n    ']
-      Tag:p --> Tag:em[Tag:em]
-        Tag:em --> NavigableString:'more'[NavigableString:'more']
-      Tag:p --> NavigableString:'_see_the\n____'[NavigableString:' see the\n    ']
-      Tag:p --> Tag:a[Tag:a]
-        Tag:a --> NavigableString:'standard'[NavigableString:'standard']
-      Tag:p --> NavigableString:'.\n'[NavigableString:'.\n']
-```
-
-⚠"导航字段"的返回值总是节点对象(如，Tag 对象、NavigableString 对象)，或由节点对象组成的列表(或迭代器)。
-
-
-
-### Going down
-
-Tag 中包含的字符串或 Tag 等节点被视作该 Tag 的 children (或 descendants )节点。为了便于在 children (或 descendants )节点中进行导航，BeautifulSoup 提供了许多与此相关的方法。
-
-⚠BeautifulSoup 中的字符串节点(如，NavigableString和注释)不支持与导航相关的属性，因为字符串节点永远不会包含任何 children 节点。
-
-#### 节点名
-
-可使用节点名来选取目标节点，此时会返回子孙节点中的第一个同名节点。
-
-```python
-html_doc = """
-<html>
-<head>
-    <title>The Dormouse's story</title>
-</head>
-<body>
-    <p class="title"><b>The Dormouse's story</b></p>
-
-    <p class="story">Once upon a time there were three little sisters; and their names were
-        <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
-        <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
-        <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
-        and they lived at the bottom of a well.
-    </p>
-
-    <p class="story">...</p>
-"""
-from bs4 import BeautifulSoup
-soup = BeautifulSoup(html_doc, 'html.parser')
-print(repr(f"{type(soup.head)}:{soup.head}"))
-print(repr(f"{type(soup.title)}:{soup.title}"))
-print(repr(f"{type(soup.a)}:{soup.a}"))
-```
-
-输出:
-
-```
-"<class 'bs4.element.Tag'>:<head>\n<title>The Dormouse's story</title>\n</head>"
-"<class 'bs4.element.Tag'>:<title>The Dormouse's story</title>"
-'<class \'bs4.element.Tag\'>:<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>'
-```
-
-#### .contents🔧
-
-`.contents` 字段会返回一个由"直接子节点"组成的列表:
-
-```python
-html_doc = """
-<html>
-<head>
-    <title>The Dormouse's story</title>
-</head>
-<body>
-    <p class="title"><b>The Dormouse's story</b></p>
-
-    <p class="story">Once upon a time there were three little sisters; and their names were
-        <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
-        <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
-        <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
-        and they lived at the bottom of a well.
-    </p>
-
-    <p class="story">...</p>
-"""
-from pprint import pprint
-from bs4 import BeautifulSoup
-
-soup = BeautifulSoup(html_doc, 'html.parser')
-p = soup.find('p', 'story')
-pprint(p.contents)
-pprint([type(i) for i in p.contents])
-```
-
-输出:
-
-```
-['Once upon a time there were three little sisters; and their names were\n'
- '        ',
- <a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>,
- ',\n        ',
- <a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>,
- ' and\n        ',
- <a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>,
- ';\n        and they lived at the bottom of a well.\n    ']
-[<class 'bs4.element.NavigableString'>,
- <class 'bs4.element.Tag'>,
- <class 'bs4.element.NavigableString'>,
- <class 'bs4.element.Tag'>,
- <class 'bs4.element.NavigableString'>,
- <class 'bs4.element.Tag'>,
- <class 'bs4.element.NavigableString'>]
-```
-
-⚠`.contents` 返回的列表中的元素是节点对象，不是字符串对象。
-
-⚠BeautifulSoup 中的字符串节点(如，NavigableString和注释)不支持 `.contents` 字段，因为字符串节点永远不会包含任何 children 节点，强行获取会抛出异常:
-
-```python
-soup = BeautifulSoup(html_doc, 'html.parser')
-pprint(soup.title.contents[0].contents)
-#> AttributeError: 'NavigableString' object has no attribute 'contents'
-```
-
-
-
-#### .children🔧
-
-`.children` 是 `.contents` 的迭代器版本，源代码如下:
-
-```python
-#Generator methods
-@property
-def children(self):
-    # return iter() to make the purpose of the method clear
-    return iter(self.contents)  # XXX This seems to be untested.
-```
-
-
-
-#### .descendants🔧
-
-`.descendants` 字段会返回一个包含"所有子孙节点"的生成器，从而允许你以递归方式遍历当前节点的所有子孙节点。
-
-```python
-html_doc = """
-<html>
-<head>
-    <title>The Dormouse's story</title>
-</head>
-<body>
-    <p class="title"><b>The Dormouse's story</b></p>
-
-    <p class="story">Once upon a time there were three little sisters; and their names were
-        <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
-        <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
-        <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
-        and they lived at the bottom of a well.
-    </p>
-
-    <p class="story">...</p>
-"""
-from pprint import pprint
-from bs4 import BeautifulSoup
-
-soup = BeautifulSoup(html_doc, 'html.parser')
-print(soup.head.descendants)
-print(list(soup.head.descendants))
-```
-
-输出:
-
-```
-<generator object Tag.descendants at 0x000001D502BA2750>
-['\n', <title>The Dormouse's story</title>, "The Dormouse's story", '\n']
-```
-
-
-
-#### .string🔧
-
-`.string` 属性被用于获取 tag 内部的字符串，其返回值可以是 `NavigableString` , `None` , `Comment`，具体如下:
-
-- 如果 tag 仅含一个字符串子项，则返回一个包含该字符串的 `NavigableString` 对象:
-
-  ```python
-  from bs4 import BeautifulSoup
-  soup = BeautifulSoup('<b class="boldest">Extremely bold</b>', 'lxml')
-  tag = soup.b
-  print(type(tag.string))
-  #> <class 'bs4.element.NavigableString'>
-  print(tag.string)
-  #> Extremely bold
-  ```
-
-- 如果 tag 中仅包含一个子 tag，且该 tag 仅含一个字符串子项，则返回一个包含该字符串的 `NavigableString` 对象，该逻辑可递归:
-
-  ```python
-  soup = BeautifulSoup('<b class="boldest">
-                       	<i>
-                       	  <i>Extremely bold</i>
-                       	</i></b>',
-                       'lxml')
-  tag = soup.b
-  print(type(tag.string))
-  #> <class 'bs4.element.NavigableString'>
-  print(tag.string)
-  #> Extremely bold
-  ```
-
-- 如果 tag 中没有子项，或单个子项中不包含字符串，或有多个子项，或有多个字符串子项，都将会返回 `None`:
-
-  ```python
-  # 没有子项
-  soup = BeautifulSoup('<b class="boldest"></b>', 'lxml')
-  tag = soup.b
-  print(type(tag.string))
-  #> <class 'NoneType'>
-  print(tag.string)
-  #> None
-  
-  # 子项中不包含字符串
-  soup = BeautifulSoup('<b class="boldest"><i></i></b>', 'lxml')
-  print(soup.b.string)
-  #> None
-  
-  # 多个子项,即便包含字符串也返回None
-  soup = BeautifulSoup('<b class="boldest">link to <i>example.com</i></b>',
-                       'lxml')
-  print(soup.b.string)
-  #> None
-  ```
-
-- 如果 tag 仅含一个注释子项，则返回一个包含该注释的 `Comment` 对象:
-
-  ```python
-  from bs4 import BeautifulSoup
-  markup = "<b><!--Hey, buddy. Want to buy a used parser?--></b>"
-  soup = BeautifulSoup(markup, 'lxml')
-  comment = soup.b.string
-  print(type(comment))
-  #> <class 'bs4.element.Comment'>
-  print(comment)
-  #> Hey, buddy. Want to buy a used parser?
-  ```
-
-#### .strings🔧
-
-如果 tag 有数个内含字符串的子孙节点，`.stirng` 字段允许你以递归方式遍历这些字符串:
-
-```python
-html_doc = """
-<html>
-<head>
-    <title>The Dormouse's story</title>
-</head>
-<body>
-    <p class="title"><b>The Dormouse's story</b></p>
-
-    <p class="story">Once upon a time there were three little sisters; and their names were
-        <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
-        <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
-        <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
-        and they lived at the bottom of a well.
-    </p>
-
-    <p class="story">...</p>
-"""
-from pprint import pprint
-from bs4 import BeautifulSoup
-
-soup = BeautifulSoup(html_doc, 'html.parser')
-print(soup.strings)
-pprint(list(soup.strings))
-```
-
-输出:
-
-```
-<generator object Tag._all_strings at 0x0000013C23342750>
-['\n',
- '\n',
- '\n',
- "The Dormouse's story",
- '\n',
- '\n',
- '\n',
- "The Dormouse's story",
- '\n',
- 'Once upon a time there were three little sisters; and their names were\n'
- '        ',
- 'Elsie',
- ',\n        ',
- 'Lacie',
- ' and\n        ',
- 'Tillie',
- ';\n        and they lived at the bottom of a well.\n    ',
- '\n',
- '...',
- '\n']
-```
-
-#### stripped_strings🔧
-
-`.stripped_strings` 的功能与 `.strings` 类似，但会剥离掉多余的空白符。`.stripped_strings` 会忽略掉完全由空白符组成的字符串，并删除字符串开头和结尾处的空白符。
-
-```python
-from pprint import pprint
-from bs4 import BeautifulSoup
-
-soup = BeautifulSoup(html_doc, 'html.parser')
-print(soup.stripped_strings)
-pprint(list(soup.stripped_strings))
-```
-
-输出:
-
-```
-<generator object Tag.stripped_strings at 0x000002644BE22750>
-["The Dormouse's story",
- "The Dormouse's story",
- 'Once upon a time there were three little sisters; and their names were',
- 'Elsie',
- ',',
- 'Lacie',
- 'and',
- 'Tillie',
- ';\n        and they lived at the bottom of a well.',
- '...']
-```
-
-
-
-### Going up
-
-每个 tag 或字符串都有父节点: 包含当前 tag 的节点。
-
-#### .parent🔧
-
-`.parent` 字段用于访问当前节点的父节点。
-
-```python
-html_doc = """
-<html>
-<head>
-    <title>The Dormouse's story</title>
-</head>
-<body>
-    <p class="title"><b>The Dormouse's story</b></p>
-
-    <p class="story">Once upon a time there were three little sisters; and their names were
-        <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
-        <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
-        <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
-        and they lived at the bottom of a well.
-    </p>
-
-    <p class="story">...</p>
-"""
-from pprint import pprint
-from bs4 import BeautifulSoup
-
-soup = BeautifulSoup(html_doc, 'html.parser')
-print(soup.parent)
-print(soup.html.parent.name)
-print(soup.title.parent.name)
-```
-
-输出:
-
-```
-None
-[document]
-head
-```
-
-#### .parents🔧
-
-`.parent` 字段会返回一个内含所有祖先节点的生成器，可用于迭代访问当前节点的所有祖先节点:
-
-```python
-from pprint import pprint
-from bs4 import BeautifulSoup
-
-soup = BeautifulSoup(html_doc, 'html.parser')
-link = soup.a
-print(link.parents)
-print([i.name for i in link.parents])
-```
-
-输出:
-
-```
-<generator object PageElement.parents at 0x0000013D87571750>
-['p', 'body', 'html', '[document]']
-```
-
-### Going sideways
-
-先考虑下面这个示例:
-
-```python
-sibling_soup = BeautifulSoup("<a><b>text1</b><c>text2</c></b></a>",
-                             'html.parser')
-print(sibling_soup.prettify())
-```
-
-输出:
-
-```
-<a>
- <b>
-  text1
- </b>
- <c>
-  text2
- </c>
-</a>
-```
-
-`<b>` 和 `<c>` 是兄弟节点，因为它们拥有相同的父节点；字符串 `'text1'` 和 `'text2'` 不是兄弟节点，因为它们的父节点不同。
-
-#### .next_sibling🔧.previous_sibling🔧
-
-`.next_sibling` 字段用于选取下一个兄弟节点，`.previous_sibling` 字段用于选取上一个兄弟节点:
-
-```python
-sibling_soup = BeautifulSoup("<a><b>text1</b><c>text2</c></b></a>",
-                             'html.parser')
-print(sibling_soup.b.previous_sibling)
-print(sibling_soup.b.next_sibling)
-
-print(sibling_soup.c.previous_sibling)
-print(sibling_soup.c.next_sibling)
-```
-
-输出:
-
-```
-None
-<c>text2</c>
-<b>text1</b>
-None
-```
-
-`<c>` 没有 `.next_sibling`，因为在 `<c>` 之后并没有兄弟节点；`<b>` 没有 `.previous_sibling`，因为在 `<b>` 之前并没有兄弟节点。
-
-⚠在实际的文档中，节点的 `.next_sibling` ( 或 `.previous_sibling`) 字段可能是包含空白符的字符串:
-
-```python
-html_doc = """
-<html>
-<head>
-    <title>The Dormouse's story</title>
-</head>
-<body>
-    <p class="title"><b>The Dormouse's story</b></p>
-    <b>The</b>
-    <p class="story">Once upon a time there were three little sisters; and their names were
-        <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
-        <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
-        <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
-        and they lived at the bottom of a well.
-    </p>
-
-    <p class="story">...</p>
-"""
-from pprint import pprint
-from bs4 import BeautifulSoup
-
-soup = BeautifulSoup(html_doc, 'html.parser')
-print(repr(soup.a.next_sibling))
-```
-
-输出:
-
-```
-',\n        '
-```
-
-
-
-#### .next_siblings🔧.previous_siblings🔧
-
-`.next_siblings` 和 `.previous_siblings` 会返回由兄弟节点组成的生成器:
-
-```python
-html_doc = """
-<html>
-<head>
-    <title>The Dormouse's story</title>
-</head>
-<body>
-    <p class="title"><b>The Dormouse's story</b></p>
-    <b>The</b>
-    <p class="story">Once upon a time there were three little sisters; and their names were
-        <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
-        <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
-        <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
-        and they lived at the bottom of a well.
-    </p>
-
-    <p class="story">...</p>
-"""
-from pprint import pprint
-from bs4 import BeautifulSoup
-
-soup = BeautifulSoup(html_doc, 'html.parser')
-print(soup.a.next_siblings)
-pprint([repr(i) for i in soup.a.next_siblings])
-
-pprint([repr(i) for i in soup.find(id='link3').previous_siblings])
-```
-
-输出:
-
-```
-<generator object PageElement.next_siblings at 0x000001DDDD0C2750>
-["',\\n        '",
- '<a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>',
- "' and\\n        '",
- '<a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>',
- "';\\n        and they lived at the bottom of a well.\\n    '"]
-["' and\\n        '",
- '<a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>',
- "',\\n        '",
- '<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>',
- "'Once upon a time there were three little sisters; and their names "
- "were\\n        '"]
-```
-
-
-
-### Going back and forth
-
-先看一段 "three sisters" 中的 HTML 文档:
-
-```html
-<html><head><title>The Dormouse's story</title></head>
-<p class="title"><b>The Dormouse's story</b></p>
-```
-
-HTML 解析器在获得上面的 HTML 文档后，会将其转换成一连串事件: "打开 `<html>` 标签"，"打开一个 `<head>` 标签"，"打开一个 `<title>` 标签"，"添加一段字符串"，"关闭 `<title>` 标签"，"打开 `<p>` 标签"，等等。BeautifulSoup 提供了重现文档初始解析过程的工具。
-
-#### .next_element🔧.previous_element🔧
-
-`.next_element` 字段指向下一个被解析的节点，其结果通常与 `.next_sibling` 不同:
-
-```python
-html_doc = """
-<html>
-<head>
-    <title>The Dormouse's story</title>
-</head>
-<body>
-    <p class="title"><b>The Dormouse's story</b></p>
-    <b>The</b>
-    <p class="story">Once upon a time there were three little sisters; and their names were
-        <a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
-        <a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
-        <a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
-        and they lived at the bottom of a well.
-    </p>
-
-    <p class="story">...</p>
-"""
-from pprint import pprint
-from bs4 import BeautifulSoup
-
-soup = BeautifulSoup(html_doc, 'html.parser')
-print(repr(soup.find('a', id='link3').next_sibling)) # 下一个兄弟节点
-print(repr(soup.find('a', id='link3').next_element)) # 下一个被解析的节点
-```
-
-输出:
-
-```python
-';\n        and they lived at the bottom of a well.\n    '
-'Tillie'
-```
-
-`.previous_element` 字段指向前一个被解析的节点，其结果通常与 `.previous_sibling` 不同:
-
-```python
-sibling_soup = BeautifulSoup("<a><b>text1</b><c>text2</c></b></a>",
-                             'html.parser')
-
-print(repr(sibling_soup.c.next_element))
-print(repr(sibling_soup.c.next_sibling))
-```
-
-输出:
-
-```
-'text2'
-None
-```
-
-#### .next_elements🔧.previous_elements🔧
-
-`.next_elements` 会返回一个生成器，该生成器会按照解析顺序逆向获取先前解析的节点； `.previous_elements` 会返回一个生成器，该生成器会按照解析顺序依次获取之后解析的节点。
-
-```python
-sibling_soup = BeautifulSoup("<a><b>text1</b><c>text2</c></b></a>",
-                             'html.parser')
-
-pprint([repr(i) for i in sibling_soup.a.next_elements])
-print(repr(sibling_soup.c.next_sibling))
-```
-
-
-
-## 修改文档树
-
-> GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
-
-BeautifulSoup 的强项是搜索文档树，但是你也可以利用 BeautifulSoup 来修改文档树，并将修改后的文档树保存到一个新的 HTML 或 XML 文档中，具体功能如下:
-
-- [修改 tag 名和属性](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#changing-tag-names-and-attributes)
-- [修改 `.string`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#modifying-string)
-- [`append()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#append) - 向 tag 中追加内容
-- [`extend()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#extend) - 4.7.0 新增方法，扩展 tag 中的内容
-- [`NavigableString()` & `.new_tag()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#navigablestring-and-new-tag) - 向 tag 中添加新文本或新标签
-- [`insert()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#insert) - 向 tag 中插入内容，可设定插入位置
-- [`insert_before()` & `insert_after()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#insert-before-and-insert-after) - 在当前 tag 前(或后)插入内容
-- [`clear()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#clear) - 清理当前 tag 中的内容
-- [`extract()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#extract) - 从文档树中移除当前 tag，并返回被移除的 tag
-- [`decompose()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#decompose) - 从文档树中移除当前 tag，并完全销毁
-- [`replace_with()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#replace-with) - 替换文档树中的内容
-- [`wrap()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#wrap) - 打包指定元素
-- [`unwrap()`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#unwrap) - 解包指定元素

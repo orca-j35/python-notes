@@ -118,6 +118,7 @@ tesseract 相关资源:
 - 语言数据文件 - Wiki: https://github.com/tesseract-ocr/tesseract/wiki/Data-Files
 - Tesseract for Windows at UB Mannheim: https://github.com/UB-Mannheim/tesseract/wiki
   - 历史版本: https://digi.bib.uni-mannheim.de/tesseract/
+  - GitHub: https://github.com/UB-Mannheim/tesseract
 
 ### 安装
 

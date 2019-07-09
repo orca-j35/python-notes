@@ -1473,6 +1473,7 @@ print(doc)
 > - <https://pyquery.readthedocs.io/en/latest/traversing.html>
 > - [`pyquery`](https://pyquery.readthedocs.io/en/stable/api.html#module-pyquery.pyquery) – PyQuery complete API 🧀
 > - <https://api.jquery.com/category/traversing/> 🧀
+> - [jQuery 遍历函数](http://www.w3school.com.cn/jquery/jquery_ref_traversing.asp)
 
 PyQuery 支持一些 jQuery 中的遍历方法，本小节仅介绍一些常用的方法，如果需要了解更多内容，请阅读参考中给出的连接。
 
