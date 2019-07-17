@@ -70,61 +70,7 @@ BeautifulSoup 的速度永远会低于其使用的解析器的速度。如果对
 
 [仅解析部分文档](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#parsing-only-part-of-a-document)并不会节省大量的解析时间，但是可以节省大量内存，并有效提升检索文档的速度。
 
-### 对象的是否相等
 
-> 参考: https://www.crummy.com/software/BeautifulSoup/bs4/doc/#copying-beautiful-soup-objects
-
-Beautiful Soup says that two `NavigableString` or `Tag` objects are equal when they represent the same HTML or XML markup. In this example, the two <b> tags are treated as equal, even though they live in different parts of the object tree, because they both look like “<b>pizza</b>”:
-
-```
-markup = "<p>I want <b>pizza</b> and more <b>pizza</b>!</p>"
-soup = BeautifulSoup(markup, 'html.parser')
-first_b, second_b = soup.find_all('b')
-print first_b == second_b
-# True
-
-print first_b.previous_element == second_b.previous_element
-# False
-```
-
-If you want to see whether two variables refer to exactly the same object, use is:
-
-```
-print first_b is second_b
-# False
-```
-
-### 拷贝 BeautifulSoup 对象
-
-> 参考: https://www.crummy.com/software/BeautifulSoup/bs4/doc/#copying-beautiful-soup-objects
-
-You can use `copy.copy()` to create a copy of any `Tag` or `NavigableString`:
-
-```python
-import copy
-p_copy = copy.copy(soup.p)
-print p_copy
-# <p>I want <b>pizza</b> and more <b>pizza</b>!</p>
-```
-
-The copy is considered equal to the original, since it represents the same markup as the original, but it’s not the same object:
-
-```python
-print soup.p == p_copy
-# True
-
-print soup.p is p_copy
-# False
-```
-
-The only real difference is that the copy is completely detached from the original Beautiful Soup object tree, just as if `extract()` had been called on it:
-
-```python
-print p_copy.parent
-# None
-```
-
-This is because two different `Tag` objects can’t occupy the same space at the same time.
 
 ## BeautifulSoup()🛠
 
@@ -483,6 +429,8 @@ print(xml_soup.p['class'])
 
 ### NavigableString 🐘
 
+🐘 `bs4.element.NavigableString`
+
 `NavigableString` 继承自 `str` 类和 `PageElement` 类，不能对 `NavigableString` 对象所含字符串进行编辑，但是可以使用 `replace_with()` 方法进行替换:
 
 ```python
@@ -572,6 +520,64 @@ print(soup.b.prettify())
 </b>
 '''
 ```
+
+
+
+### 对象的是否相等
+
+> 参考: https://www.crummy.com/software/BeautifulSoup/bs4/doc/#copying-beautiful-soup-objects
+
+Beautiful Soup says that two `NavigableString` or `Tag` objects are equal when they represent the same HTML or XML markup. In this example, the two `<b>` tags are treated as equal, even though they live in different parts of the object tree, because they both look like “`<b>pizza</b>`”:
+
+```
+markup = "<p>I want <b>pizza</b> and more <b>pizza</b>!</p>"
+soup = BeautifulSoup(markup, 'html.parser')
+first_b, second_b = soup.find_all('b')
+print first_b == second_b
+# True
+
+print first_b.previous_element == second_b.previous_element
+# False
+```
+
+If you want to see whether two variables refer to exactly the same object, use is:
+
+```
+print first_b is second_b
+# False
+```
+
+### 拷贝 BeautifulSoup 对象
+
+> 参考: https://www.crummy.com/software/BeautifulSoup/bs4/doc/#copying-beautiful-soup-objects
+
+You can use `copy.copy()` to create a copy of any `Tag` or `NavigableString`:
+
+```python
+import copy
+p_copy = copy.copy(soup.p)
+print p_copy
+# <p>I want <b>pizza</b> and more <b>pizza</b>!</p>
+```
+
+The copy is considered equal to the original, since it represents the same markup as the original, but it’s not the same object:
+
+```python
+print soup.p == p_copy
+# True
+
+print soup.p is p_copy
+# False
+```
+
+The only real difference is that the copy is completely detached from the original Beautiful Soup object tree, just as if `extract()` had been called on it:
+
+```python
+print p_copy.parent
+# None
+```
+
+This is because two different `Tag` objects can’t occupy the same space at the same time.
 
 
 

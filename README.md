@@ -118,7 +118,7 @@ Python 学习笔记
 - [欢乐蟒](https://pythonfun.top/)：翻译了一些技术文章，比如 [Python 3.7 中的新特性](https://pythonfun.top/cool-new-features-in-python-3.7-trp/) 
 - [Python 之旅](http://funhacks.net/2017/01/03/explore_python/)：内容层次清晰，有作者自己的理解，很不错 - [在线阅读](https://funhacks.net/explore-python/)
 - [Python 之禅](https://foofish.net/)：博客
-- [Python 学习之旅](https://segmentfault.com/blog/python3)：有几篇总结性的文章很不错
+- [Python 学习之旅](https://segmentfault.com/blog/python3)：有几篇总结性的文章很不错，博主还自己写了一本书《[Python 之旅](http://funhacks.net/2017/01/03/explore_python/)》
 - [Python Reference (The Right Way) - DRAFT](https://python-reference.readthedocs.io/en/latest/index.html)：适用于Python 2.7.X，提供了有关内置函数、列表推导式、容器数据、运算符、语句等的快速参考
 - [〖十月狐狸〗](https://www.cnblogs.com/sesshoumaru/)：提供了 Python 3.6 中所有内置函数的笔记
 - [Yixiaohan](https://github.com/Yixiaohan)/[codeparkshare](https://github.com/Yixiaohan/codeparkshare) 整理并推荐了一些学习资料

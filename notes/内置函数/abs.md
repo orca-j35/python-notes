@@ -1,6 +1,8 @@
 # abs
 
-abs(*x*) 
+> GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
+
+🔨abs(*x*)
 
 返回一个数的绝对值。
 如果实参(argument)是整数或浮点数，则会返回其绝对值。
@@ -32,7 +34,7 @@ abs(*x*)
 
 > 相关笔记:『3.3. Special method names.md』-> 3.3.8. Emulating numeric types
 
-🔨 object.`__abs__`(*self*)
+🔨object.`__abs__`(*self*)
 
 `__abs__` 用于实现 `abs()`。调用 `abs(x)` 时，便会调用 `x.__abs__()`。
 

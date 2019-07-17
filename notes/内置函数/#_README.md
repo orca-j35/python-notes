@@ -5,5 +5,4 @@
 - [Python in a Nutshell](https://learning.oreilly.com/library/view/python-in-a/0596001886/) -> 8.Core Builts-ins -> Built-in Types
 - [Python Reference (The Right Way) - Built-In Functions](https://python-reference.readthedocs.io/en/latest/docs/functions/index.html#built-in-functions)：基于 Python 2
 - https://www.runoob.com/python/python-built-in-functions.html
-- 
 

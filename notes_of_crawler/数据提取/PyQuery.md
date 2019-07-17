@@ -87,6 +87,8 @@ for i in a: # a是包含etree._Element对象的列表
 '''
 ```
 
+### 输出
+
 `PyQuery.__repr__()` 会以列表形式描述 PyQuery 实例中的元素:
 
 ```python
@@ -140,7 +142,7 @@ def __str__(self):
 
 🛠class pyquery.pyquery.PyQuery(\*args, \*\*kwargs)
 
-PyQuery 类的构造函数 `PyQuery(*args, **kwargs)` 可以从字符串、lxml 文档、文件和 url 中加载 xml 文档:
+PyQuery 类的构造函数 `PyQuery(*args, **kwargs)` 可以从字符串、`bytes` 对象、lxml 文档、文件和 url 中加载 xml 文档:
 
 ```python
 >>> from pyquery import PyQuery as pq
@@ -267,7 +269,7 @@ PyQuery 类的构造函数 `PyQuery(*args, **kwargs)` 可以从字符串、lxml 
 
 建议在构造函数 `PyQuery()` 中手动设置解析器。🧀
 
-默认情况下，PyQuery 会优先使用 lxml 的 xml 解析器进行解析。如果 xml 解析器解析失败，才会尝试使用 lxml.html 的 html 解析器进行解析。在解析 xhtml 页面时，xml 解析器有时出现问题，虽然解析器不会抛出异常，但由解析器提供的树将不可用(on w3c.org for example)。
+默认情况下，PyQuery 会优先使用 lxml 的 xml 解析器进行解析。如果 xml 解析器解析失败，才会尝试使用 lxml.html 的 html 解析器进行解析。在解析 xhtml 页面时，xml 解析器有时出现问题，虽然解析器不会抛出异常，但由解析器提供的树将不可用。
 
 构造函数 `PyQuery()` 在解析文档时，解析库的选择遵循以下规则(详见源代码):
 

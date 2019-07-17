@@ -1,6 +1,7 @@
 # super
 
-[TOC]
+> GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库。
+> 欢迎任何形式的转载，但请务必注明出处。
 
 ## 调用父类中的方法
 
