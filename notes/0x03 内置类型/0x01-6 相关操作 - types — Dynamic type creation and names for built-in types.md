@@ -1,4 +1,4 @@
-# types — 动态类型创建和内置类型的名称
+# types — 为内置类型创建动态类型和名称
 
 types — Dynamic type creation and names for built-in types
 
