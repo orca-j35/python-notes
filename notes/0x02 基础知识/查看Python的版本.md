@@ -24,3 +24,9 @@ sys.version_info
 #> sys.version_info(major=3, minor=7, micro=2, releaselevel='final', serial=0)
 ```
 
+查看 pip 版本信息:
+
+```shell
+$ pip --version
+```
+

@@ -63,7 +63,7 @@ URL 解析函数可分为以下几类:
 - 拼接函数:
   - [urljoin()](#urljoin())
 
-### urlparse()
+### urlparse()🔨
 
 🔨 urllib.parse.urlparse(*urlstring*, *scheme=*'', *allow_fragments=True*)
 
@@ -186,7 +186,7 @@ urlparse('help/Python.html')
 
 *Changed in version 3.7.3:* Characters that affect netloc parsing under NFKC normalization will now raise [`ValueError`](https://docs.python.org/3/library/exceptions.html#ValueError).
 
-### urlsplit()
+### urlsplit()🔨
 
 🔨 urllib.parse.urlsplit(*urlstring*, *scheme*='', *allow_fragments*=True)
 
@@ -234,7 +234,7 @@ Characters in the `netloc` attribute that decompose under NFKC normalization (as
 
 *Changed in version 3.7.3:* Characters that affect netloc parsing under NFKC normalization will now raise [`ValueError`](https://docs.python.org/3/library/exceptions.html#ValueError).
 
-### urldefrag()
+### urldefrag()🔨
 
 🔨 urllib.parse.urldefrag(*url*)
 
@@ -264,7 +264,7 @@ print(d.geturl()) #> http://netloc/path;param?query=arg#frag
 
 *Changed in version 3.2:* Result is a structured object rather than a simple 2-tuple.
 
-### parse_qs()
+### parse_qs()🔨
 
 🔨 urllib.parse.parse_qs(*qs*, *keep_blank_values*=False, *strict_parsing*=False, *encoding*='utf-8', *errors*='replace', *max_num_fields*=None)
 
@@ -315,7 +315,7 @@ print(parse_qs(encoded))
   #> ValueError: Max number of fields exceeded
   ```
 
-### parse_qsl()
+### parse_qsl()🔨
 
 🔨 urllib.parse.parse_qsl(*qs*, *keep_blank_values*=False, *strict_parsing*=False, *encoding*='utf-8', *errors*='replace', *max_num_fields*=None)
 
@@ -337,7 +337,7 @@ print(parse_qsl(encoded))
 
 *Changed in version 3.7.2:* Added *max_num_fields* parameter.
 
-### .geturl()
+### .geturl()🔨
 
 `geturl()` 方法用于逆解析 URL，以下对象均具备该方法:
 
@@ -358,7 +358,7 @@ PARSED: http://netloc/path;param?query=arg#frag
 '''
 ```
 
-### urlunparse()
+### urlunparse()🔨
 
 🔨 urllib.parse.urlunparse(*parts*)
 
@@ -386,7 +386,7 @@ print(urlunparse(parsed))
 #> http://netloc/path
 ```
 
-### urlunsplit()
+### urlunsplit()🔨
 
 🔨 urllib.parse.urlunsplit(*parts*)
 
@@ -416,7 +416,7 @@ print(urlunsplit(parsed))
 
 
 
-### urljoin()
+### urljoin()🔨
 
 🔨 urllib.parse.urljoin(*base*, *url*, *allow_fragments*=True)
 
@@ -616,7 +616,7 @@ https://cn.bing.com/search?q=鲸+鱼
 https://cn.bing.com/search?q=%E9%B2%B8+%E9%B1%BC
 ```
 
-### quote()
+### quote()🔨
 
 🔨 urllib.parse.quote(*string*, *safe*='/', *encoding*=None, *errors*=None)
 
@@ -665,7 +665,7 @@ quote_from_bytes(string.encode(encoding, errors), safe)
 
 - *encoding* 和 *errors* - 用于设置如何处理 non-ASCII 字符，使用方法和 [`str.encode()`](https://docs.python.org/3/library/stdtypes.html#str.encode) 类似。*encoding* 的默认值是 `'utf-8'`；*eorrs* 的默认值是 `'strict'`(在遇到不支持的字符时，会抛出 [`UnicodeEncodeError`](https://docs.python.org/3/library/exceptions.html#UnicodeEncodeError))。当 *string* 的实参属于 `bytes` 类型时，不支持 *encoding* 和 *errors* 参数，强行使用这两个参数的话，会抛出 [`TypeError`](https://docs.python.org/3/library/exceptions.html#TypeError)。
 
-### quote_plus
+### quote_plus()🔨
 
 🔨 urllib.parse.quote_plus(*string*, *safe*='', *encoding*=None, *errors*=None)
 
@@ -694,7 +694,7 @@ https://cn.bing.com/search?q=%E9%B2%B8+%E9%B1%BC
 
 Note: *safe* 的默认值是 `''`
 
-### quote_from_bytes
+### quote_from_bytes()🔨
 
 🔨 urllib.parse.quote_from_bytes(*bytes*, *safe*='/')
 
@@ -707,7 +707,7 @@ quote(string, safe, encoding, errors)
 quote_from_bytes(string.encode(encoding, errors), safe)
 ```
 
-### unquote
+### unquote()🔨
 
 🔨 urllib.parse.unquote(*string*, *encoding*='utf-8', *errors*='replace')
 
@@ -726,7 +726,7 @@ print(unquote('http%3A//localhost%3A8080/%7Ehellmann/'))
 - *string* - 必须是 `str`
 - *encoding* 和 *errors* - 用于设置将百分比编码(*percent*-*encoded*)序列的解码方案，使用方法和 [`bytes.decode()`](https://docs.python.org/3/library/stdtypes.html#bytes.decode) 类似。依照给定的解码方案，可以将百分比编码序列解码为 Unicode 字符。由于 *error* 的默认值是 `replace`，因此会将无效序列替换为占位符(*placeholder*)。
 
-### unquote_plus
+### unquote_plus()🔨
 
 🔨 urllib.parse.unquote_plus(*string*, *encoding*='utf-8', *errors*='replace')
 
@@ -742,7 +742,7 @@ print(unquote_plus('http%3A%2F%2Flocalhost%3A8080%2F%7Ehellmann%2F'))
 
 需使用该方法来 unquote 已引用的 HTML 表单值。
 
-### unquote_to_bytes
+### unquote_to_bytes()🔨
 
 🔨 urllib.parse.unquote_to_bytes(*string*)
 
@@ -756,7 +756,7 @@ print(unquote_to_bytes('a%26%EF'))
 
 *string* 可以是 `str` 或 `bytes`。如果 *string* 是 `str` 类型，则会将 *string* 中的未转义的 non-ASCII 字符编码为 UTF-8 字节。
 
-### urlencode
+### urlencode()🔨
 
 🔨 urllib.parse.urlencode(*query*, *doseq*=False, *safe*='', *encoding*=None, *errors*=None, *quote_via*=quote_plus)
 

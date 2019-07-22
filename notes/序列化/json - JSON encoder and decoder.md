@@ -5,6 +5,8 @@
 >
 > - [`json` — JSON encoder and decoder](https://docs.python.org/3/library/json.html)
 > - https://pymotw.com/3/json/index.html
+> - https://codingpy.com/books/thinkpython2/14-files.html
+> - https://codingpy.com/books/thinkpython2/14-files.html
 
 ## 概述
 
@@ -14,7 +16,7 @@
 
 - 
 
-序列化是指将内存中的对象变为可存储(或可传输)的对象的过程。
+
 
 
 
@@ -22,7 +24,7 @@
 
 不同之处在于 JSON 基于文本，而 pickle 基于二进制模式。
 
-### JSON
+### JavaScript 与 JSON
 
 > [JSON (JavaScript Object Notation - JavaScript 对象标记)](http://json.org/), specified by [**RFC 7159**](https://tools.ietf.org/html/rfc7159.html) (which obsoletes [**RFC 4627**](https://tools.ietf.org/html/rfc4627.html)) and by [ECMA-404](http://www.ecma-international.org/publications/standards/Ecma-404.htm), is a lightweight data interchange format inspired by [JavaScript](https://en.wikipedia.org/wiki/JavaScript) object literal syntax (although it is not a strict subset of JavaScript [1](https://docs.python.org/3/library/json.html#rfc-errata) ).
 
