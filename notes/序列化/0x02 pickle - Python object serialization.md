@@ -4,12 +4,25 @@
 > 参考:
 >
 > - [`pickle`](https://docs.python.org/3/library/pickle.html#module-pickle) — Python object serialization
-> - https://pymotw.com/3/pickle/index.html
 > - https://codingpy.com/books/thinkpython2/14-files.html
+> 
+>扩展阅读:
+> 
+>- Module [`copyreg`](https://docs.python.org/3/library/copyreg.html#module-copyreg) - Pickle interface constructor registration for extension types.
+> - Module [`pickletools`](https://docs.python.org/3/library/pickletools.html#module-pickletools) - Tools for working with and analyzing pickled data.
+> - Module [`shelve`](https://docs.python.org/3/library/shelve.html#module-shelve) - Indexed databases of objects; uses [`pickle`](https://docs.python.org/3/library/pickle.html#module-pickle).
+> - Module [`copy`](https://docs.python.org/3/library/copy.html#module-copy) - Shallow and deep object copying.
+> - Module [`marshal`](https://docs.python.org/3/library/marshal.html#module-marshal) - High-performance serialization of built-in types.
+
+在阅读完本笔记后，务必阅读下述材料:
+
+- https://pymotw.com/3/pickle/index.html 🧀
+
+
+
+## 概述
 
 `pickle` 模块实现了序列化(*serializing*)和返序列化(*de-serializing*) Python 对象的二进制协议。Pickling 是指将 Python 对象的层次结构转换为字节流的过程，unpickling 是 pickling 的反向操作，用于将字节流(来自 [binary file](https://docs.python.org/3/glossary.html#term-binary-file) 或 [bytes-like object](https://docs.python.org/3/glossary.html#term-bytes-like-object))转换为 Python 对象。Pickling (和 unpickling) 在其它编程语言中也被称为 serialization、marshalling、flattening。为了避免术语之间的混淆，本文将使用术语 pickling 和 unpickling。
-
-
 
 > ⚠ The [`pickle`](https://docs.python.org/3/library/pickle.html#module-pickle) module is not secure against erroneous or maliciously constructed data. Never unpickle data received from an untrusted or unauthenticated source.
 >
@@ -75,6 +88,38 @@ pickle 协议和 [JSON (JavaScript Object Notation)](http://json.org/) 主要存
 > ⚠ Serialization is a more primitive notion than persistence; although [`pickle`](https://docs.python.org/3/library/pickle.html#module-pickle) reads and writes file objects, it does not handle the issue of naming persistent objects, nor the (even more complicated) issue of concurrent access to persistent objects. The [`pickle`](https://docs.python.org/3/library/pickle.html#module-pickle)module can transform a complex object into a byte stream and it can transform the byte stream into an object with the same internal structure. Perhaps the most obvious thing to do with these byte streams is to write them onto a file, but it is also conceivable to send them across a network or store them in a database. 
 
  [`shelve`](https://docs.python.org/3/library/shelve.html#module-shelve) 模块为在 DBM-style 数据库文件中 pickle 和 unpickle 对象提供了一个简单的接口。
+
+## 性能
+
+新版的 pcikle 协议(protocol 2 及之后的协议)具有针对若干常见功能和内置类型的高效二进制编码。此外，pickle 模块有一个用 C 编写的透明优化器。
+
+示例 - 对于简单的代码可使用 `dump()` 和 `load()` 函数:
+
+```python
+import pickle
+
+# An arbitrary collection of objects supported by pickle.
+data = {
+    'a': [1, 2.0, 3, 4+6j],
+    'b': ("character string", b"byte string"),
+    'c': {None, True, False}
+}
+
+with open('data.pickle', 'wb') as f:
+    # Pickle the 'data' dictionary using the highest protocol available.
+    pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+```
+
+示例 - 从文件中读取二进制数据，并 unpickle:
+
+```python
+import pickle
+
+with open('data.pickle', 'rb') as f:
+    # The protocol version used is detected automatically, so we do not
+    # have to specify it.
+    data = pickle.load(f)
+```
 
 ## 模块接口
 
@@ -241,17 +286,17 @@ Error raised when there is a problem unpickling an object, such as a data corrup
 
 `Pickle` 实例的功能是向 *file* 写入 pickle 数据流。
 
-参数说明:
+**参数说明:**
 
 - The optional *protocol* argument, an integer, tells the pickler to use the given protocol; supported protocols are 0 to [`HIGHEST_PROTOCOL`](https://docs.python.org/3/library/pickle.html#pickle.HIGHEST_PROTOCOL). If not specified, the default is [`DEFAULT_PROTOCOL`](https://docs.python.org/3/library/pickle.html#pickle.DEFAULT_PROTOCOL). If a negative number is specified, [`HIGHEST_PROTOCOL`](https://docs.python.org/3/library/pickle.html#pickle.HIGHEST_PROTOCOL) is selected.
 - The *file* argument must have a write() method that accepts a single bytes argument. It can thus be an on-disk file opened for binary writing, an [`io.BytesIO`](https://docs.python.org/3/library/io.html#io.BytesIO) instance, or any other custom object that meets this interface.
 - If *fix_imports* is true and *protocol* is less than 3, pickle will try to map the new Python 3 names to the old module names used in Python 2, so that the pickle data stream is readable with Python 2.
 
-属性:(详见 https://docs.python.org/3/library/pickle.html#pickle.Pickler)
+**属性:**
 
 - dump(*obj*) - 将 *obj* 序列化后写入 *file*
 
-- persistent_id(*obj*) - 在调用 `dump()` 方法时，会自动调用此方法。
+- persistent_id(*obj*) - 在调用 `dump()` 方法时，会自动调用此方法，以便引用持久化的外部对象。
 
   > Do nothing by default. This exists so a subclass can override it.
   >
@@ -259,9 +304,13 @@ Error raised when there is a problem unpickling an object, such as a data corrup
   >
   > See [Persistence of External Objects](https://docs.python.org/3/library/pickle.html#pickle-persistent) for details and examples of uses.
 
-- dispatch_table
+  详见: [引用持久化的外部对象](#引用持久化的外部对象)
+
+- dispatch_table - 引入私有调度表，以便处理特定类型的对象，参考 [Dispatch Tables](#Dispatch Tables)
 
 - fast - 已废弃
+
+详见 https://docs.python.org/3/library/pickle.html#pickle.Pickler)
 
 
 
@@ -273,12 +322,12 @@ Error raised when there is a problem unpickling an object, such as a data corrup
 
 会自动检测 pickle 协议的版本，因此不再需要 *protocol* 参数。
 
-参数说明:
+**参数说明:**
 
 - The argument *file* must have two methods, a read() method that takes an integer argument, and a readline() method that requires no arguments. Both methods should return bytes. Thus *file* can be an on-disk file object opened for binary reading, an [`io.BytesIO`](https://docs.python.org/3/library/io.html#io.BytesIO) object, or any other custom object that meets this interface.
 - Optional keyword arguments are *fix_imports*, *encoding* and *errors*, which are used to control compatibility support for pickle stream generated by Python 2. If *fix_imports* is true, pickle will try to map the old Python 2 names to the new names used in Python 3. The *encoding* and *errors* tell pickle how to decode 8-bit string instances pickled by Python 2; these default to ‘ASCII’ and ‘strict’, respectively. The *encoding* can be ‘bytes’ to read these 8-bit string instances as bytes objects.
 
-属性:(详见 https://docs.python.org/3/library/pickle.html#pickle.Unpickler)
+**属性:**
 
 - load() - 将 *file* 中的二进制内容逆序列化为 Python 对象，会自动检测 Python 对象经 pickle 后的二进制数据的长度，多余的二进制数据将被忽略:
 
@@ -290,11 +339,15 @@ Error raised when there is a problem unpickling an object, such as a data corrup
   >
   > See [Persistence of External Objects](https://docs.python.org/3/library/pickle.html#pickle-persistent) for details and examples of uses.
 
+  详见: [引用持久化的外部对象](#引用持久化的外部对象)
+
 - find_class(*module*, *name*)
 
   > Import *module* if necessary and return the object called *name* from it, where the *module* and *name* arguments are [`str`](https://docs.python.org/3/library/stdtypes.html#str) objects. Note, unlike its name suggests, [`find_class()`](https://docs.python.org/3/library/pickle.html#pickle.Unpickler.find_class) is also used for finding functions.
   >
   > Subclasses may override this to gain control over what type of objects and how they can be loaded, potentially reducing security risks. Refer to [Restricting Globals](https://docs.python.org/3/library/pickle.html#pickle-restrict) for details.
+
+详见 https://docs.python.org/3/library/pickle.html#pickle.Unpickler
 
 ## 可pickle的类型
 
@@ -323,12 +376,12 @@ Error raised when there is a problem unpickling an object, such as a data corrup
 >
 > ```python
 > def save(obj):
->     return (obj.__class__, obj.__dict__)
+>        return (obj.__class__, obj.__dict__)
 > 
 > def load(cls, attributes):
->     obj = cls.__new__(cls)
->     obj.__dict__.update(attributes)
->     return obj
+>        obj = cls.__new__(cls)
+>        obj.__dict__.update(attributes)
+>        return obj
 > ```
 
 可以在类中提供一个或多个特殊方法来改变 pickled/unpickled 的默认行为:
@@ -342,11 +395,295 @@ Error raised when there is a problem unpickling an object, such as a data corrup
 
 详见: https://docs.python.org/3/library/pickle.html#pickling-class-instances
 
-### 外部对象的持久化
+### 引用持久化的外部对象
 
-pickle 模块支持引用 pickle 数据流之外的对象，我们可利用 persisten ID 来引用外部对象，
+Persistence of External Objects
+
+> 参考: https://docs.python.org/3/library/pickle.html#persistence-of-external-objects
+
+在使用 pickle 模块时，我们可利用 persisten ID 来引用位于 pickle 数据流外部的对象。persisten ID 可以是由字母和数字组成的字符串(仅限 protocol 0)，也可以是任何 Python 对象(需使用较新的 protocol)。
+
+解析 persistent ID 的工作并不是由 pickle 模块定义的，我们需要将解析工作分别委托给 pickler 的[`persistent_id()`](https://docs.python.org/3/library/pickle.html#pickle.Pickler.persistent_id) 方法和 unpickler 的 [`persistent_load()`](https://docs.python.org/3/library/pickle.html#pickle.Unpickler.persistent_load) 来完成。
+
+在 pickle 具备 persistent ID 的 Python 对象时，pickler 必须具备自定的 `persistent_id()` 方法，并以 Python 对象为参数，返回值是 `None` 或该对象的 persistent ID。当返回值是 `None` 时，pickler 会以默认方式 pickle 输入对象；当返回值是输入对象的 persistent ID 时，pickler 会将输入对象和标记 ID 一同 pickle，以便 unpickler 可能够识别到 persistent ID。在调用 `pickler.dump()` 时，会自动调用 `persistent_id()`。
+
+在 unpickle 外部对象时，unpickler 必须具有自定的 `persistent_load()` 方法，该方法以 persistent ID 为输入参数，并返回引用的对象，并且 `unpickler.load()` 的会将该对象作为返回值。如果二进制数据包含 persistent ID，则会在调用 `unpickler.load()` 时，会自动调用 `persistent_load()`；如果二进制数据不包含 persistent ID，则不会调用 `persistent_load()`。
+
+下面这是示例展示了如何使用 persistent ID 来引用 pickle 数据流外部的对象:
+
+```python
+import pickle
+import sqlite3
+from collections import namedtuple
+
+# Simple class representing a record in our database.
+MemoRecord = namedtuple("MemoRecord", "key, task")
 
 
+class DBPickler(pickle.Pickler):
+    def persistent_id(self, obj):
+        # 在调用self.dump()时，会自动调用该方法
+        # Instead of pickling MemoRecord as a regular class instance,
+        # we emit a persistent ID.
+        if isinstance(obj, MemoRecord):
+            # Here, our persistent ID is simply a tuple, containing a tag and a
+            # key, which refers to a specific record in the database.
+            return ("MemoRecord", obj.key)
+        else:
+            # If obj does not have a persistent ID, return None. 
+            # This means obj needs to be pickled as usual.
+            return None
 
 
+class DBUnpickler(pickle.Unpickler):
+    def __init__(self, file, connection):
+        super().__init__(file)
+        self.connection = connection
 
+    def persistent_load(self, pid):
+        # 在调用self.load()时，会自动调用该方法
+        # This method is invoked whenever a persistent ID is encountered.
+        # Here, pid is the tuple returned by DBPickler.
+        cursor = self.connection.cursor()
+        type_tag, key_id = pid
+        if type_tag == "MemoRecord":
+            # Fetch the referenced record from the database and return it.
+            # 引用持久化的外部数据
+            cursor.execute("SELECT * FROM memos WHERE key=?", (str(key_id), ))
+            key, task = cursor.fetchone()
+            return MemoRecord(key, task)
+        else:
+            # Always raises an error if you cannot return the correct object.
+            # Otherwise, the unpickler will think None is the object referenced
+            # by the persistent ID.
+            raise pickle.UnpicklingError("unsupported persistent object")
+
+
+def main():
+    import io
+    import pprint
+
+    # Initialize and populate our database.
+    conn = sqlite3.connect(":memory:")
+    cursor = conn.cursor()
+    cursor.execute("CREATE TABLE memos(key INTEGER PRIMARY KEY, task TEXT)")
+    tasks = (
+        'give food to fish',
+        'prepare group meeting',
+        'fight with a zebra',
+    )
+    for task in tasks:
+        cursor.execute("INSERT INTO memos VALUES(NULL, ?)", (task, ))
+
+    # Fetch the records to be pickled.
+    cursor.execute("SELECT * FROM memos")
+    memos = [MemoRecord(key, task) for key, task in cursor]
+    # Save the records using our custom DBPickler.
+    file = io.BytesIO()
+    DBPickler(file).dump(memos)
+
+    print("Pickled records:")
+    pprint.pprint(memos)
+
+    # Update a record, just for good measure.
+    cursor.execute("UPDATE memos SET task='learn italian' WHERE key=1")
+
+    # Load the records from the pickle data stream.
+    file.seek(0)
+    memos = DBUnpickler(file, conn).load()
+
+    print("Unpickled records:")
+    pprint.pprint(memos)
+
+
+if __name__ == '__main__':
+    main()
+```
+
+输出:
+
+```
+Pickled records:
+[MemoRecord(key=1, task='give food to fish'),
+ MemoRecord(key=2, task='prepare group meeting'),
+ MemoRecord(key=3, task='fight with a zebra')]
+Unpickled records:
+[MemoRecord(key=1, task='learn italian'),
+ MemoRecord(key=2, task='prepare group meeting'),
+ MemoRecord(key=3, task='fight with a zebra')]
+```
+
+### Dispatch Tables
+
+> 参考: https://docs.python.org/3/library/pickle.html#id5
+
+如果想要自定义某些类的 pickling 过程，同时不像其它对象的 pickling 过程，便可以使用私有调度表(*private* *dispatch* *table*)。
+
+示例 - 在源代码中用于处理 `bool` 类型的 pickling 函数如下:
+
+```python
+def save_bool(self, obj):
+    if self.proto >= 2:
+        self.write(NEWTRUE if obj else NEWFALSE)
+        else:
+            self.write(TRUE if obj else FALSE)
+dispatch[bool] = save_bool
+# save_bool函数会被添加到pickler内建的调度表dispatch中,
+# 每当需要pickling bool类型时,便会调用此方法
+```
+
+> The global dispatch table managed by the [`copyreg`](https://docs.python.org/3/library/copyreg.html#module-copyreg) module is available as `copyreg.dispatch_table`. Therefore, one may choose to use a modified copy of `copyreg.dispatch_table` as a private dispatch table.
+
+示例 - 添加私有调度表:
+
+```python
+f = io.BytesIO()
+p = pickle.Pickler(f)
+p.dispatch_table = copyreg.dispatch_table.copy()
+p.dispatch_table[SomeClass] = reduce_SomeClass
+# SomeClass表示某个类,reduce_SomeClass表示pickling该类的实例的方法
+```
+
+> creates an instance of [`pickle.Pickler`](https://docs.python.org/3/library/pickle.html#pickle.Pickler) with a private dispatch table which handles the `SomeClass` class specially. Alternatively, the code
+
+```python
+class MyPickler(pickle.Pickler):
+    dispatch_table = copyreg.dispatch_table.copy()
+    dispatch_table[SomeClass] = reduce_SomeClass
+f = io.BytesIO()
+p = MyPickler(f)
+```
+
+> does the same, but all instances of `MyPickler` will by default share the same dispatch table. The equivalent code using the [`copyreg`](https://docs.python.org/3/library/copyreg.html#module-copyreg) module is
+
+```python
+copyreg.pickle(SomeClass, reduce_SomeClass)
+f = io.BytesIO()
+p = pickle.Pickler(f)
+```
+
+### Handling Stateful Objects
+
+本节讲述了如何处理具备状态信息的对象。
+
+> Here’s an example that shows how to modify pickling behavior for a class. The `TextReader`class opens a text file, and returns the line number and line contents each time its `readline()` method is called. If a `TextReader` instance is pickled, all attributes *except* the file object member are saved. When the instance is unpickled, the file is reopened, and reading resumes from the last location. The [`__setstate__()`](https://docs.python.org/3/library/pickle.html#object.__setstate__) and [`__getstate__()`](https://docs.python.org/3/library/pickle.html#object.__getstate__) methods are used to implement this behavior.
+
+```python
+class TextReader:
+    """Print and number lines in a text file."""
+
+    def __init__(self, filename):
+        self.filename = filename
+        self.file = open(filename)
+        self.lineno = 0
+
+    def readline(self):
+        self.lineno += 1
+        line = self.file.readline()
+        if not line:
+            return None
+        if line.endswith('\n'):
+            line = line[:-1]
+        return "%i: %s" % (self.lineno, line)
+
+    def __getstate__(self):
+        # Copy the object's state from self.__dict__ which contains
+        # all our instance attributes. Always use the dict.copy()
+        # method to avoid modifying the original state.
+        state = self.__dict__.copy()
+        # Remove the unpicklable entries.
+        del state['file']
+        return state
+
+    def __setstate__(self, state):
+        # Restore instance attributes (i.e., filename and lineno).
+        self.__dict__.update(state)
+        # Restore the previously opened file's state. To do so, we need to
+        # reopen it and read from it until the line count is restored.
+        file = open(self.filename)
+        for _ in range(self.lineno):
+            file.readline()
+        # Finally, save the file.
+        self.file = file
+```
+
+> A sample usage might be something like this:
+
+```python
+>>> reader = TextReader("hello.txt")
+>>> reader.readline()
+'1: Hello world!'
+>>> reader.readline()
+'2: I am line number two.'
+>>> new_reader = pickle.loads(pickle.dumps(reader))
+>>> new_reader.readline()
+'3: Goodbye!'
+```
+
+## Restricting Globals
+
+> 参考: https://docs.python.org/3/library/pickle.html#restricting-globals
+
+在 unpickling 时，限制其对全局符号表的改动。
+
+By default, unpickling will import any class or function that it finds in the pickle data. For many applications, this behaviour is unacceptable as it permits the unpickler to import and invoke arbitrary code. Just consider what this hand-crafted pickle data stream does when loaded:
+
+```python
+>>> import pickle
+>>> pickle.loads(b"cos\nsystem\n(S'echo hello world'\ntR.")
+hello world
+0
+```
+
+In this example, the unpickler imports the [`os.system()`](https://docs.python.org/3/library/os.html#os.system) function and then apply the string argument “echo hello world”. Although this example is inoffensive, it is not difficult to imagine one that could damage your system.
+
+For this reason, you may want to control what gets unpickled by customizing[`Unpickler.find_class()`](https://docs.python.org/3/library/pickle.html#pickle.Unpickler.find_class). Unlike its name suggests, [`Unpickler.find_class()`](https://docs.python.org/3/library/pickle.html#pickle.Unpickler.find_class) is called whenever a global (i.e., a class or a function) is requested. Thus it is possible to either completely forbid globals or restrict them to a safe subset.
+
+Here is an example of an unpickler allowing only few safe classes from the [`builtins`](https://docs.python.org/3/library/builtins.html#module-builtins) module to be loaded:
+
+```python
+import builtins
+import io
+import pickle
+
+safe_builtins = {
+    'range',
+    'complex',
+    'set',
+    'frozenset',
+    'slice',
+}
+
+class RestrictedUnpickler(pickle.Unpickler):
+
+    def find_class(self, module, name):
+        # Only allow safe classes from builtins.
+        if module == "builtins" and name in safe_builtins:
+            return getattr(builtins, name)
+        # Forbid everything else.
+        raise pickle.UnpicklingError("global '%s.%s' is forbidden" %
+                                     (module, name))
+
+def restricted_loads(s):
+    """Helper function analogous to pickle.loads()."""
+    return RestrictedUnpickler(io.BytesIO(s)).load()
+```
+
+A sample usage of our unpickler working has intended:
+
+```python
+>>> restricted_loads(pickle.dumps([1, 2, range(15)]))
+[1, 2, range(0, 15)]
+>>> restricted_loads(b"cos\nsystem\n(S'echo hello world'\ntR.")
+Traceback (most recent call last):
+  ...
+pickle.UnpicklingError: global 'os.system' is forbidden
+>>> restricted_loads(b'cbuiltins\neval\n'
+...                  b'(S\'getattr(__import__("os"), "system")'
+...                  b'("echo hello world")\'\ntR.')
+Traceback (most recent call last):
+  ...
+pickle.UnpicklingError: global 'builtins.eval' is forbidden
+```
+
+As our examples shows, you have to be careful with what you allow to be unpickled. Therefore if security is a concern, you may want to consider alternatives such as the marshalling API in [`xmlrpc.client`](https://docs.python.org/3/library/xmlrpc.client.html#module-xmlrpc.client) or third-party solutions.
