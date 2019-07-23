@@ -1,7 +1,7 @@
 # 元类_Metaclasses
 
-[TOC]
-
+> GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
+>
 > 本文的目标是讨论如何使用自定义元类。由于自定义元类总继承自 `type`，且 `type` 只能构造新式类，所以自定元类也只能构造新式类。因此，本文仅针对新式类展开，不涉及旧式类。强调一点，本文中提到的"类"均指"新式类"。如果想了解新式类和旧式类的差异，可阅读笔记 [Old-Style vs. New-Style Classes](Old-Style vs. New-Style Classes.md) 
 >
 > 由于 Python 2 中同时存在新式类和旧式类，容易造成混淆。所以文本基于 Python 3 展开。
