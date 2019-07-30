@@ -51,6 +51,15 @@ JSON 示例:
 
 对象和数组可以以任意方式进行嵌套。
 
+在 JSON 中以下内容只能被包裹在双引号中，否则 `json.loads()` / `json.load()` 会抛出异常:
+
+- JSON 对象(`{}`)的属性 key 
+- JSON 字符串          
+
+JSON 对象(`{}`)的属性 key 只能由双引号包裹，JSON 字符串也只能使用双引号包裹，否则 `json.loads()` / `json.load()` 会抛出异常。
+
+
+
 ## 基本用法
 
 ### json.dump()🔨
@@ -104,6 +113,35 @@ False
 *skipkeys* - 假如 *obj* 内含 `dict` 对象，并且 `dict` 中的某些键属于非基本类型(keys must be `str`, `int`, `float`, `bool` or `None`, not `tuple`)，可使用 *skipkeys* 表明是否跳过这些非基本类型的键。
 
 > If *skipkeys* is true (default: `False`), then dict keys that are not of a basic type ([`str`](https://docs.python.org/3/library/stdtypes.html#str), [`int`](https://docs.python.org/3/library/functions.html#int), [`float`](https://docs.python.org/3/library/functions.html#float), [`bool`](https://docs.python.org/3/library/functions.html#bool), `None`) will be skipped instead of raising a [`TypeError`](https://docs.python.org/3/library/exceptions.html#TypeError).
+
+```python
+import json
+
+data = [{'a': 'A', 'b': (2, 4), 'c': 3.0, ('d', ): 'D tuple'}]
+
+print('First attempt')
+try:
+    print(json.dumps(data))
+except TypeError as err:
+    print('ERROR:', err)
+
+print()
+print('Second attempt')
+# 结果中不会包含被跳过的键值对
+print(json.dumps(data, skipkeys=True))
+```
+
+输出:
+
+```
+First attempt
+ERROR: keys must be str, int, float, bool or None, not tuple
+
+Second attempt
+[{"a": "A", "b": [2, 4], "c": 3.0}]
+```
+
+
 
 #### ensure_ascii📌
 
