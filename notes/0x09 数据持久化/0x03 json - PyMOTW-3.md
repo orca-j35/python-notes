@@ -2,6 +2,8 @@
 
 > GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
 >
+> 在阅读本文时，务必配合﹝0x03 json - JSON encoder and decoder.md﹞一起食用
+>
 > 参考:
 >
 > - https://pymotw.com/3/json/index.html
@@ -16,11 +18,9 @@
 > - [JavaScript Object Notation](http://json.org/) – JSON home, with documentation and implementations in other languages.
 > - [jsonpickle](http://code.google.com/p/jsonpickle/) – `jsonpickle` allows for any Python object to be serialized into JSON.
 
-在阅读本文时，务必配合﹝0x02 pickle - Python object serialization.md﹞一起食用
 
 
-
-**功能：**将 Python 对象编码为 JSON 字符串，或将 JSON 字符串解码为 Python 对象。
+**Purpose: **将 Python 对象编码为 JSON 字符串，或将 JSON 字符串解码为 Python 对象。
 
 `json` 模块的 API 与 `pickle` 模块类似，用于将内存中的 Python 对象转换为 JSON 序列。与 `pickle` 不同的是，JSON 具有以多种语言（尤其是 JavaScript）实现的优点。它在 REST API 中 Web 服务端和客户端之间的通信被广泛应用，同时对于应用程序间通信需求也很有用。
 
