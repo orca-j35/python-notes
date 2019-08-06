@@ -188,9 +188,9 @@ print('dumps(data, separators):', len(with_separators))
 
 > 另见笔记﹝0x02 pickle - Python object serialization.md﹞
 
-JSON 字典中的 key 始终是字符串，将 Python `dict` 序列化为 JSON 字典时，在遇到以下类型的 Python key 时，会强制将这些 key 转换为字符串:
+JSON 字典中的 key 始终是字符串，将 Python `dict` 序列化为 JSON 字典时，在遇到以下类型的 Python key 时，会强制将以下 key 转换为字符串:
 
-- int, float, bool, None
+- `int`, `float`, `bool`, `None`
 
 ```python
 >>> d = {'a': '--', 23: '--', True: '--', None: '--'}
@@ -244,7 +244,7 @@ print(json.dumps(data, skipkeys=True))
 # [{"a": "A", "b": [2, 4], "c": 3.0}]
 ```
 
-不会引发异常，而是忽略非字符串键。
+此时，不会引发异常，而是忽略非字符串键。
 
 
 

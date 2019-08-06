@@ -1,6 +1,8 @@
 # csv - CSV File Reading and Writing
 > GitHub@[orca-j35](https://github.com/orca-j35)，所有笔记均托管于 [python_notes](https://github.com/orca-j35/python_notes) 仓库
 >
+> 在阅读本文时，请交叉参考﹝0x04 csv - PyMOTW-3.md﹞
+>
 > 参考:
 >
 > - https://docs.python.org/3.7/library/csv.html
@@ -16,6 +18,8 @@ CSV (Comma Separated Values) 格式是在电子表格和数据库中最常用的
 `csv` 模块中实现了一个使用 CSV 格式读取和写入表格数据的类。该类允许程序员"以 Excel 首选格式编辑数据"或"从 Excel 生成的文件中读取数据"，并且程序员不需要知道 Excel 所使用的 CSV 格式的精确细节。程序员同样可以处理其它应用程序理解的 CSV 格式，也可定义自己专用 CSV 格式。
 
 当我们需要读写序列时，可使用 `reader` 和 `writer` 对象；当我们需要以字典形式读写数据时，可使用 `DictReader` 和 `DictWriter` 类
+
+除了 `csv` 模块，还可以使用 `pandas` 等库来读写 CSV 文件。
 
 ## 函数
 
@@ -647,7 +651,9 @@ reader 对象在读取内容时，会将所有未引用的字段转换为 `float
 
 writer 对象在向文件写入内容时，永远不会对任何字段进行引用。如果某个输出字段中包含 *delimiter* (分隔符)，会在 *delimiter* 前方添加 *escapechar* 字符。如果需要使用 *escapechar*，但并未设置 *escapechar*，则会抛出 [`Error`](https://docs.python.org/3.7/library/csv.html#csv.Error)。
 
-reader 对象在读取内容时，不会对引用字符执行任何特殊处理。
+reader 对象在读取内容时，不会对引用字符执行任何特殊处理，返回的字段中会包含引用字符。
+
+
 
 ## 异常
 

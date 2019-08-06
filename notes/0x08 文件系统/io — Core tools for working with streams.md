@@ -115,7 +115,7 @@ IOBase
 
 ### I/O Base Classes
 
-#### 📐 IOBase
+#### IOBase🛠
 
 class io.IOBase
 
@@ -151,7 +151,7 @@ class io.IOBase
 
 - `__del__`() - 用于销毁对象，`IOBase` 为该方法提供默认实现——调用实例的 `close()` 方法
 
-#### 📐 RawIOBase
+#### RawIOBase🛠
 
 class io.RawIOBase
 
@@ -167,7 +167,7 @@ class io.RawIOBase
 
 - write(*b*)
 
-#### 📐 BufferedIOBase
+#### BufferedIOBase🛠
 
 class io.BufferedIOBase
 
@@ -193,7 +193,7 @@ A typical [`BufferedIOBase`](https://docs.python.org/3.7/library/io.html#io.Buff
 
 ### Raw File I/O
 
-#### 📐 FileIO
+#### FileIO🛠
 
 🔨 *class* io.FileIO(*name*, *mode='r'*, *closefd=True*, *opener=None*)
 
@@ -209,7 +209,7 @@ A typical [`BufferedIOBase`](https://docs.python.org/3.7/library/io.html#io.Buff
 
 Buffered I/O 流为 I/O 设备提供了比 raw I/O 更高级别的接口。
 
-#### 📐 BytesIO
+#### BytesIO🛠
 
 🔨 *class* io.BytesIO([*initial_bytes*])
 
@@ -264,7 +264,7 @@ b'orca\xe9\x80\x86\xe6\x88\x9f\xe9\xb2\xb8'
 >>> b_io.close() # 使用完毕后，同样需要关闭
 ```
 
-#### 📐 BufferedReader
+#### BufferedReader🛠
 
 *class* io.BufferedReader(*raw*, *buffer_size=DEFAULT_BUFFER_SIZE*)
 
@@ -279,7 +279,7 @@ b'orca\xe9\x80\x86\xe6\x88\x9f\xe9\xb2\xb8'
 
 - read1([*size*]) 
 
-#### 📐 BufferedWriter
+#### BufferedWriter🛠
 
 *class* io.BufferedWriter(*raw*, *buffer_size=DEFAULT_BUFFER_SIZE*)
 
@@ -289,13 +289,13 @@ b'orca\xe9\x80\x86\xe6\x88\x9f\xe9\xb2\xb8'
 
 - write(*b*)
 
-#### 📐 BufferedRandom
+#### BufferedRandom🛠
 
 *class* io.BufferedRandom(*raw*, *buffer_size=DEFAULT_BUFFER_SIZE*)
 
 A buffered interface to random access streams. It **inherits** [`BufferedReader`](https://docs.python.org/3.7/library/io.html#io.BufferedReader) and [`BufferedWriter`](https://docs.python.org/3.7/library/io.html#io.BufferedWriter), and further supports `seek()` and `tell()` functionality.
 
-#### 📐 BufferedRWPair
+#### BufferedRWPair🛠
 
 *class* io.BufferedRWPair(*reader*, *writer*, *buffer_size=DEFAULT_BUFFER_SIZE*)
 
@@ -303,7 +303,7 @@ A buffered I/O object combining two unidirectional [`RawIOBase`](https://docs.py
 
 ### Text I/O
 
-#### 📐 TextIOBase
+#### TextIOBase🛠
 
 *class* io.TextIOBase
 
@@ -333,7 +333,7 @@ A buffered I/O object combining two unidirectional [`RawIOBase`](https://docs.py
 
 - write(*s*) - 将字符串 *s* 写入流并返回写入的字符数。
 
-#### 📐 TextIOWrapper
+#### TextIOWrapper🛠
 
 🔨 *class* io.TextIOWrapper(*buffer*, *encoding=None*, *errors=None*, *newline=None*, *line_buffering=False*, *write_through=False*)
 
@@ -389,7 +389,7 @@ Inital value for read buffer with unicode characters ÁÇÊ
 
   New in version 3.7.
 
-#### 📐 StringIO
+#### StringIO🛠
 
 🔨 *class* io.StringIO(*initial_value=''*, *newline='\n'*)
 

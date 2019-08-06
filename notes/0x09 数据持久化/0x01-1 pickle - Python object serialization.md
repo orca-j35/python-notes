@@ -1100,7 +1100,7 @@ Unpickled records:
 
 > 参考: https://docs.python.org/3/library/pickle.html#id5
 
-如果想要自定义某些类的 pickling 过程，同时不像其它对象的 pickling 过程，便可以使用私有调度表(*private* *dispatch* *table*)。
+如果想要自定义某些类的 pickling 过程，同时不影响其它对象的 pickling 过程，便可以使用私有调度表(*private* *dispatch* *table*)。
 
 示例 - 在源代码中用于处理 `bool` 类型的 pickling 函数如下:
 
