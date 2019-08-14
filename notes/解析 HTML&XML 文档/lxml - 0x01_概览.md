@@ -41,7 +41,7 @@ lxml 提供各种操作 XML 的方式，比如读取、生成、修改、解析�
 conda install lxml
 ```
 
-Tips: 如果在使用 `pip` 安装时，如果提示缺少依赖库(如 libxml2)，则可采用 wheel 方式安装。在 https://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml 中下载需要的版本(如 Win64、Python3.6 需选择 lxml‑3.8.0‑cp36‑cp36m‑win_amd64.whl)，然后在本地安装 `.whl` 文件即可。
+Tips: 如果在使用 `pip` 安装时，提示缺少依赖库(如 libxml2)，可采用 wheel 方式安装缺少库。在 https://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml 中下载需要的版本(如 Win64、Python3.6 需选择 lxml‑3.8.0‑cp36‑cp36m‑win_amd64.whl)，然后在本地安装 `.whl` 文件即可。
 
 Note: lxml 库不仅包含 `etree` 模块，还包含 `html`、`cssselect` 等模块。另外，我们还可以在 `lxml.html` 的文档中看到 BeautifulSoup 和 html5lib 的身影:
 

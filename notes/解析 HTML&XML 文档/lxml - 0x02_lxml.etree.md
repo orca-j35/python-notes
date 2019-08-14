@@ -308,7 +308,7 @@ etree.get_default_parser()
 
 ## 解析 HTML
 
-[HTMLParser🛠](#HTMLParser🛠) 解析器支持解析(broken) HTML，它拥有一个名为 *recover* 关键字参数(默认值是 `True`)。当 `recover=True` 时，会产生如下效果:
+[HTMLParser🛠](#HTMLParser🛠) 解析器支持解析(*broken*) HTML，它拥有一个名为 *recover* 关键字参数(默认值是 `True`)。当 `recover=True` 时，会产生如下效果:
 
 - libxml2 会尽力返回一个有效的 HTML 树，在该树中包含了所有可解析的内容
 
@@ -345,9 +345,16 @@ print(result)
 >
 > Note that the result is a valid HTML tree, but it may not be a well-formed XML tree. For example, XML forbids double hyphens in comments, which the HTML parser will happily accept in recovery mode. Therefore, if your goal is to serialise an HTML document as an XML/XHTML document after parsing, you may have to apply some manual preprocessing first.
 
-## Python unicode 字符串
+
+
+## Python Unicode 字符串
 
 > 参考: [Python unicode strings](https://lxml.de/parsing.html#python-unicode-strings)
+>
+> 扩展阅读:
+>
+> - https://lxml.de/FAQ.html#why-can-t-lxml-parse-my-xml-from-unicode-strings
+> - https://lxml.de/FAQ.html#can-lxml-parse-from-file-objects-opened-in-unicode-text-mode
 
 `lxml.etree` 库与 `ElementTree` 库相比，前者对 Python Unicode 字符串提供了更广泛的支持。首先，在 `ElementTree` 因 Unicode 抛出异常的地方，`lxml.etree` 中的解析器可直接处理这些 Unicode。这对于使用 `XML()` 函数嵌入源代码中的 XML 片段最有帮助:
 
@@ -377,7 +384,66 @@ etree.tounicode(r)
 #> '<html><head><meta charset="utf-8"/><title>鲸鱼</title></head></html>'
 ```
 
-通常情况下我们应避免在将 XML/HTML 数据传递到解析器之前，将其转换为 Unicode。这样做既慢又容易出错。
+### bytes 数据和编码问题
+
+⚠通常情况下我们应避免在将 XML/HTML 数据传递到解析器之前，将其转换为 Unicode (这样做既慢又容易出错)。也就是说，被解析的文本最好是 `bytes` 类型，通常情况下解析器会根据 HTML  `mate` 标记来识别编码方式。当我们需要将 `bytes` 类型的数据解码为 Unicode 字符串(或转换为其它编码方式的 `bytes` 字符串)时，便会以 `mate` 标记给出的编码方案为准。
+
+如果缺少 HTML `mate` 标记，则会默认采用  `ascii` 编码方式。此时可以创建 `HTMLParser` (或 `XMLParser`) 实例，并在构造函数中传入所需的编码方案，详见:
+
+- https://lxml.de/FAQ.html#why-can-t-lxml-parse-my-xml-from-unicode-strings
+- https://lxml.de/FAQ.html#can-lxml-parse-from-file-objects-opened-in-unicode-text-mode
+
+```python
+html_unicode = """
+<html><head>
+<title>鲸鱼</title>
+</head>
+"""
+html_doc = html_unicode.encode('utf8') # 将unicode字符串编码为gb2312字节码
+root = html.document_fromstring(html_doc,parser = etree.HTMLParser(encoding='utf8'))
+print(etree.tounicode(root))
+print(etree.tostring(root))
+print(root.getroottree().docinfo.encoding)
+```
+
+输出
+
+```
+<html><head>
+<title>鲸鱼</title>
+</head>
+</html>
+b'<html><head>\n<title>&#40120;&#40060;</title>\n</head>\n</html>'
+utf8
+```
+
+如果不设置编码方式，则会出现乱码:
+
+```python
+html_unicode = """
+<html><head>
+<title>鲸鱼</title>
+</head>
+"""
+html_doc = html_unicode.encode('utf8')
+root = html.document_fromstring(html_doc)
+print(etree.tounicode(root))
+print(etree.tostring(root))
+print(root.getroottree().docinfo.encoding)
+```
+
+输出:
+
+```
+<html><head>
+<title>é²¸é±¼</title>
+</head>
+</html>
+b'<html><head>\n<title>&#233;&#178;&#184;&#233;&#177;&#188;</title>\n</head>\n</html>'
+UTF-8
+```
+
+
 
 ### 序列化为Unicode字符串
 
@@ -411,6 +477,8 @@ etree.tostring(tree, encoding='unicode')
 > The result of `tostring(encoding='unicode')` can be treated like any other Python unicode string and then passed back into the parsers. However, if you want to save the result to a file or pass it over the network, you should use `write()` or `tostring()` with a byte encoding (typically UTF-8) to serialize the XML. The main reason is that unicode strings returned by `tostring(encoding='unicode')` are not byte streams and they never have an XML declaration to specify their encoding. These strings are most likely not parsable by other XML libraries.
 >
 > For normal byte encodings, the `tostring()` function automatically adds a declaration as needed that reflects the encoding of the returned string. This makes it possible for other parsers to correctly parse the XML byte stream. Note that using `tostring()` with UTF-8 is also considerably faster in most cases.
+
+
 
 ## 序列化 Element
 

@@ -12,7 +12,7 @@
 
 从 2.0 版本开始，lxml 附带了一个用于处理 HTML 的专用 Python 包 `lxml.html`。该包基于 lxml 的 HTML 解析器，但为 HTML elements 提供了一个特殊的 API，以及一些用于 HTML 处理任务的使用程序。
 
-主 API 基于 [lxml.etree](https://lxml.de/tutorial.html) API，因此也基于 [ElementTree](http://effbot.org/zone/element-index.htm)API。
+主 API 基于 [lxml.etree](https://lxml.de/tutorial.html) API，因此也基于 [ElementTree](http://effbot.org/zone/element-index.htm) API。
 
 ## 解析 HTML
 
@@ -229,6 +229,69 @@ etree.dump(html.fromstring("<html><head><title>test<body><h1>page title</h3>"))
 
 ```python
 # 源代码:
+1781 -def tostring(doc, pretty_print=False, include_meta_content_type=False, 
+1782               encoding=None, method="html", with_tail=True, doctype=None): 
+1783      """Return an HTML string representation of the document. 
+1784   
+1785      Note: if include_meta_content_type is true this will create a 
+1786      ``<meta http-equiv="Content-Type" ...>`` tag in the head; 
+1787      regardless of the value of include_meta_content_type any existing 
+1788      ``<meta http-equiv="Content-Type" ...>`` tag will be removed 
+1789   
+1790      The ``encoding`` argument controls the output encoding (defaults to 
+1791      ASCII, with &#...; character references for any characters outside 
+1792      of ASCII).  Note that you can pass the name ``'unicode'`` as 
+1793      ``encoding`` argument to serialise to a Unicode string. 
+1794   
+1795      The ``method`` argument defines the output method.  It defaults to 
+1796      'html', but can also be 'xml' for xhtml output, or 'text' to 
+1797      serialise to plain text without markup. 
+1798   
+1799      To leave out the tail text of the top-level element that is being 
+1800      serialised, pass ``with_tail=False``. 
+1801   
+1802      The ``doctype`` option allows passing in a plain string that will 
+1803      be serialised before the XML tree.  Note that passing in non 
+1804      well-formed content here will make the XML output non well-formed. 
+1805      Also, an existing doctype in the document tree will not be removed 
+1806      when serialising an ElementTree instance. 
+1807   
+1808      Example:: 
+1809   
+1810          >>> from lxml import html 
+1811          >>> root = html.fragment_fromstring('<p>Hello<br>world!</p>') 
+1812   
+1813          >>> html.tostring(root) 
+1814          b'<p>Hello<br>world!</p>' 
+1815          >>> html.tostring(root, method='html') 
+1816          b'<p>Hello<br>world!</p>' 
+1817   
+1818          >>> html.tostring(root, method='xml') 
+1819          b'<p>Hello<br/>world!</p>' 
+1820   
+1821          >>> html.tostring(root, method='text') 
+1822          b'Helloworld!' 
+1823   
+1824          >>> html.tostring(root, method='text', encoding='unicode') 
+1825          u'Helloworld!' 
+1826   
+1827          >>> root = html.fragment_fromstring('<div><p>Hello<br>world!</p>TAIL</div>') 
+1828          >>> html.tostring(root[0], method='text', encoding='unicode') 
+1829          u'Helloworld!TAIL' 
+1830   
+1831          >>> html.tostring(root[0], method='text', encoding='unicode', with_tail=False) 
+1832          u'Helloworld!' 
+1833   
+1834          >>> doc = html.document_fromstring('<p>Hello<br>world!</p>') 
+1835          >>> html.tostring(doc, method='html', encoding='unicode') 
+1836          u'<html><body><p>Hello<br>world!</p></body></html>' 
+1837   
+1838          >>> print(html.tostring(doc, method='html', encoding='unicode', 
+1839          ...          doctype='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"' 
+1840          ...                  ' "http://www.w3.org/TR/html4/strict.dtd">')) 
+1841          <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
+1842          <html><body><p>Hello<br>world!</p></body></html> 
+1843      """ 
 1844      html = etree.tostring(doc, method=method, pretty_print=pretty_print, 
 1845                            encoding=encoding, with_tail=with_tail, 
 1846                            doctype=doctype) 
@@ -240,43 +303,7 @@ etree.dump(html.fromstring("<html><head><title>test<body><h1>page title</h3>"))
 1852      return html 
 ```
 
-示例代码:
 
-```python
->>> from lxml import html
->>> root = html.fragment_fromstring('<p>Hello<br>world!</p>')
-
->>> html.tostring(root)
-'<p>Hello<br>world!</p>'
->>> html.tostring(root, method='html')
-'<p>Hello<br>world!</p>'
-
->>> html.tostring(root, method='xml')
-'<p>Hello<br/>world!</p>'
-
->>> html.tostring(root, method='text')
-'Helloworld!'
-
->>> html.tostring(root, method='text', encoding='unicode')
-u'Helloworld!'
-
->>> root = html.fragment_fromstring('<div><p>Hello<br>world!</p>TAIL</div>')
->>> html.tostring(root[0], method='text', encoding='unicode')
-u'Helloworld!TAIL'
-
->>> html.tostring(root[0], method='text', encoding='unicode', with_tail=False)
-u'Helloworld!'
-
->>> doc = html.document_fromstring('<p>Hello<br>world!</p>')
->>> html.tostring(doc, method='html', encoding='unicode')
-u'<html><body><p>Hello<br>world!</p></body></html>'
-
->>> print(html.tostring(doc, method='html', encoding='unicode',
-...          doctype='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"'
-...                  ' "http://www.w3.org/TR/html4/strict.dtd">'))
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html><body><p>Hello<br>world!</p></body></html>
-```
 
 ## tag soup
 

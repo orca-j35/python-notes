@@ -154,7 +154,7 @@ print(soup.h1.string)
 #> u'Sacr\xe9 bleu!'
 ```
 
-BeautifulSoup 会使用一个叫做 [Unicode, Dammit](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#unicode-dammit) 的子库来检测文档编码并将其转换为 Unicode。 `BeautifulSoup` 对象的 `.original_encoding` 属性记录了自动识别编码的结果:
+BeautifulSoup 会使用一个名为 [Unicode, Dammit](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#unicode-dammit) 的子库来检测文档编码并将其转换为 Unicode。 `BeautifulSoup` 对象的 `.original_encoding` 属性记录了自动识别编码的结果:
 
 ```python
 print(soup.original_encoding)

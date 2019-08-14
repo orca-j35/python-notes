@@ -92,15 +92,15 @@ for i in a: # a是包含etree._Element对象的列表
 `PyQuery.__repr__()` 会以列表形式描述 PyQuery 实例中的元素:
 
 ```python
-def __repr__(self):
-    r = []
-    try:
-        for el in self:
-            c = el.get('class')
-            c = c and '.' + '.'.join(c.split(' ')) or ''
-            id = el.get('id')
-            id = id and '#' + id or ''
-            r.append('<%s%s%s>' % (el.tag, id, c))
+    def __repr__(self):
+        r = []
+        try:
+            for el in self:
+                c = el.get('class')
+                c = c and '.' + '.'.join(c.split(' ')) or ''
+                id = el.get('id')
+                id = id and '#' + id or ''
+                r.append('<%s%s%s>' % (el.tag, id, c))
             return '[' + (', '.join(r)) + ']'
         except AttributeError:
             if PY3k:
@@ -109,9 +109,9 @@ def __repr__(self):
                 for el in self:
                     if isinstance(el, text_type):
                         r.append(el.encode('utf-8'))
-                        else:
-                            r.append(el)
-                            return repr(r)
+                    else:
+                        r.append(el)
+                return repr(r)
 ```
 
 `PyQuery.__str__()` 会将 PyQuery 实例中各个 `etree._Element` 元素中的内容整合到一个字符串中:
@@ -155,6 +155,54 @@ PyQuery 类的构造函数 `PyQuery(*args, **kwargs)` 可以从字符串、`byte
 ...        opener=lambda url, **kw: urlopen(url).read())
 >>> d = pq(filename=path_to_html_file) # 需使用关键字参数
 ```
+
+在使用 xml 解析器时，建议使用 `bytes` 类型的文本，详见笔记﹝lxml.etree.md﹞->Python Unicode 字符串
+
+#### bytes 数据和编码问题
+
+使用 xml 解析器解析 bytes 数据时，通常情况下我们应避免在将 XML/HTML 数据传递到解析器之前，将其转换为 Unicode (这样做既慢又容易出错，虽然可以避免编码问题)。也就是说，被解析的文本最好是 `bytes` 类型，通常情况下解析器会根据 HTML  `mate` 标记来识别编码方式。当我们需要将 `bytes` 类型的数据解码为 Unicode 字符串(或转换为其它编码方式的 `bytes` 字符串)时，便会以 `mate` 标记给出的编码方案为准。
+
+如果 xml 文档中声明了编码方案( 如，`<meta charset="gb2312">`)，则会使用此编码方案来处理 `bytes` 对象。`.encode` 字段与能否成功解码并没有必然联系。如果缺少 HTML `mate` 标记，则会默认采用  `ascii` 编码方式。此时可以创建 `HTMLParser` (或 `XMLParser`) 实例，并在构造函数中传入所需的编码方案。
+
+详见笔记﹝lxml.etree.md﹞->Python Unicode 字符串
+
+```python
+from pyquery import PyQuery as pq
+html_unicode1 = """
+<html><head>
+<meta charset="gb2312">
+<title>鲸鱼</title>
+</head>
+"""
+html_gb2312 = html_unicode1.encode('gb2312') # 将unicode字符串编码为gb2312字节码
+doc = pq(html_gb2312)
+print(doc('title')) #> <title>鲸鱼</title>
+print(doc.encoding) #> gb2312
+
+html_unicode2 = """
+<html><head>
+<title>鲸鱼</title>
+</head>
+"""
+html_gb2312 = html_unicode2.encode('gb2312')
+doc = pq(html_gb2312)
+print(doc('title')) #> <title>¾¨Óã</title>
+print(doc.encoding) #> UTF-8
+
+
+html_utf8 = html_unicode2.encode('utf-8')
+doc = pq(html_utf8)
+print(doc('title')) #> <title>é²¸é±¼</title>
+print(doc.encoding) #> UTF-8
+
+# 如果在 bytes 包含 BOM 信息，也可以处理
+html_utf_8_sig = html_unicode2.encode('utf_8_sig') 
+doc = pq(html_utf_8_sig)
+print(doc('title')) #> <title>鲸鱼</title>
+print(doc.encoding) #> UTF-8
+```
+
+从 url 中加载 xml 文档时，由请求库对收到的内容进行解码，返回 Unicode 字符串。最好还是自己先使用请求库获取内容，并把内容解码为 Unicode 字符串后，再传递给构造函数 `PyQuery()`
 
 
 
@@ -206,7 +254,7 @@ PyQuery 类的构造函数 `PyQuery(*args, **kwargs)` 可以从字符串、`byte
   '''
   ```
 
-- 可将 selector 和 context (可以是文本, PyQuery 对象, list 对象, etree._Element 对象) 用作 `*args` 参数，详见 `PyQuery.__init__` 的源代码。使用示例:
+- 可将 selector 和/或 context (可以是文本, PyQuery 对象, list 对象, etree._Element 对象) 用作 `*args` 参数，详见 `PyQuery.__init__` 的源代码。使用示例:
 
   ```python
   from pyquery import PyQuery as pq
@@ -247,7 +295,7 @@ PyQuery 类的构造函数 `PyQuery(*args, **kwargs)` 可以从字符串、`byte
 - `parent` 似乎是用于设置父节点，目前不清楚具体效果
 - `css_translator` 似乎是用于设置 css 翻译器，目前不清楚具体效果
 - `namespaces` 用于为 XML 设置命名空间，目前不清楚具体效果
-- `filename` 用于指定 XML/HTML 文件
+- `filename` 用于指定 XML/HTML 文件，
 - `opener` 设置用于请求 url 的工具，比如 `requests`
 
 剩余的 `**kwargs` 会被传递给 `opener` 使用，例如:
