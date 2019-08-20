@@ -46,7 +46,7 @@ MySQL 官方提供了以下几个版本的 MySQL 数据库:
 - [MySQL-Front](http://www.mysqlfront.de/) - 用于MySQL数据库服务器的 Windows 前端程序。在连接本地 MySQL 数据库时，需将主机设置为 `localhost` 或 `127.0.0.1`
 - [navicat](https://www.navicat.com.cn/) - 破解参考 [1](https://github.com/Deltafox79/Navicat_Keygen) , [2](https://www.jianshu.com/p/5f693b4c9468?mType=Group) (目前能够顺利破解 12.1 版)
 
-## Python Drivers
+## DB-API Drivers
 
 > 参考:
 >
@@ -54,9 +54,13 @@ MySQL 官方提供了以下几个版本的 MySQL 数据库:
 > - https://stackoverflow.com/questions/4960048/how-can-i-connect-to-mysql-in-python-3-on-windows
 > - https://stackoverflow.com/questions/384471/mysql-db-lib-for-python-3-x
 
+本小节会介绍一些遵循数据库 API 规范(v2.0)的 MySQL 数据库驱动模块。
+
+
+
 ### Connector/Python
 
-纯 Python 实现
+纯 Python 实现，由 MySQL 官方提供的驱动器。
 
 相关资源:
 
@@ -69,7 +73,12 @@ MySQL 官方提供了以下几个版本的 MySQL 数据库:
 推荐使用 `pip` (或 `conda` )安装 Connector/Python
 
 ```shell
-conda install mysql-connector-python
+pip install mysql-connector-python
+
+# 某些教程可能会使用下述命令进行安装,这样做是错误的
+# pip install mysql-connector-python --allow-external mysql-connector-python
+# 因为自1.0版起,pip已弃用如下选项:
+# --allow-external,--allow-all-external,--allow-unverified 
 ```
 
 下面的代码用于测试连接器是否安装成功:
@@ -84,6 +93,12 @@ cnx.close()
 ```
 
 在 Windows 中还可使用 [MySQL Installer](https://dev.mysql.com/downloads/windows/installer/8.0.html)(或[独立的 MSI Installer](https://dev.mysql.com/downloads/connector/python/))来安装 Connector/Python。Installer 会检查本机中 Python 的路径，并将 Connector/Python 置于 `~\PythonX.Y\Lib\site-packages\` 中。不推荐使用这种方式安装，因为这会导致 `pip` (或 `conda` )无法管理此包。
+
+扩展阅读:
+
+- [MySQL Python connector API详解](https://www.history-of-my-life.com/archives/222) 
+
+
 
 ### PyMySQL
 
@@ -113,6 +128,10 @@ import pymysql
 print(pymysql.VERSION)
 ```
 
+相关示例请参考官方文档。
+
+#### 使用提示
+
 在调用 `pymysql.install_as_MySQLdb()` 后，任何导入 MySQLdb 或 \_mysql 的应用都会在不知不觉中实际使用 PyMySQL，源代码如下:
 
 ```python
@@ -125,7 +144,7 @@ def install_as_MySQLdb():
     sys.modules["MySQLdb"] = sys.modules["_mysql"] = sys.modules["pymysql"]
 ```
 
-相关示例请参考官方文档。
+pymysql 模块中的 connection 对象和 cursor 对象均支持上下文管理( `with` 语句)，详见源代码。
 
 ### CyMySQL
 
@@ -171,7 +190,7 @@ pip install mysqlclient
 
 该包依赖 MySQLConnector/C 或 MSVC，安装过程详见 [GitHub](https://github.com/PyMySQL/mysqlclient-python)。
 
-## 编码方案
+## 数据库编码方案
 
 > 参考:
 >
@@ -184,6 +203,6 @@ MySQL 中的"utf8 字符集"与 Unicode 中的 UTF-8 编码方案并不等价，
 
 三个字节的 UTF-8 最大能编码的 Unicode 字符是 0xffff，也就是 Unicode 中的基本多文种平面(BMP)。也就是说，任何不在基本多文本平面的 Unicode字符，都无法使用 Mysql 的 utf8 字符集存储。包括 Emoji 表情和很多不常用的汉字，以及任何新增的 Unicode 字符等等。
 
-要在 Mysql 中保存 4 字节长度的 UTF-8 编码，需要使用 utf8mb4 字符集，但只有 5.5.3 版本以后的才支持(查看版本: `select version();`)。为了获取更好的兼容性，在 MySQL 中总应使用 utf8mb4 字符集而非 utf8 字符集。对于 CHAR 类型数据，utf8mb4 会多消耗一些空间，根据 Mysql 官方建议，使用 VARCHAR 替代 CHAR。
+要在 Mysql 中保存 4 字节长度的 UTF-8 编码，需要使用 utf8mb4 字符集，但只有 5.5.3 版本以后的才支持(查看版本: `select version();`)。**为了获取更好的兼容性，在 MySQL 中总应使用 utf8mb4 字符集而非 utf8 字符集。**对于 CHAR 类型数据，utf8mb4 会多消耗一些空间，根据 Mysql 官方建议，使用 VARCHAR 替代 CHAR。
 
 在 MariaDB 中也存在类似问题。
