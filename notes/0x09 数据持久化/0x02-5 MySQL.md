@@ -6,6 +6,7 @@
 - Home: https://www.mysql.com/cn/
 - MySQL Reference Manuals: http://dev.mysql.com/doc/
 - MySQL client/server protocol: http://dev.mysql.com/doc/internals/en/client-server-protocol.html
+- MySQL 8.0 Reference Manual: https://dev.mysql.com/doc/refman/8.0/en/
 - Download: https://dev.mysql.com/downloads/mysql/
   - For Windows: https://dev.mysql.com/downloads/windows/installer/8.0.html
 - 教程:
