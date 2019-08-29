@@ -3,12 +3,10 @@ Python 学习笔记
 
 ## 目录结构
 
-- Language Reference - 「[Library Reference](https://docs.python.org/3.7/library/index.html)」的笔记
-- Library Reference - 「[Language Reference](https://docs.python.org/3.7/reference/index.html)」的笔记
 - notes - 已整理的笔记
 - notes_of_PyQt -  PyQt 的笔记
 - notes_of_crawler - 爬虫的笔记
-- 待整理笔记 - 待整理的笔记
+- 待整理笔记 - 待整理的笔记，会逐步整合到 notes/ 中
 
 ## 资源索引
 
