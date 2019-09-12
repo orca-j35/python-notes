@@ -8,7 +8,7 @@
 
 Redis（*Remote Dictionary Server*）是一个 in-memory 数据结构项目，它实现了一个具有[可选持久性](https://en.wikipedia.org/wiki/Redis#Persistence)的分布式 in-memory 键值（*key-value*）数据库。Redis 通常被称为数据结构服务器，因为值（*value*）可以是 字符串（*String*）、哈希（*Hash*）、 列表（*list*）、 集合（set）、有序集合（*sorted set*）和位图（*bitmaps*）等类型。
 
-Redis 最好的地方就是用来提供数据[持久化](https://en.wikipedia.org/wiki/Redis#Persistence)功能（定时把内存中的数据写入文件），从而不至于一旦宕机将造成数据丢失。而且相较于 Memcached ，Redis 提供的值类型选择更为宽泛。
+Redis 最好的地方就是用来提供数据[持久化](https://en.wikipedia.org/wiki/Redis#Persistence)功能（定时把内存中的数据写入文件），从而不至于一旦宕机将造成数据丢失。而且相较于 [memcached](https://www.memcached.org/)，Redis 提供的值类型选择更为宽泛。
 
 相关资源:
 
