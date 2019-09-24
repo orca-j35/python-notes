@@ -11,6 +11,8 @@
 
 The handlers raise this exception (or derived exceptions) when they run into a problem. It is a subclass of [`OSError`](https://docs.python.org/3/library/exceptions.html#OSError).
 
+如果服务器不存在，则会抛出 URLError。因为获取不到服务器，并且由于远程服务器负责返回 HTTP 状态代码，所以无法抛出 HTTPError 异常。
+
 - `reason` - 引发错误的原因，可以是一个消息字符串，或者是另一个异常实例。
 
 ```python
@@ -34,7 +36,7 @@ except error.URLError as ex:
 
 🔨*exception* urllib.error.HTTPError
 
-虽然 [`HTTPError`](https://docs.python.org/3/library/urllib.error.html#urllib.error.HTTPError) 属于异常类型([`URLError`](https://docs.python.org/3/library/urllib.error.html#urllib.error.URLError) 的子类)，但是我们还可以将其视作 non-exceptional 的 file-like 返回值(类似于 [`urlopen()`](https://docs.python.org/3/library/urllib.request.html#urllib.request.urlopen) 的返回值)——这在处理部分 HTTP 错误时非常有用，比如身份验证(*authentication*)请求。
+虽然 [`HTTPError`](https://docs.python.org/3/library/urllib.error.html#urllib.error.HTTPError) 属于异常类型([`URLError`](https://docs.python.org/3/library/urllib.error.html#urllib.error.URLError) 的子类)，但是我们还可以将其视作 non-exceptional 的 file-like 返回值(类似于 [`urlopen()`](https://docs.python.org/3/library/urllib.request.html#urllib.request.urlopen) 的返回值)——这在处理部分 HTTP 错误时非常有用，比如身份验证(*authentication*)请求。如果网页在服务器上不存在（或者获取页面的时候出现错误），则会抛出 HTTPError，HTTP 错误可能是"404 Page Note Found"、"500 Internal Server Error"等。
 
 - `code`
 

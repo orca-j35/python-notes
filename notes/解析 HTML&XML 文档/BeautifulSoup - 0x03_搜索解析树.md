@@ -328,7 +328,7 @@ pprint([f"{type(i)}::{i.name}" for i in tag])
 
 ### name 参数
 
-*name* 是用来筛选 tag 名称的过滤器，`find_all()` 会保留与 *name* 过滤器匹配的 tag 对象。使用 *name* 参数时，会自动过滤 HTML 文本节点，因为文本节点的 `.name` 字段为 `None`。
+*name* 是用来筛选 tag 名称的"过滤器"，`find_all()` 会保留与 *name* 过滤器匹配的 tag 对象。使用 *name* 参数时，会自动过滤 HTML 文本节点，因为文本节点的 `.name` 字段为 `None`。
 
 前面提到的五种过滤器均可用作 *name* 参数，即字符串、正则表达式、列表、`True`、函数(可调用对象)。
 
@@ -342,7 +342,7 @@ print([f"{type(i)}::{i.name}" for i in soup.find_all('title')])
 
 ### \*\*kwargs 参数
 
-函数定义中未包含的关键字参数将被视作 HTML 属性过滤器，`find_all()` 会保留属性值与 var-keyword 匹配的 tag 对象。使用 var-keyword 时，会自动过滤 HTML 文本节点，因为文本节不含有 HTML 属性。
+函数定义中未包含的关键字参数将被视作 HTML 属性"过滤器"，`find_all()` 会保留属性值与 var-keyword 匹配的 tag 对象。使用 var-keyword 时，会自动过滤 HTML 文本节点，因为文本节不含有 HTML 属性。
 
 前面提到的五种过滤器均可用作 var-keyword 的值，即字符串、正则表达式、列表、`True`、函数(可调用对象)。
 
@@ -741,5 +741,7 @@ print(soup.select("body a"))
 print(soup.select("html head title"))
 #> [<title>The Dormouse's story</title>]
 ```
+
+CSS 选择器会选取所有符合条件 tag
 
 更多示例详见: https://www.crummy.com/software/BeautifulSoup/bs4/doc/#css-selectors

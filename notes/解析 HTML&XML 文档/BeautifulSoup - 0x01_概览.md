@@ -38,6 +38,8 @@ print(soup.p.string) #> Hello
 
 如果在使用过程中遇到本文未涵盖的问题，请参考: https://www.crummy.com/software/BeautifulSoup/bs4/doc/#troubleshooting
 
+扩展阅读：‹Python 网络爬虫权威指南 2E› 第一章和第二章
+
 ### Three sisters
 
 下面这段名为 "Three sisters" 文档是本笔记的 HTML 示例文档(官方文档中也用的这段代码):
@@ -79,7 +81,7 @@ BeautifulSoup 的速度永远会低于其使用的解析器的速度。如果对
 
 构造器 `BeautifulSoup()` 中各参数的含义如下:
 
-- `markup` - 要解析的标签(*markup*)，可以是字符串或 file-like 对象。
+- `markup` - 要解析的标签(*markup*)，可以是 `str`、`bytes` 或 file-like 对象。
 
   ```python
   from bs4 import BeautifulSoup
@@ -89,6 +91,8 @@ BeautifulSoup 的速度永远会低于其使用的解析器的速度。如果对
   
   soup = BeautifulSoup("<html>data</html>")
   ```
+
+  如果向 `markup` 传递 `str` 对象（Python 3 中的 Unicode 字符串），则不会进行解码操作，会直接解析该 Unicode 字符串。假如在解析 Unicode 字符串的同时传递了 `from_encoding` 参数，则会抛出 `UserWarning`。
 
 - `features` - 用来设置解析器，可使用解析器的名称("lxml", "lxml-xml", "html.parser", "html5lib")，或使用标签的类型("html", "html5", "xml")。建议明确给出需要使用的解析器，以便 BeautifulSoup 在不同的平台和虚拟环境中提供相同的结果。
 
@@ -146,12 +150,15 @@ Note: 如果试图解析无效的 HTML/XML 文档，不同解析器可能会给�
 HTML 或 XML 文档可能会采用不同的编码方案(如 ASCII 或 UTF-8)，当你将文档加载到 BeautifulSoup 后，便会自动转换为 Unicode。
 
 ```python
-markup = "<h1>Sacr\xc3\xa9 bleu!</h1>"
+from bs4 import BeautifulSoup
+markup = b"<h1>Sacr\xc3\xa9 bleu!</h1> <p>\xe9\xb2\xb8<\p>"
 soup = BeautifulSoup(markup, 'lxml')
 print(soup.h1)
 #> <h1>Sacré bleu!</h1>
 print(soup.h1.string)
-#> u'Sacr\xe9 bleu!'
+#> Sacré bleu!
+print(soup.original_encoding)
+#> UTF-8
 ```
 
 BeautifulSoup 会使用一个名为 [Unicode, Dammit](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#unicode-dammit) 的子库来检测文档编码并将其转换为 Unicode。 `BeautifulSoup` 对象的 `.original_encoding` 属性记录了自动识别编码的结果:
@@ -465,7 +472,7 @@ print(soup.name)
 #> [document]
 ```
 
-### 注释及特殊字符串
+### 注释及特殊字符串 🐘
 
 `Tag`, `NavigableString`, `BeautifulSoup` 几乎涵盖了你在 HTML 或 XML 文件中看到的所有内容，但是仍有一些没有覆盖到的内容，比如注释(*comment*):
 

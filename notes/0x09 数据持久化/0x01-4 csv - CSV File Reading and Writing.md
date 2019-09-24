@@ -65,7 +65,7 @@ pprint(list(csv.reader(csv_list, quoting=csv.QUOTE_NONNUMERIC)))
 
 **参数说明:**
 
-- *csvfile* - 可以是任何可迭代(*iterable*)的对象，比如 file-like 对象和 `list` 对象
+- *csvfile* - 可以是任何可迭代(*iterable*)的对象，比如 file-like 对象（如 `SringIO` 对象）和 `list` 对象。
 
   > *csvfile* can be any object which supports the [iterator](https://docs.python.org/3.7/glossary.html#term-iterator) protocol and returns a string each time its `__next__()`method is called — [file objects](https://docs.python.org/3.7/glossary.html#term-file-object) and list objects are both suitable. If *csvfile* is a file object, it should be opened with `newline=''`. [1](https://docs.python.org/3.7/library/csv.html#id3) 
   >

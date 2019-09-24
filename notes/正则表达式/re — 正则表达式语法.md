@@ -15,12 +15,13 @@
 >
 > - [正则表达式30分钟入门教程](http://deerchao.net/tutorials/regex/regex.htm) 🧀
 >
->   这篇文章部分翻译自 [The 30 Minute Regex Tutorial](https://www.codeproject.com/Articles/9099/The-30-Minute-Regex-Tutorial)
+> 这篇文章部分翻译自 [The 30 Minute Regex Tutorial](https://www.codeproject.com/Articles/9099/The-30-Minute-Regex-Tutorial)
 >
 > 工具:
 >
-> - https://regex101.com/
-> - [在线正则表达式测试 - 开源中国](http://tool.oschina.net/regex)
+> - https://regex101.com/ 
+> - [在线正则表达式测试 - 开源中国](http://tool.oschina.net/regex) 
+> - https://www.regexpal.com/ 
 
 Note: 在本笔记中我会使用 `Style without quotes` 来表示正则表达式(*Regular* *Expression* - RE)，同时会使用 `'Style without quotes'` 来表示被匹配的字符串。例如，可使用正则表达式 `hello` 来匹配字符串 `'hello'`。
 
@@ -591,6 +592,16 @@ re.match(r"(?<!a).", "abc")
 re.search(r"(?<!a).", "abc")
 #> <re.Match object; span=(0, 1), match='a'>
 ```
+
+#### 不包含 `((?!...).)` 
+
+`((?!...).)` 是零宽度断言-向后预查的一种特殊用法，表示不包含指定的字符串。
+
+示例：
+
+- `^((?![A-Z]).)$` 表示不包含大写字母的字符串，可匹配 `no-caps-here`,
+  `$ymb0ls` 或 `a4e f!ne`。
+- `^(http|www)((?!baidu.com).)*$` 可匹配不包含 `baidu.com` 的 URL，如 `https://www.github.com/`
 
 
 

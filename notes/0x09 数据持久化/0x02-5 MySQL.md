@@ -56,6 +56,7 @@ MySQL 官方提供了以下几个版本的 MySQL 数据库:
 适用于 MySQL 的可视化管理工具:
 
 - [MySQL Workbench](https://dev.mysql.com/downloads/workbench/) - 在 MySQL 安装包中自带该工具
+- [phpMyAdmin](https://www.phpmyadmin.net/) - 是一个以[PHP](https://zh.wikipedia.org/wiki/PHP)为基础，以Web-Base方式架构在网站主机上的[MySQL](https://zh.wikipedia.org/wiki/MySQL)的数据库管理工具，让管理者可用Web接口管理MySQL数据库。
 - [MySQL-Front](http://www.mysqlfront.de/) - 用于MySQL数据库服务器的 Windows 前端程序。在连接本地 MySQL 数据库时，需将主机设置为 `localhost` 或 `127.0.0.1`
 - [navicat](https://www.navicat.com.cn/) - 破解参考 [1](https://github.com/Deltafox79/Navicat_Keygen) , [2](https://www.jianshu.com/p/5f693b4c9468?mType=Group) (目前能够顺利破解 12.1 版)
 
@@ -617,7 +618,11 @@ MySQL 中的"utf8 字符集"与 Unicode 中的 UTF-8 编码方案并不等价，
 
 在 MariaDB 中也存在类似问题。
 
-## SQL 补充
+MySQL 中使用"CHARACTER SET"来表示数据库的编码方案，另外还有一个与之相关的关键字是"COLLATE"（排序规则）。COOLATER 会影响到 ORDER BY 语句的排序结果，会影响到 WHERE 条件中大于（小于）号的筛选结果，会 DISTINCT、GROUP BY、HAVING 的查询结果。对于 mysql 中那些字符类型的列，如 `VARCHAR`、`CHAR`、`TEXT` 类型的 record，都需要有一个 `COLLATE` 类型来告知 mysql 如何对该列进行排序和比较。推荐使用 `utf8mb4_unicode_ci` ，原因详见 [MYSQL中的COLLATE是什么？](https://juejin.im/post/5bfe5cc36fb9a04a082161c2)。另外，从 mysql 8.0 开始，mysql 默认的 `CHARSET` 已经不再是 `Latin1` 了，改为了`utf8mb4`（[参考链接](https://link.juejin.im?target=https%3A%2F%2Fdev.mysql.com%2Fdoc%2Frefman%2F8.0%2Fen%2Fcharset-applications.html)），并且默认的 COLLATE 也改为了`utf8mb4_0900_ai_ci`。`utf8mb4_0900_ai_ci` 大体上就是 `unicode` 的进一步细分，`0900` 指代unicode 比较算法的编号（ Unicode Collation Algorithm version），`ai ` 表示accent insensitive（发音无关），例如 e, è, é, ê 和 ë 是一视同仁的。[相关参考链接1](https://link.juejin.im?target=https%3A%2F%2Fwww.monolune.com%2Fwhat-is-the-utf8mb4_0900_ai_ci-collation%2F)，[相关参考链接2](https://link.juejin.im?target=https%3A%2F%2Fdev.mysql.com%2Fdoc%2Frefman%2F8.0%2Fen%2Fcharset-collation-names.html)
+
+
+
+## SQL 补充　
 
 本节会对本文中出现的某些 SQL 语句进行解释。
 

@@ -25,7 +25,7 @@
   - PyPI: <https://pypi.org/project/pdfminer3/>
   - GitHub: <https://github.com/gwk/pdfminer3>
 
-- pdfminer3k - 似乎年久失修，上次在 PyPI 上的 release 的时间是 Jun 21, 2011
+- pdfminer3k - 似乎年久失修，上次在 PyPI 上的 release 的时间是 Jun 21, 2011。《Python 网络爬虫权威指南（第 2 版）》的 7.4 节有介绍这个库的使用方法。
 
   - PyPI: <https://pypi.org/project/pdfminer3k/>
   - GitHub: <https://github.com/jaepil/pdfminer3k>
