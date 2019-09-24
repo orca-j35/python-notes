@@ -58,7 +58,7 @@ MySQL 官方提供了以下几个版本的 MySQL 数据库:
 - [MySQL Workbench](https://dev.mysql.com/downloads/workbench/) - 在 MySQL 安装包中自带该工具
 - [phpMyAdmin](https://www.phpmyadmin.net/) - 是一个以[PHP](https://zh.wikipedia.org/wiki/PHP)为基础，以Web-Base方式架构在网站主机上的[MySQL](https://zh.wikipedia.org/wiki/MySQL)的数据库管理工具，让管理者可用Web接口管理MySQL数据库。
 - [MySQL-Front](http://www.mysqlfront.de/) - 用于MySQL数据库服务器的 Windows 前端程序。在连接本地 MySQL 数据库时，需将主机设置为 `localhost` 或 `127.0.0.1`
-- [navicat](https://www.navicat.com.cn/) - 破解参考 [1](https://github.com/Deltafox79/Navicat_Keygen) , [2](https://www.jianshu.com/p/5f693b4c9468?mType=Group) (目前能够顺利破解 12.1 版)
+- [navicat](https://www.navicat.com.cn/) - 参考 [1](https://github.com/Deltafox79/Navicat_Keygen) , [2](https://www.jianshu.com/p/5f693b4c9468?mType=Group) (目前适用于 12.1 版)
 
 
 

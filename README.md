@@ -19,7 +19,7 @@ Python 学习笔记
 ## 相关工具
 
 - [pythontutor](http://www.pythontutor.com/index.html)：可视化 Python 代码的执行过程
-- [PyCharm](http://www.jetbrains.com/pycharm/)：[crack-lanyus](http://idea.lanyus.com/), [crack-zhile](https://zhile.io/2018/08/22/jetbrains-license-server-crack.html)
+- [PyCharm](http://www.jetbrains.com/pycharm/)
 - [Thonny](http://thonny.org/)：适合初学者的 IDE
 - [Anaconda](https://www.anaconda.com/)：用于科学计算的 Python 发行版，包含了众多用于科学计算、数据分析的 Python 包，文档 [docs.anaconda.com](http://docs.anaconda.com/anaconda/)，在安装和使用时务必需要管理员权限，否则可能出现一些意料之外的异常。可使用清华大学镜像(详见 [Anaconda 镜像使用帮助](https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/))或[中科大镜像](https://mirrors.ustc.edu.cn/)来提高包下载速度。在使用第三方镜像进行配置后，配置信息被保存在 `user/.condarc` 中。
 - Conda：多编程语言包、依赖、环境管理工具，文档 [docs.conda.io](https://conda.io/en/latest/)，在使用时可能需要管理员权限

@@ -81,7 +81,7 @@ MongoDB 官方在 [Install MongoDB Community Edition on Windows](https://docs.mo
 - [Robo 3T](https://robomongo.org/) - 十分轻便的管理工具
 - [Studio 3T](https://studio3t.com) - 比 Robo 3T 功能更加丰富
 - [MongoDB Compass](https://www.mongodb.com/products/compass) - MongoDB 官方提供的可视化管理工具
-- [navicat](https://www.navicat.com.cn/) - 支持中文，破解参考 [1](https://github.com/Deltafox79/Navicat_Keygen) , [2](https://www.jianshu.com/p/5f693b4c9468?mType=Group) (目前能够顺利破解 12.1 版)
+- [navicat](https://www.navicat.com.cn/) - 参考 [1](https://github.com/Deltafox79/Navicat_Keygen) , [2](https://www.jianshu.com/p/5f693b4c9468?mType=Group) (目前适用于 12.1 版)
 
 
 

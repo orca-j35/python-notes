@@ -5,7 +5,7 @@
 
 适用于 PostgreSQL 的可视化管理工具:
 
-- [navicat](https://www.navicat.com.cn/) - 破解参考 [1](https://github.com/Deltafox79/Navicat_Keygen) , [2](https://www.jianshu.com/p/5f693b4c9468?mType=Group) (目前能够顺利破解 12.1 版)
+- [navicat](https://www.navicat.com.cn/) - 参考 [1](https://github.com/Deltafox79/Navicat_Keygen) , [2](https://www.jianshu.com/p/5f693b4c9468?mType=Group) (目前适用于 12.1 版)
 
 
 
