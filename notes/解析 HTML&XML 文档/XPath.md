@@ -14,6 +14,7 @@
 - [XML Path Language (XPath) - W3C 标准](https://www.w3.org/TR/xpath/all/)
 - [XPath and XQuery Functions and Operators 3.1](https://www.w3.org/TR/xpath-functions-31)
 - [4. XPath reference](https://infohost.nmt.edu/tcc/help/pubs/xslt/xpath-sect.html) 🍰
+- [微软 XPath 语法页面](https://docs.microsoft.com/en-us/previous-versions/dotnet/netframework-4.0/ms256471(v=vs.100)?redirectedfrom=MSDN) 
 
 XPath 是一门在 XML 文档中查找信息的语言(也适用于 HTML)。XPath 的功能十分强大，主要体现在以下两方面:
 

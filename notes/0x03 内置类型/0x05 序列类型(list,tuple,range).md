@@ -148,7 +148,7 @@ list_5 = copy.deepcopy(list_)
 
 队列(*queue*)遵循『first-in, first-out』原则，由于在列表头部执行插入和弹出操作会很慢——在列表头部进行操作时，其后的所有元素都会被移动。因此将列表用作队列时效率很低。
 
-队列可使用 [`deque`](https://docs.python.org/3/library/collections.html#collections.deque) 对象实现，该类可从两端快速添加或删除。
+队列可使用 [`deque`](https://docs.python.org/3/library/collections.html#collections.deque) 对象（双端队列）实现，该类可从两端快速添加或删除。
 
 ```python
 >>> from collections import deque

@@ -131,9 +131,5 @@
 
   The default value of `-1` selects the optimization level of the interpreter as given by [`-O`](https://docs.python.org/3.7/using/cmdline.html#cmdoption-o) options. Explicit levels are `0` (no optimization; `__debug__` is true), `1` (asserts are removed, `__debug__` is false) or `2` (docstrings are removed too).
 
-一些示例：
 
-```python
-
-```
 

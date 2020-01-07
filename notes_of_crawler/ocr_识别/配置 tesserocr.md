@@ -112,6 +112,7 @@ tesseract 有三个独立的仓库用于存放语言包，其区别大致如下(
 tesseract 相关资源:
 
 - GitHub: https://github.com/tesseract-ocr/tesseract
+  - https://github.com/tesseract-ocr/
 - Wiki: https://github.com/tesseract-ocr/tesseract/wiki
   - 在 Wiki 主页中有安装指导
 - Docs: https://github.com/tesseract-ocr/tesseract/wiki/Documentation
@@ -192,6 +193,40 @@ PS C:\Users\iwhal\Desktop\PyTest> cat result.txt
 | equ       | Math / equation detection        | [equ.traineddata](https://github.com/tesseract-ocr/tessdata/raw/3.04.00/equ.traineddata) |
 
 **Note**: These two data files are compatible with older versions of Tesseract. `osd` is compatible with version 3.01 and up, and `equ` is compatible with version 3.02 and up.
+
+## pytesseract
+
+pytesseract 类似于 tesserocr，也是 tesseract 的第三方包装器，区别如下：
+
+- https://stackoverflow.com/questions/54761638/what-is-the-difference-between-pytesseract-and-tesserocr
+
+在使用 pytesseract 时，需安装 tesseract。
+
+相关资源：
+
+- PyPI - https://pypi.org/project/pytesseract/
+- GitHub - https://github.com/madmaze/pytesseract
+
+安装需求：
+
+- Python-tesseract requires Python 2.7 or Python 3.5+
+- You will need the Python Imaging Library (PIL) (or the [Pillow](https://pypi.org/project/Pillow/) fork). Under Debian/Ubuntu, this is the package **python-imaging** or **python3-imaging**.
+- Install [Google Tesseract OCR](https://github.com/tesseract-ocr/tesseract) (additional info how to install the engine on Linux, Mac OSX and Windows). You must be able to invoke the tesseract command as *tesseract*. If this isn’t the case, for example because tesseract isn’t in your PATH, you will have to change the “tesseract_cmd” variable `pytesseract.pytesseract.tesseract_cmd`. Under Debian/Ubuntu you can use the package **tesseract-ocr**. For Mac OS users. please install homebrew package **tesseract**.
+
+示例
+
+```python
+from PIL import Image
+import pytesseract
+print(pytesseract.image_to_string(Image.open('image.png'), lang='eng'))
+#> 4VC7
+```
+
+就附件图片而言，感觉 pytesseract 比 tesserocr 的输出效果要好一些。
+
+
+
+
 
 ## Pillow
 

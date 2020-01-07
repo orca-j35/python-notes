@@ -4,12 +4,23 @@
 相关资源:
 
 - PyPI: https://pypi.org/project/requests/
+
 - GitHub: https://github.com/kennethreitz/requests
-- Docs-EN: https://2.python-requests.org/en/master/ 🧀
-- Docs-CN: https://2.python-requests.org/en/master/
+
+- Docs-EN: 🧀
+
+  - https://2.python-requests.org/en/master/ 
+
+  - https://requests.kennethreitz.org/en/master/
+
+- Docs-CN:
+
+  - http://cn.python-requests.org/zh_CN/latest/
+  - https://2.python-requests.org/en/master/
+
 - 教程 - [测试教程网](http://www.testclass.net/all): http://www.testclass.net/requests
 
-安装:
+安装：
 
 ```shell
 conda install requests
@@ -68,7 +79,7 @@ print(reps.text)
 
 ## httpbin
 
-可使用 [httpbin](http://httpbin.org/) 来观察 HTTP 请求和响应的内容。由于众所周知的原因，直接访问 [httpbin](http://httpbin.org/) 可能会比较缓慢，因此建议在本地运行 httppin，详见 [httpbin - GitHub](https://github.com/postmanlabs/httpbin) 。
+可使用 [httpbin](https://httpbin.org/) 来观察 HTTP 请求和响应的内容。由于众所周知的原因，直接访问 [httpbin](https://httpbin.org/) 可能会比较缓慢，因此建议在本地运行 httppin，详见 [httpbin - GitHub](https://github.com/postmanlabs/httpbin) 。
 
 ```python
 docker pull kennethreitz/httpbin

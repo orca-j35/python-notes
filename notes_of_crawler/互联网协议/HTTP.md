@@ -70,6 +70,12 @@ sequenceDiagram
     服务器->>客户端: Response(响应)
 ```
 
+
+
+网站 https://www.whatismybrowser.com 可用来测试对服务器可见的浏览器属性
+
+
+
 ## HTTP 协议
 
 > 参考:
@@ -97,6 +103,8 @@ Accept: */*
 ```
 
 第一行是请求命令，必须在尾部添加协议版本(`HTTP/1.0`)。后面就是多行头信息，描述客户端的情况。
+
+关于请求头的详细解释，请见 https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
 
 #### 请求方法
 
